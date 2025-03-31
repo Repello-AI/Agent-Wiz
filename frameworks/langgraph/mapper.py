@@ -978,6 +978,6 @@ if __name__ == "__main__":
     try:
         with open(output_filename, "w", encoding='utf-8') as outfile:
             json.dump(graph_data, outfile, indent=4)
-        print(f"Enhanced graph data written to {output_filename}")
+        print(f"Combined graph data written to {output_filename}")
     except Exception as e:
         print(f"Error writing JSON output to {output_filename}: {e}")
