@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Workflow visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; font-family: sans-serif; }
+        svg { display: block; background-color: #f9f9f9; }
+        .link { stroke-opacity: 0.6; }
+        .node circle { cursor: pointer; }
+        .node text { pointer-events: none; fill: #333; }
+        .link-text { pointer-events: none; fill: #555; }
+        .label-text { pointer-events: none; }
+        .legend { font-size: 12px; }
+        .tooltip {
+            font-family: sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .tooltip strong { display: block; margin-bottom: 5px; }
+        .tooltip pre {
+            font-size: 11px;
+            background-color: #eee;
+            padding: 5px;
+            border-radius: 3px;
+            margin: 5px 0 0 0;
+            max-height: 100px;
+            overflow-y: auto;
+            white-space: pre-wrap; /* Allow wrapping */
+            word-wrap: break-word; /* Break long words */
+        }
+        button {
+            background-color: #e0e0e0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 5px 10px;
+            margin-right: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        button:hover {
+            background-color: #d0d0d0;
+        }
+    </style>
+</head>
+<body>
+<svg width="100vw" height="100vh"></svg>
+
+<script>
+const data = {}
+const width = window.innerWidth;
+const height = window.innerHeight;
+const svg = d3.select("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+// Define zoom scale limits
+const minZoom = 0.1;
+const maxZoom = 7;
+
+// Add zoom capability
+const zoomHandler = d3.zoom()
+    .scaleExtent([minZoom, maxZoom])
+    .on("zoom", (event) => {
+        container.attr("transform", event.transform);
+    });
+
+svg.call(zoomHandler);
+
+// Create a container for all elements that will be zoomed
+const container = svg.append("g")
+    .attr("class", "container");
+
+// Create tooltip div
+const tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("background", "rgba(255, 255, 255, 0.95)") 
+    .style("border", "1px solid #ccc")
+    .style("padding", "10px")
+    .style("border-radius", "5px")
+    .style("box-shadow", "0 3px 8px rgba(0,0,0,0.15)")
+    .style("pointer-events", "none")
+    .style("opacity", 0)
+    .style("z-index", "9999"); 
+
+function formatSourceLocation(loc) {
+    if (!loc) return "N/A";
+    return `${loc.file} (L${loc.line}:${loc.col} - L${loc.end_line}:${loc.end_col})`;
+}
+
+function formatMetadata(meta) {
+    if (!meta || Object.keys(meta).length === 0) return "None";
+    let html = "<pre>";
+    for (const key in meta) {
+        if (Object.hasOwnProperty.call(meta, key)) {
+            let value = meta[key];
+            if (typeof value === 'object' && value !== null) {
+                if(key === 'origin_location' || key === 'definition_location') {
+                    value = formatSourceLocation(value);
+                } else {
+                    value = JSON.stringify(value, null, 2); 
+                }
+            }
+            html += `${key}: ${value}\n`;
+        }
+    }
+    html += "</pre>";
+    return html;
+}
+
+const colorMap = {
+    "Input": "#2ca02c",         // Green
+    "Output": "#d62728",        // Red
+    "Agent/LLM": "#1f77b4",     // Blue
+    "ToolExecutor": "#ff7f0e",  // Orange
+    "Generic": "#bcbd22",       // Olive
+    "Special": "#7f7f7f",       // Grey
+    "_default": "#9467bd"       // Purple (fallback)
+};
+const nodeTypes = [...new Set(data.nodes.map(n => n.node_type))].sort(); 
+
+const simulation = d3.forceSimulation(data.nodes)
+    .force("link", d3.forceLink(data.edges)
+        .id(d => d.name)
+        .distance(300)) 
+    .force("charge", d3.forceManyBody()
+        .strength(-2400) 
+        .distanceMax(750)) 
+    .force("center", d3.forceCenter(width / 2, height / 2).strength(0.1))
+    .force("collision", d3.forceCollide()
+        .radius(80) 
+        .iterations(3))
+    .alphaDecay(0.01)
+    .velocityDecay(0.3); 
+const defs = container.append("defs");
+defs.append("marker")
+    .attr("id", "arrowhead")
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 28) 
+    .attr("refY", 0)
+    .attr("orient", "auto")
+    .attr("markerWidth", 7)
+    .attr("markerHeight", 7)
+    .append("path")
+    .attr("d", "M0,-5L10,0L0,5")
+    .attr("fill", "#777"); 
+
+// --- Links ---
+const link = container.append("g")
+    .attr("class", "links")
+    .selectAll("path")
+    .data(data.edges)
+    .join("path")
+    .attr("class", "link")
+    .attr("marker-end", "url(#arrowhead)")
+    .attr("stroke", "#aaa") 
+    .attr("stroke-width", 2.5)
+    .attr("fill", "none")
+    .on("mouseover", function(event, d) {
+        d3.select(this)
+            .attr("stroke", "#333")
+            .attr("stroke-width", 3.5);
+
+        linkText.filter(t => t === d)
+            .transition().duration(150)
+            .attr("opacity", 1);
+        linkTextBg.filter(t => t === d)
+            .transition().duration(150)
+            .attr("opacity", 0.8);
+
+        tooltip.transition()
+            .duration(200)
+            .style("opacity", 1);
+        tooltip.html(`
+            <strong>Edge: ${d.source.name} -> ${d.target.name}</strong>
+            Condition Type: ${d.condition?.type || 'N/A'}
+            <br>Metadata: ${formatMetadata(d.metadata)}
+        `)
+            .style("left", (event.pageX + 15) + "px")
+            .style("top", (event.pageY - 28) + "px");
+    })
+    .on("mouseout", function(event, d) {
+        d3.select(this)
+            .attr("stroke", "#aaa")
+            .attr("stroke-width", 1.5);
+
+         linkText.filter(t => t === d)
+            .transition().duration(300)
+            .attr("opacity", 0);
+        linkTextBg.filter(t => t === d)
+            .transition().duration(300)
+            .attr("opacity", 0);
+
+        tooltip.transition()
+            .duration(500)
+            .style("opacity", 0);
+    })
+    .on("click", function(event, d) { 
+        focusOnElement(d, 1.5); 
+    });
+
+
+const linkLabelBackgrounds = container.append("g")
+    .attr("class", "link-label-backgrounds");
+
+const linkTextBg = linkLabelBackgrounds.selectAll("rect")
+    .data(data.edges.filter(d => d.condition && d.condition.type)) 
+    .join("rect")
+    .attr("rx", 4)
+    .attr("ry", 3)
+    .attr("fill", "white")
+    .attr("opacity", 0) 
+    .style("pointer-events", "none");
+
+const linkText = container.append("g")
+    .attr("class", "link-labels")
+    .selectAll("text")
+    .data(data.edges.filter(d => d.condition && d.condition.type)) 
+    .join("text")
+    .attr("class", "link-text")
+    .attr("font-size", "10px")
+    .attr("text-anchor", "middle")
+    .attr("fill", "#444")
+    .attr("dy", -5)
+    .attr("opacity", 0) 
+    .style("pointer-events", "none")
+    .text(d => d.condition.type)
+    .each(function(d) { 
+        const bbox = this.getBBox();
+        d.linkLabelWidth = bbox.width;
+        d.linkLabelHeight = bbox.height;
+    });
+
+linkTextBg.each(function(d, i) {
+    const correspondingTextData = linkText.data()[i];
+    if (correspondingTextData && correspondingTextData.linkLabelWidth !== undefined) {
+        const padding = 3;
+        d3.select(this)
+            .attr("width", correspondingTextData.linkLabelWidth + (padding * 2))
+            .attr("height", correspondingTextData.linkLabelHeight + (padding * 2));
+    }
+});
+
+
+// --- Nodes ---
+const node = container.append("g")
+    .attr("class", "nodes")
+    .selectAll(".node")
+    .data(data.nodes)
+    .join("g")
+    .attr("class", "node")
+    .call(drag(simulation))
+    .on("mouseover", function(event, d) {
+        d3.select(this).select("circle")
+            .transition().duration(150)
+            .attr("r", 12) 
+            .attr("stroke", "#333")
+            .attr("stroke-width", 2.5);
+
+        link.attr("stroke", l => l.source === d || l.target === d ? "#333" : "#ccc") // Use object reference
+            .attr("stroke-width", l => l.source === d || l.target === d ? 2.5 : 1.5)
+            .attr("stroke-opacity", l => l.source === d || l.target === d ? 1 : 0.3);
+
+        labels.filter(l => l === d)
+           .attr("font-weight", "bold")
+           .attr("font-size", "16px"); 
+        labelsBackground.filter(l => l === d)
+           .attr("fill", "#f0f0f0")
+           .attr("stroke", "#555")
+           .attr("stroke-width", );
+
+        tooltip.transition()
+            .duration(200)
+            .style("opacity", 1);
+        tooltip.html(`
+            <strong>${d.name}</strong>
+            Type: ${d.node_type || 'N/A'}
+            <br>Function: ${d.function_name || 'N/A'}
+            <br>Location: ${formatSourceLocation(d.source_location)}
+            ${d.docstring ? `<br>Doc: <pre>${d.docstring}</pre>` : ''}
+            <br>Metadata: ${formatMetadata(d.metadata)}
+        `)
+            .style("left", (event.pageX + 15) + "px")
+            .style("top", (event.pageY - 28) + "px");
+    })
+    .on("mouseout", function(event, d) {
+        d3.select(this).select("circle")
+            .transition().duration(200)
+            .attr("r", 9) 
+            .attr("stroke", "white")
+            .attr("stroke-width", 1.5);
+
+        link.attr("stroke", "#aaa")
+            .attr("stroke-width", 1.5)
+            .attr("stroke-opacity", 0.6);
+
+        labels.filter(l => l === d)
+            .attr("font-weight", "normal")
+            .attr("font-size", "16px");
+        labelsBackground.filter(l => l === d)
+            .attr("fill", "white")
+            .attr("stroke", "none");
+
+        tooltip.transition()
+            .duration(500)
+            .style("opacity", 0);
+    })
+    .on("click", function(event, d) { 
+       focusOnElement(d, 2); 
+    });
+
+node.append("circle")
+    .attr("r", 16) 
+    .attr("fill", d => colorMap[d.node_type] || colorMap._default)
+    .attr("stroke", "white")
+    .attr("stroke-width", 1.5);
+
+const labelsLayer = container.append("g").attr("class", "labels-layer");
+
+const labelsBackground = labelsLayer.selectAll(".label-bg")
+    .data(data.nodes)
+    .join("rect")
+    .attr("class", "label-bg")
+    .attr("fill", "white")
+    .attr("opacity", 0.8)
+    .attr("rx", 3)
+    .attr("ry", 3)
+    .style("pointer-events", "none");
+
+const labels = labelsLayer.selectAll(".label-text")
+    .data(data.nodes)
+    .join("text")
+    .attr("class", "label-text")
+    .text(d => d.name)
+    .attr("font-size", "16px")
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start") 
+    .each(function(d) {
+        const bbox = this.getBBox();
+        d.labelWidth = bbox.width + 10; 
+        d.labelHeight = bbox.height + 6;
+    });
+
+labelsBackground
+    .attr("width", d => d.labelWidth)
+    .attr("height", d => d.labelHeight)
+    .attr("x", -5) 
+    .attr("y", d => -d.labelHeight / 2);
+
+
+function adjustLabelPositions() {
+    const labelPadding = 5; 
+    const sortedNodes = data.nodes.slice().sort((a, b) => a.y - b.y); 
+
+    for (let i = 0; i < sortedNodes.length - 1; i++) {
+        const nodeA = sortedNodes[i];
+        for (let j = i + 1; j < sortedNodes.length; j++) {
+             const nodeB = sortedNodes[j];
+
+             if (Math.abs(nodeB.y - nodeA.y) > (nodeA.labelHeight + nodeB.labelHeight) / 2 + labelPadding) {
+                 continue; 
+             }
+             if (Math.abs(nodeB.x - nodeA.x) > (nodeA.labelWidth + nodeB.labelWidth) / 2) {
+                  continue; 
+             }
+
+            const dy = nodeB.y - nodeA.y;
+            const requiredDist = (nodeA.labelHeight + nodeB.labelHeight) / 2 + labelPadding;
+            if (Math.abs(dy) < requiredDist) {
+                const overlap = requiredDist - Math.abs(dy);
+                const sign = dy > 0 ? 1 : -1;
+                if (nodeA.fy === null) nodeA.y -= sign * overlap * 0.1; 
+                if (nodeB.fy === null) nodeB.y += sign * overlap * 0.1;
+            }
+        }
+    }
+
+    const labelOffset = 15; 
+    labels.attr("transform", d => `translate(${d.x + labelOffset}, ${d.y})`);
+    labelsBackground.attr("transform", d => `translate(${d.x + labelOffset}, ${d.y})`);
+}
+
+
+const legend = svg.append("g")
+    .attr("class", "legend")
+    .attr("transform", `translate(${width - 160}, 20)`) 
+    .style("pointer-events", "none");
+
+const legendItemHeight = 22;
+const legendPadding = 10;
+const legendHeaderHeight = 25;
+const legendHeight = nodeTypes.length * legendItemHeight + legendHeaderHeight + legendPadding * 2;
+
+legend.append("rect")
+    .attr("width", 140) 
+    .attr("height", legendHeight)
+    .attr("fill", "rgba(255, 255, 255, 0.85)")
+    .attr("rx", 5)
+    .attr("ry", 5);
+
+legend.append("text")
+    .attr("x", legendPadding)
+    .attr("y", legendHeaderHeight - 5)
+    .attr("font-weight", "bold")
+    .text("Node Types");
+
+nodeTypes.forEach((type, i) => {
+    const yPos = legendHeaderHeight + i * legendItemHeight + legendPadding;
+
+    legend.append("circle")
+        .attr("cx", legendPadding + 8) 
+        .attr("cy", yPos)
+        .attr("r", 7)
+        .attr("fill", colorMap[type] || colorMap._default);
+
+    legend.append("text")
+        .attr("x", legendPadding + 25) 
+        .attr("y", yPos + 4)
+        .text(type);
+});
+
+
+// --- Simulation Tick Function ---
+simulation.on("tick", () => {
+    link.attr("d", d => {
+        const sourceX = d.source.x;
+        const sourceY = d.source.y;
+        const targetX = d.target.x;
+        const targetY = d.target.y;
+
+        const dx = targetX - sourceX;
+        const dy = targetY - sourceY;
+        const dr = Math.sqrt(dx * dx + dy * dy);
+
+        // Handle self-loops
+        if (dr === 0) {
+            const loopRadius = 30; // Radius of the self-loop
+            const sweepFlag = 1; // Clockwise sweep
+            return `M${sourceX},${sourceY - 9} A${loopRadius},${loopRadius} 0 1,${sweepFlag} ${sourceX + 9},${sourceY}`;
+        }
+
+        // Check for multiple links between the same nodes (including reverse direction)
+        const sameLinks = data.edges.filter(l =>
+            (l.source === d.source && l.target === d.target) ||
+            (l.source === d.target && l.target === d.source)
+        );
+
+        if (sameLinks.length > 1) {
+            let linkIndex = sameLinks.findIndex(l => l === d);
+             if (d.source !== sameLinks[0].source) {
+                linkIndex += 0.5; // Offset reverse links slightly differently
+             }
+
+            const arcScale = 0.3; // Controls the amount of curvature
+            const arcDeviation = (linkIndex - (sameLinks.length - 1) / 2) * arcScale;
+
+             const effectiveDr = Math.max(dr, 50);
+             const curveFactor = Math.sign(arcDeviation) * Math.pow(Math.abs(arcDeviation), 0.7); // Non-linear scaling
+             const curveDr = effectiveDr / (2 * Math.sin(Math.PI / 8)) * (1 + curveFactor * 0.5) ; // Adjust radius based on curve factor
+
+
+             const sweepFlag = arcDeviation > 0 ? 1 : 0;
+             const largeArcFlag = 0;
+
+            return `M${sourceX},${sourceY} A${curveDr},${curveDr} 0 ${largeArcFlag},${sweepFlag} ${targetX},${targetY}`;
+        }
+
+        // return `M${sourceX},${sourceY} L${targetX},${targetY}`; // Straight line
+         return `M${sourceX},${sourceY} A${dr},${dr} 0 0,1 ${targetX},${targetY}`; // Simple arc
+    });
+
+
+    node.attr("transform", d => `translate(${d.x}, ${d.y})`);
+
+    adjustLabelPositions();
+
+    linkText.each(function(d) {
+        if (d.source && d.target) { 
+            const midpoint = getMidpoint(d);
+            d3.select(this)
+                .attr("x", midpoint.x)
+                .attr("y", midpoint.y);
+
+             const bg = linkTextBg.filter(bgData => bgData === d);
+             if (!bg.empty() && d.linkLabelWidth !== undefined) {
+                const padding = 3;
+                bg.attr("x", midpoint.x - d.linkLabelWidth / 2 - padding)
+                  .attr("y", midpoint.y - d.linkLabelHeight / 2 - padding - 5); 
+             }
+        }
+    });
+});
+
+function getMidpoint(d) {
+    const source = d.source;
+    const target = d.target;
+
+    let midX = (source.x + target.x) / 2;
+    let midY = (source.y + target.y) / 2;
+
+     if (source === target) {
+         const loopRadius = 30;
+         return { x: source.x , y: source.y - loopRadius - 10 }; 
+     }
+
+    const dx = target.x - source.x;
+    const dy = target.y - source.y;
+    const dr = Math.sqrt(dx * dx + dy * dy);
+
+     const sameLinks = data.edges.filter(l =>
+         (l.source === d.source && l.target === d.target) ||
+         (l.source === d.target && l.target === d.source)
+     );
+
+     if (sameLinks.length > 1 && dr > 0) {
+         let linkIndex = sameLinks.findIndex(l => l === d);
+          if (d.source !== sameLinks[0].source) {
+             linkIndex += 0.5;
+          }
+         const arcScale = 0.3;
+         const arcDeviation = (linkIndex - (sameLinks.length - 1) / 2) * arcScale;
+
+          const offsetX = -dy * arcDeviation * 0.5; 
+          const offsetY = dx * arcDeviation * 0.5;
+
+          midX += offsetX;
+          midY += offsetY;
+     } else if (dr > 0) {
+         const offsetAmount = 12; 
+         midX += -dy / dr * offsetAmount * 0.2;
+         midY += dx / dr * offsetAmount * 0.2 - offsetAmount * 0.8;
+     }
+
+
+    return { x: midX, y: midY - 5 }; 
+}
+
+
+// Drag behavior
+function drag(simulation) {
+    function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+    function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+    }
+    function dragended(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+    }
+    return d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended);
+}
+
+// Function to smoothly pan and zoom to a target element (node or edge)
+function focusOnElement(d, targetScale) {
+    let targetX, targetY;
+
+    if (d.source && d.target) { // It's an edge
+        targetX = (d.source.x + d.target.x) / 2;
+        targetY = (d.source.y + d.target.y) / 2;
+    } else { // It's a node
+        targetX = d.x;
+        targetY = d.y;
+    }
+
+    const transform = d3.zoomIdentity
+        .translate(width / 2, height / 2) // Translate to center first
+        .scale(targetScale)              // Then scale
+        .translate(-targetX, -targetY);  // Then translate target to center
+
+    svg.transition().duration(750).call(
+        zoomHandler.transform,
+        transform
+    );
+}
+
+// --- Control Buttons ---
+const buttonsContainer = d3.select("body").append("div")
+    .style("position", "fixed")
+    .style("bottom", "20px") // Position at bottom-left
+    .style("left", "10px")
+    .style("z-index", "999");
+
+// Reset Layout button
+buttonsContainer.append("button")
+    .text("Reset Layout & View")
+    .on("click", function() {
+        // Clear fixed positions
+        data.nodes.forEach(d => {
+            d.fx = null;
+            d.fy = null;
+        });
+
+        // Reset zoom
+        svg.transition().duration(750).call(
+            zoomHandler.transform,
+            d3.zoomIdentity // Reset to initial scale and position
+        );
+
+        // Reset forces and restart simulation
+        simulation
+            .force("link", d3.forceLink(data.edges).id(d => d.name).distance(200))
+            .force("charge", d3.forceManyBody().strength(-900).distanceMax(600))
+            .force("collision", d3.forceCollide().radius(d => 60).iterations(2))
+            .alpha(1) // Reset alpha to reheat
+            .restart();
+    });
+
+// Spread Nodes button
+buttonsContainer.append("button")
+    .text("Spread Nodes")
+    .on("click", function() {
+        // Temporarily increase repulsion and collision
+        simulation
+            .force("charge", d3.forceManyBody().strength(-2000).distanceMax(700))
+            .force("collision", d3.forceCollide().radius(d => 90).iterations(4))
+            .alpha(0.5) // Give it a boost
+            .restart();
+
+        setTimeout(() => {
+            simulation
+                .force("charge", d3.forceManyBody().strength(-900).distanceMax(600))
+                .force("collision", d3.forceCollide().radius(d => 60).iterations(2))
+                .alpha(0.3) // Keep it simmering
+                .restart();
+        }, 2500); // Revert after 2.5 seconds
+    });
+
+simulation.alpha(0.3).restart(); // Start with a bit of energy
+
+// setTimeout(() => {
+//     if (simulation.alpha() > 0.05) { // Only stop if it hasn't settled much
+//         simulation.stop();
+//     }
+// }, 3000); // Stop after 3 seconds if still active
+
+
+</script>
+
+</body>
+</html>
