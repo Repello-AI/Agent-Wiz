@@ -1,129 +1,146 @@
 import ast
 import json
-import inspect
 import os
-from typing import Any, Dict, List, Optional, Set, Tuple, Union 
-def get_fqn(node: Union[ast.Name, ast.Attribute]) -> str:
+import re
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
+
+def get_func_name(node: Union[ast.Name, ast.Attribute]) -> str:
     if isinstance(node, ast.Name):
         return node.id
     elif isinstance(node, ast.Attribute):
-        base = get_fqn(node.value)
+        base = get_func_name(node.value)
         return f"{base}.{node.attr}" if base else node.attr
     return ""
 
-import ast
-import json
-import inspect
-import os
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
-
+# --- Enhanced FunctionAnalyzer ---
 
 class FunctionAnalyzer(ast.NodeVisitor):
-    """
-    Analyzes a function body for return values and Command(goto=...) targets.
-    Includes basic intra-function variable tracking and analysis of simple function calls
-    assigned to variables used in 'goto'.
-    """
-    def __init__(self, outer_visitor, source_node_name: Optional[str] = None, call_site_context: Optional[Dict[str, ast.AST]] = None, depth=0):
+    def __init__(self, outer_visitor, filename: str, source_node_name: Optional[str] = None, call_site_context: Optional[Dict[str, ast.AST]] = None, depth=0):
         self.outer_visitor = outer_visitor
-        self.source_node_name = source_node_name 
-        self.call_site_context = call_site_context or {} 
+        self.filename = filename
+        self.source_node_name = source_node_name
+        self.call_site_context = call_site_context or {}
         self.depth = depth
-        self.max_depth = 3 # Limit recursion to avoid infinite loops/stack overflows
+        self.max_depth = 3
 
-        self.variables: Dict[str, Set[str]] = {}  
-        self.potential_returns: Set[str] = set() 
-        self.potential_gotos: Set[str] = set()   
-        self.has_unresolved_goto_var: bool = False
-        self.unresolved_goto_vars: Set[str] = set()
+        self.variables: Dict[str, Set[str]] = {}
+        self.potential_returns: Set[str] = set()
+        self.potential_gotos: Dict[str, Dict[str, Any]] = {}
+        self.unresolved_reasons: Set[Tuple[str, str]] = set()
+        self.goto_source_locations: Dict[str, Dict[str, Any]] = {}
+
+        self.calls_llm = False
+        self.calls_search = False
+        self.calls_db = False
+        self.calls_tool = False
+        self.is_router = False
+
+    def _get_location_dict(self, node: ast.AST) -> Dict[str, Any]:
+        return {
+            "file": self.filename,
+            "line": node.lineno,
+            "col": node.col_offset,
+            "end_line": getattr(node, 'end_lineno', None),
+            "end_col": getattr(node, 'end_col_offset', None),
+        }
 
     def _build_call_context(self, func_def: Union[ast.FunctionDef, ast.AsyncFunctionDef], call_node: ast.Call) -> Dict[str, ast.AST]:
-        """Maps parameter names of func_def to argument AST nodes from call_node."""
         context = {}
         params = func_def.args.args
         param_names = [p.arg for p in params]
-
         for i, arg_node in enumerate(call_node.args):
-            if i < len(param_names):
-                context[param_names[i]] = arg_node
-
+            if i < len(param_names): context[param_names[i]] = arg_node
         for kw in call_node.keywords:
-            if kw.arg in param_names:
-                context[kw.arg] = kw.value
-
+            if kw.arg in param_names: context[kw.arg] = kw.value
         return context
 
-    def _analyze_called_function(self, func_call_node: ast.Call) -> Set[str]:
-        """
-        Attempts to analyze the function called and return its potential string return values.
-        """
+    def _analyze_called_function(self, func_call_node: ast.Call) -> Tuple[Set[str], str, Optional[str]]:
         if self.depth >= self.max_depth:
-            print(f"      Max recursion depth ({self.max_depth}) reached, skipping deeper analysis for {self.outer_visitor._stringify_ast_node(func_call_node)}")
-            return {f"unresolved_call_max_depth({self.outer_visitor._stringify_ast_node(func_call_node.func)})"}
+            func_name_str = self.outer_visitor._stringify_ast_node(func_call_node.func)
+            return set(), "unresolved_call_max_depth", func_name_str
 
-        resolved_func_name = self.outer_visitor._resolve_fq_name(func_call_node.func)
-        func_simple_name = get_fqn(func_call_node.func).split('.')[-1]
-
-        func_def = self.outer_visitor.function_defs.get(func_simple_name) 
+        func_simple_name = get_func_name(func_call_node.func).split('.')[-1]
+        func_def = self.outer_visitor.function_defs.get(func_simple_name)
 
         if func_def:
-            print(f"      Analyzing call to '{func_simple_name}'...")
             inner_context = self._build_call_context(func_def, func_call_node)
-
-            inner_analyzer = FunctionAnalyzer(self.outer_visitor, call_site_context=inner_context, depth=self.depth + 1)
+            inner_analyzer = FunctionAnalyzer(self.outer_visitor, self.filename, call_site_context=inner_context, depth=self.depth + 1)
             try:
-                 inner_analyzer.visit(func_def)
-                 print(f"      Call to '{func_simple_name}' potentially returns: {inner_analyzer.potential_returns}")
-                 return {ret for ret in inner_analyzer.potential_returns if not ret.startswith("variable(") and not ret.startswith("unresolved_")}
+                inner_analyzer.visit(func_def)
+                resolved_returns = {ret for ret in inner_analyzer.potential_returns if not ret.startswith("variable(") and not ret.startswith("unresolved_")}
+                has_unresolved = bool(inner_analyzer.potential_returns - resolved_returns) or bool(inner_analyzer.unresolved_reasons)
+                status = "resolved_partial" if resolved_returns and has_unresolved else ("resolved" if resolved_returns else "unresolved_no_returns")
+                unresolved_detail = f"inner_call:{func_simple_name}" if has_unresolved else None
+                return resolved_returns, status, unresolved_detail
             except Exception as e:
-                 print(f"      Error analyzing inner function '{func_simple_name}': {e}")
-                 return {f"unresolved_call_error({func_simple_name})"}
+                return set(), "unresolved_call_error", func_simple_name
         else:
-            print(f"      Definition for called function '{func_simple_name}' not found.")
-            return {f"unresolved_call_not_found({func_simple_name})"}
-
+            return set(), "unresolved_call_not_found", func_simple_name
 
     def visit_Assign(self, node: ast.Assign):
         if len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
             target_var = node.targets[0].id
             value_node = node.value
-            new_values: Set[str] = set() 
+            new_values: Set[str] = set()
+            # resolution_status = "unknown"
+            # resolution_detail = None
 
             if isinstance(value_node, ast.Constant) and isinstance(value_node.value, str):
                 new_values.add(value_node.value)
+                # resolution_status = "resolved_literal"
             elif isinstance(value_node, ast.Name):
-                if value_node.id in self.variables:
-                    new_values.update(self.variables[value_node.id])
-                elif value_node.id in self.call_site_context:
-                    arg_node = self.call_site_context[value_node.id]
+                source_var = value_node.id
+                if source_var in self.variables:
+                    new_values.update(self.variables[source_var])
+                    resolution_status = "resolved_variable"
+                    resolution_detail = source_var
+                elif source_var in self.call_site_context:
+                    arg_node = self.call_site_context[source_var]
                     resolved_arg = self.outer_visitor.extract_argument_value(arg_node)
                     if isinstance(resolved_arg, str):
                          new_values.add(resolved_arg)
-                    else: 
-                         new_values.add(f"unresolved_param({value_node.id})")
+                         resolution_status = "resolved_parameter"
+                         resolution_detail = source_var
+                    else:
+                         resolution_status = "unresolved_parameter_type"
+                         resolution_detail = source_var
+                         self.unresolved_reasons.add(('parameter', source_var))
+                         new_values.add(f"unresolved_param({source_var})")
                 else:
-                     new_values.add(f"variable({value_node.id})") 
+                     resolution_status = "unresolved_variable"
+                     resolution_detail = source_var
+                     self.unresolved_reasons.add(('variable', source_var))
+                     new_values.add(f"variable({source_var})")
 
             elif isinstance(value_node, ast.Call):
-                 print(f"    Found assignment to '{target_var}' from call: {self.outer_visitor._stringify_ast_node(value_node.func)}")
-                 potential_call_returns = self._analyze_called_function(value_node)
-                 new_values.update(potential_call_returns)
+                 call_returns, status, detail = self._analyze_called_function(value_node)
+                 new_values.update(call_returns)
+                 resolution_status = status
+                 resolution_detail = detail
+                 if status.startswith("unresolved"):
+                      self.unresolved_reasons.add(('call_result', detail or self.outer_visitor._stringify_ast_node(value_node.func)))
+
 
             if target_var not in self.variables:
                 self.variables[target_var] = set()
-
             if new_values:
                  self.variables[target_var].update(new_values)
+            # TODO: Track resolution status per variable? Complex.
 
         self.generic_visit(node)
 
     def visit_Return(self, node: ast.Return):
         if node.value:
-            current_potential_returns: Set[str] = set()
             value_node = node.value
+            current_potential_returns: Set[str] = set()
+            resolution_status = "unknown"
+            resolution_detail = None
+            goto_target_results : Dict[str, Dict[str, Any]] = {}
 
+            # --- Resolve the value being returned (for direct returns) ---
             if isinstance(value_node, ast.Constant) and isinstance(value_node.value, str):
                 current_potential_returns.add(value_node.value)
+                resolution_status = "resolved_literal"
             elif isinstance(value_node, ast.Name):
                 var_name = value_node.id
                 if var_name in self.call_site_context:
@@ -131,126 +148,172 @@ class FunctionAnalyzer(ast.NodeVisitor):
                     resolved_arg = self.outer_visitor.extract_argument_value(arg_node)
                     if isinstance(resolved_arg, str):
                         current_potential_returns.add(resolved_arg)
+                        resolution_status = "resolved_parameter"
+                        resolution_detail = var_name
                     else:
-                        current_potential_returns.add(f"unresolved_param_value({var_name})")
-
+                        resolution_status = "unresolved_parameter_type"
+                        resolution_detail = var_name
+                        self.unresolved_reasons.add(('parameter', var_name))
+                        current_potential_returns.add(f"unresolved_param({var_name})")
                 elif var_name in self.variables:
                     current_potential_returns.update(self.variables[var_name])
+                    resolution_status = "resolved_variable"
+                    resolution_detail = var_name
+                    if any(v.startswith("unresolved") or v.startswith("variable") for v in self.variables[var_name]):
+                        resolution_status = "resolved_variable_partial"
+                        self.unresolved_reasons.add(('variable_propagation', var_name))
                 else:
+                    resolution_status = "unresolved_variable"
+                    resolution_detail = var_name
+                    self.unresolved_reasons.add(('variable', var_name))
                     current_potential_returns.add(f"variable({var_name})")
 
-            self.potential_returns.update(current_potential_returns)
+            self.potential_returns.update(r for r in current_potential_returns if not r.startswith('unresolved') and not r.startswith('variable'))
+            if len(current_potential_returns) > 1:
+                self.is_router = True
 
+
+            # --- Check for Command(goto=...) ---
             if isinstance(value_node, ast.Call):
                 call = value_node
-                is_command_call = False
                 resolved_func_fqn = self.outer_visitor._resolve_fq_name(call.func)
-                if resolved_func_fqn and resolved_func_fqn.endswith('Command'):
-                     is_command_call = True
+                is_command_call = resolved_func_fqn and resolved_func_fqn.endswith('Command')
+
+                if resolved_func_fqn:
+                    if re.search(r'\b(llm|chat|openai|anthropic|gemini|generate)\b', resolved_func_fqn, re.IGNORECASE):
+                        self.calls_llm = True
+                    if re.search(r'\b(search|retrieve|tavily|google|bing)\b', resolved_func_fqn, re.IGNORECASE):
+                        self.calls_search = True
+                    if re.search(r'\b(sql|database|db|query)\b', resolved_func_fqn, re.IGNORECASE):
+                        self.calls_db = True
+                    if re.search(r'\b(tool|executor)\b', resolved_func_fqn, re.IGNORECASE):
+                         self.calls_tool = True
 
                 if is_command_call:
                     for keyword in call.keywords:
                         if keyword.arg == 'goto':
                             goto_value_node = keyword.value
-                            resolved_targets = self._resolve_goto_value(goto_value_node)
-                            self.potential_gotos.update(resolved_targets)
-                            break 
+                            goto_target_results = self._resolve_goto_value(goto_value_node)
+
+                            for target, res_info in goto_target_results.items():
+                                self.potential_gotos[target] = res_info
+                                self.goto_source_locations[target] = self._get_location_dict(node)
+                                if res_info.get("status", "").startswith("unresolved"):
+                                    self.unresolved_reasons.add((res_info.get("type", "goto"), res_info.get("detail", "?")))
+                            self.is_router = True
+                            break
 
         self.generic_visit(node)
 
-    def _resolve_goto_value(self, value_node: ast.AST) -> Set[str]:
-        """Resolves the AST node for a goto argument to potential string targets."""
-        targets: Set[str] = set()
+    def _resolve_goto_value(self, value_node: ast.AST) -> Dict[str, Dict[str, Any]]:
+        targets: Dict[str, Dict[str, Any]] = {}
+
+
+        def add_target(target_str: str, status: str, type_: str, detail: Optional[str]):
+            actual_target = "__end__" if target_str == "END" else target_str
+            if actual_target:
+                targets[actual_target] = {"status": status, "type": type_, "detail": detail}
+                if actual_target == "__end__":
+                     self.outer_visitor._add_node_if_not_exists("__end__", "Implicit END node", {}, None)
+
         if isinstance(value_node, ast.Constant) and isinstance(value_node.value, str):
-            targets.add(value_node.value)
+            add_target(value_node.value, "resolved_literal", "literal", None)
         elif isinstance(value_node, ast.Name):
             var_name = value_node.id
-            resolved = False
             if var_name == "END":
-                 targets.add("__end__")
-                 resolved = True
-
-            if not resolved and var_name in self.variables:
-                resolved_values = self.variables[var_name]
-                contains_unresolved = False
-                for val in resolved_values:
-                    if val.startswith(("variable(", "unresolved_", "function_call(")):
-                        contains_unresolved = True
-                        self.unresolved_goto_vars.add(val)
+                add_target(var_name, "resolved_literal", "literal", "END Constant")
+            elif var_name in self.variables:
+                possible_values = self.variables[var_name]
+                has_unresolved_source = False
+                resolved_count = 0
+                for val in possible_values:
+                    if val.startswith(("variable(", "unresolved_")):
+                        has_unresolved_source = True
+                        self.unresolved_reasons.add(('variable_propagation', var_name))
                     else:
-                        targets.add(val)
-                if contains_unresolved:
-                     self.has_unresolved_goto_var = True
-                resolved = True 
+                        status = "resolved_variable_partial" if has_unresolved_source else "resolved_variable"
+                        add_target(val, status, "variable", var_name)
+                        resolved_count += 1
+                if resolved_count == 0 and has_unresolved_source:
+                     targets["?"] = {"status": "unresolved_variable_source", "type": "variable", "detail": var_name}
 
-            if not resolved and var_name in self.call_site_context:
+            elif var_name in self.call_site_context:
                  arg_node = self.call_site_context[var_name]
                  resolved_arg = self.outer_visitor.extract_argument_value(arg_node)
                  if isinstance(resolved_arg, str):
-                     targets.add(resolved_arg)
-                     resolved = True
+                     add_target(resolved_arg, "resolved_parameter", "parameter", var_name)
                  else:
-                      self.has_unresolved_goto_var = True
-                      self.unresolved_goto_vars.add(f"unresolved_param_value({var_name})")
-                      resolved = True 
-
-            if not resolved:
-                self.has_unresolved_goto_var = True
-                self.unresolved_goto_vars.add(f"variable({var_name})")
+                      add_target("?", "unresolved_parameter_type", "parameter", var_name)
+                      self.unresolved_reasons.add(('parameter', var_name))
+            else:
+                add_target("?", "unresolved_variable", "variable", var_name)
+                self.unresolved_reasons.add(('variable', var_name))
 
         elif isinstance(value_node, ast.List):
-            for element in value_node.elts:
-                targets.update(self._resolve_goto_value(element))
+            for i, element in enumerate(value_node.elts):
+                element_targets = self._resolve_goto_value(element)
+                for target, res_info in element_targets.items():
+                    res_info["type"] = "list_element"
+                    res_info["detail"] = f"{res_info.get('detail', '')}[{i}]" if res_info.get('detail') else f"index {i}"
+                    targets[target] = res_info
+
         elif isinstance(value_node, ast.Call):
-             print(f"    Goto value is a call: {self.outer_visitor._stringify_ast_node(value_node.func)}")
-             call_returns = self._analyze_called_function(value_node)
-             resolved_targets_from_call = {t for t in call_returns if not t.startswith("unresolved_")}
-             unresolved_markers = {t for t in call_returns if t.startswith("unresolved_")}
-
-             if resolved_targets_from_call:
-                  targets.update(resolved_targets_from_call)
-             if unresolved_markers:
-                  self.has_unresolved_goto_var = True
-                  self.unresolved_goto_vars.update(unresolved_markers)
-             elif not resolved_targets_from_call: 
-                  self.has_unresolved_goto_var = True
-                  self.unresolved_goto_vars.add(f"unresolved_call_result({self.outer_visitor._stringify_ast_node(value_node.func)})")
-
-
-        if "END" in targets:
-            targets.remove("END")
-            targets.add("__end__")
-
-        if "__end__" in targets:
-             self.outer_visitor._add_node_if_not_exists("__end__", "Implicit END node", {})
+             call_returns, status, detail = self._analyze_called_function(value_node)
+             if call_returns:
+                 for ret_val in call_returns:
+                     add_target(ret_val, status, "call_result", detail or self.outer_visitor._stringify_ast_node(value_node.func))
+             elif status.startswith("unresolved"):
+                  add_target("?", status, "call_result", detail or self.outer_visitor._stringify_ast_node(value_node.func))
+                  self.unresolved_reasons.add(('call_result', detail or self.outer_visitor._stringify_ast_node(value_node.func)))
+             else:
+                 add_target("?", "unresolved_call_no_string_return", "call_result", detail or self.outer_visitor._stringify_ast_node(value_node.func))
+                 self.unresolved_reasons.add(('call_result_no_string', detail or self.outer_visitor._stringify_ast_node(value_node.func)))
+        else:
+             unrec_type = type(value_node).__name__
+             add_target("?", f"unresolved_goto_value_type", unrec_type, self.outer_visitor._stringify_ast_node(value_node))
+             self.unresolved_reasons.add(('goto_value_type', unrec_type))
 
         return targets
 
+
+# --- Enhanced GraphVisitor ---
 
 class GraphVisitor(ast.NodeVisitor):
     def __init__(self):
         self.nodes: List[Dict[str, Any]] = []
         self.edges: List[Dict[str, Any]] = []
         self.node_names: Set[str] = set()
-        self.function_defs: Dict[str, Union[ast.FunctionDef, ast.AsyncFunctionDef]] = {} 
-        self.node_function_map: Dict[str, str] = {} 
-        self.dynamic_edge_signatures: Set[Tuple[str, str]] = set()
-        self.graph_name: Optional[str] = None 
+        self.function_defs: Dict[str, Union[ast.FunctionDef, ast.AsyncFunctionDef]] = {}
+        self.node_function_map: Dict[str, str] = {}
+        self.graph_name: Optional[str] = None
+        self.current_filename: str = ""
 
-        # --- State inspired by GraphInstanceTracker ---
         self.graph_class_fqcn = "langgraph.graph.StateGraph"
-        self.command_class_fqn = "langgraph.types.Command"   
+        self.command_class_fqn = "langgraph.types.Command"
 
-        self.import_aliases: Dict[str, str] = {} 
-        self.import_aliases_fully: Dict[str, str] = {} 
-
-        self.variable_is_target_instance: Dict[str, bool] = {} #
-
+        self.import_aliases: Dict[str, str] = {}
+        self.import_aliases_fully: Dict[str, str] = {}
+        self.variable_is_target_instance: Dict[str, bool] = {}
         self.variable_values: Dict[str, Union[ast.List, ast.Dict, ast.Constant]] = {}
 
         self.has_start = False
         self.has_end = False
 
+    def _get_location_dict(self, node: ast.AST) -> Dict[str, Any]:
+        if not self.current_filename or not hasattr(node, 'lineno'):
+             return None
+        return {
+            "file": self.current_filename,
+            "line": node.lineno,
+            "col": node.col_offset,
+            "end_line": getattr(node, 'end_lineno', None),
+            "end_col": getattr(node, 'end_col_offset', None),
+        }
+
+    def visit_file(self, tree: ast.AST, filename: str):
+        self.current_filename = filename
+        self.visit(tree)
+        self.current_filename = ""
 
     def visit_Import(self, node: ast.Import):
         for alias in node.names:
@@ -262,7 +325,6 @@ class GraphVisitor(ast.NodeVisitor):
         if node.module is None:
             self.generic_visit(node)
             return
-
         base_module = node.module
         for alias in node.names:
             local_name = alias.asname if alias.asname else alias.name
@@ -270,190 +332,252 @@ class GraphVisitor(ast.NodeVisitor):
             self.import_aliases_fully[local_name] = f"{base_module}.{imported_name}"
             if '.' in base_module:
                  prefix = base_module.split('.')[0]
-                 if prefix not in self.import_aliases:
-                     self.import_aliases[prefix] = prefix
-            elif base_module not in self.import_aliases:
-                 self.import_aliases[base_module] = base_module
-
-
+                 if prefix not in self.import_aliases: self.import_aliases[prefix] = prefix
+            elif base_module not in self.import_aliases: self.import_aliases[base_module] = base_module
         self.generic_visit(node)
 
     def visit_FunctionDef(self, node: Union[ast.FunctionDef, ast.AsyncFunctionDef]):
         self.function_defs[node.name] = node
         self.generic_visit(node)
 
-    visit_AsyncFunctionDef = visit_FunctionDef # Alias for async functions
+    visit_AsyncFunctionDef = visit_FunctionDef
 
-    # --- Assignment Handler ---
     def visit_Assign(self, node: ast.Assign):
         if len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
             var_name = node.targets[0].id
             value = node.value
-
             if isinstance(value, ast.Call):
                 resolved_fqn = self._resolve_fq_name(value.func)
                 if resolved_fqn == self.graph_class_fqcn:
                     self.variable_is_target_instance[var_name] = True
                     if self.graph_name is None:
                         self.graph_name = var_name
-                        print(f"  Identified StateGraph instance: {self.graph_name}")
-
             if isinstance(value, (ast.Constant, ast.List, ast.Dict)):
                 self.variable_values[var_name] = value
             else:
-                if var_name in self.variable_values:
-                    del self.variable_values[var_name]
-
+                if var_name in self.variable_values: del self.variable_values[var_name]
             if isinstance(value, ast.Name) and value.id in self.variable_is_target_instance:
                  self.variable_is_target_instance[var_name] = True
-
-
         self.generic_visit(node)
 
-    # --- Call Handler ---
     def visit_Call(self, node: ast.Call):
         if isinstance(node.func, ast.Attribute) and isinstance(node.func.value, ast.Name):
             instance_name = node.func.value.id
             if self.variable_is_target_instance.get(instance_name, False):
                 method_name = node.func.attr
-
                 processor = getattr(self, f"process_{method_name}", None)
                 if processor:
-                    try:
-                        processor(node)
-                    except Exception as e:
-                         print(f"Error processing {method_name} call: {e}")
-
+                    try: processor(node)
+                    except Exception as e: print(f"Error processing {method_name} call at {self._get_location_dict(node)}: {e}")
         self.generic_visit(node)
 
-    # --- Helper: Add Node (Ensures Uniqueness) ---
-    def _add_node_if_not_exists(self, name, description, metadata):
-        """Helper to add a node only if its name hasn't been seen."""
-        node_name_to_add = name
-        if name == "START": node_name_to_add = "__start__"
-        if name == "END": node_name_to_add = "__end__"
-
+    def _add_node_if_not_exists(self, name, function_name, metadata, location_dict):
+        node_name_to_add = "__start__" if name == "START" else "__end__" if name == "END" else name
+        is_implicit = name in ["START", "END" , "__start__" , "__end__"]
         if node_name_to_add not in self.node_names:
-            self.nodes.append({"name": node_name_to_add, "description": description, "metadata": metadata})
-            self.node_names.add(node_name_to_add) 
+            node_data = {
+                "name": node_name_to_add,
+                "function_name": function_name if not is_implicit else None,
+                "docstring": None,
+                "node_type": "Special" if is_implicit else "Unknown",
+                "source_location": location_dict if not is_implicit else None,
+                "metadata": metadata or {}
+            }
+
+            if not is_implicit and function_name:
+                 func_def = self.function_defs.get(function_name)
+                 print(func_def)
+                 if func_def:
+                     try:
+                          docstring = ast.get_docstring(func_def)
+                          print(docstring)
+                          node_data["docstring"] = docstring
+                          node_data["node_type"] = self._classify_node(node_name_to_add, function_name, func_def)
+                     except Exception as e:
+                          print(f"Warning: Could not process function '{function_name}' for node '{node_name_to_add}': {e}")
+                 else :
+                     try :
+                          node_data["node_type"] = self._classify_node(node_name_to_add, function_name, None)
+                     except Exception as e:
+                          print(f"Warning: Could not process function '{function_name}' for node '{node_name_to_add}': {e}")
+
+
+            self.nodes.append(node_data)
+            self.node_names.add(node_name_to_add)
             if node_name_to_add == "__start__": self.has_start = True
             if node_name_to_add == "__end__": self.has_end = True
 
-    # --- Helper: Resolve Fully Qualified Name ---
+
+    def _classify_node(self, node_name: str, function_name: Optional[str], func_def: Optional[Union[ast.FunctionDef, ast.AsyncFunctionDef]]) -> str:
+        if not function_name and not node_name: return "Unknown"
+
+        check_name = node_name.lower() if node_name else ""
+        check_func = function_name.lower() if function_name else ""
+        combined_check = f"{check_name} {check_func}".strip()
+
+        if check_name in ["input", "input_node", "__start__", "start", "entry", "entry_point"]:
+            return "Input"
+        if check_name in ["output", "output_node", "__end__", "end", "finish", "exit", "finish_point"]:
+            return "Output"
+        if check_name in ["tool_node", "tools", "tool_executor", "actions", "action_node"]:
+            return "ToolExecutor"
+
+        if re.search(r'\b(router|route|routing|conditional|condition|branch|switch|decide|decision|choose|selector|map_step|path_map)\b', combined_check):
+            return "Router"
+
+        if re.search(r'\b(agent|llm|openai|anthropic|gemini|llama|mistral|claude|chat|generate|invoke|call_model|prompt|predict|reasoning|step_back)\b', combined_check):
+            return "Agent"
+
+        if re.search(r'\b(plan|planner|planning|sequence|orchestrate|orchestrator)\b', combined_check):
+            return "Planner"
+
+        if re.search(r'\b(search|retrieve|retriever|tavily|google|bing|duckduckgo|arxiv|wikipedia|lookup|knowledge)\b', combined_check):
+            return "Search/Retriever"
+
+        is_tool_related = (
+            re.search(r'\b(tool(?!_node)|action(?!_node)|api|function_call|calculator|python_repl|terminal)\b', combined_check) or
+            "tool" in check_name.split("_") or
+            "tools" in check_name.split("_") or
+            re.search(r'[_-]tools?\b', check_name)
+        )
+
+        if is_tool_related and not re.search(r'\b(search|retrieve|database|sql)\b', combined_check):
+             if func_def:
+                analyzer = FunctionAnalyzer(self, getattr(func_def, '_filename', self.current_filename), source_node_name=node_name)
+                try:
+                    analyzer.visit(func_def)
+                    if analyzer.calls_tool: return "Tool"
+                except Exception: pass
+             return "Tool"
+
+
+        if re.search(r'\b(db|database|sql|query|vectorstore|storage|memory|persist)\b', combined_check):
+             if re.search(r'\b(memory|context|history)\b', combined_check) and not re.search(r'\b(sql|query|vectorstore)\b', combined_check):
+                 return "MemoryManagement"
+             else:
+                 return "Database/Storage"
+
+        if re.search(r'\b(reflect|reflection|review|critique|critic|correct|refine|revise|validate|check)\b', combined_check):
+            return "Reflection/Correction"
+
+        if re.search(r'\b(input|entry|receive|user_input|question)\b', combined_check):
+            return "Input"
+        if re.search(r'\b(output|exit|finish|display|respond|response|answer|result)\b', combined_check):
+            return "Output"
+
+
+        if func_def:
+            func_filename = getattr(func_def, '_filename', self.current_filename)
+            analyzer = FunctionAnalyzer(self, func_filename, source_node_name=node_name)
+            try:
+                analyzer.visit(func_def)
+                if analyzer.is_router: return "Router"
+                if analyzer.calls_llm: return "Agent/LLM"
+                if analyzer.calls_search: return "Search/Retriever"
+                if analyzer.calls_db: return "Database/Storage"
+                if analyzer.calls_tool: return "Tool"
+            except Exception as e:
+                 pass
+
+        print(node_name)
+        return "Generic"
+
     def _resolve_fq_name(self, node: ast.AST) -> Optional[str]:
-        """Attempt to resolve an AST node (Name, Attribute) to a known FQN."""
         if isinstance(node, ast.Name):
             node_id = node.id
-            if node_id in self.import_aliases_fully:
-                return self.import_aliases_fully[node_id]
+            if node_id in self.import_aliases_fully: return self.import_aliases_fully[node_id]
             return node_id
-
         elif isinstance(node, ast.Attribute):
             base_node = node.value
             attr_name = node.attr
-
             base_fqn = self._resolve_fq_name(base_node)
-
             if base_fqn:
-                if base_fqn in self.import_aliases:
-                    return f"{self.import_aliases[base_fqn]}.{attr_name}"
-                else:
-                     return f"{base_fqn}.{attr_name}"
-            else:
-                 return None 
+                if base_fqn in self.import_aliases: return f"{self.import_aliases[base_fqn]}.{attr_name}"
+                else: return f"{base_fqn}.{attr_name}"
+            else: return None
+        elif isinstance(node, ast.Constant) and isinstance(node.value, str): return node.value
+        return None
 
-        elif isinstance(node, ast.Constant) and isinstance(node.value, str):
-             return node.value
-
-        return None 
-
-    # --- Helper: Stringify AST Node (for representation) ---
     def _stringify_ast_node(self, node: ast.AST) -> str:
-        """Convert simple AST nodes to string representations."""
-        if isinstance(node, ast.Constant):
-            return repr(node.value) 
-        elif isinstance(node, ast.Name):
-            return node.id
+        if isinstance(node, ast.Constant): return repr(node.value)
+        elif isinstance(node, ast.Name): return node.id
         else:
-            try:
-                 print(f"Cannot Stringify, Dumping AST node: {ast.dump(node)}")
-                 return ast.dump(node) # Generic AST dump as fallback
-            except Exception:
-                 return f"<{type(node).__name__}>"
+            try: return ast.dump(node)
+            except Exception: return f"<{type(node).__name__}>"
 
-    # --- Process Methods for Graph Builder Calls ---
+    # --- Process Methods (Enhanced) ---
 
     def process_add_node(self, node: ast.Call):
-        """Handles add_node, extracts name, maps function, prepares for analysis."""
         node_name = None
-        action_ref = None 
+        action_ref = None
         metadata = {}
         pos_args = node.args
         kw_args = {kw.arg: kw.value for kw in node.keywords if kw.arg}
+        location = self._get_location_dict(node)
+
 
         if 'node' in kw_args: node_name = self.extract_argument_value(kw_args['node'])
         if 'action' in kw_args: action_ref = self.extract_argument_value(kw_args['action'])
-
         if len(pos_args) >= 1 and node_name is None:
              arg0_val = self.extract_argument_value(pos_args[0])
-             if isinstance(pos_args[0], ast.Constant) and isinstance(arg0_val, str): 
+             if isinstance(pos_args[0], ast.Constant) and isinstance(arg0_val, str):
                  node_name = arg0_val
-                 if len(pos_args) >= 2 and action_ref is None: 
-                     action_ref = self.extract_argument_value(pos_args[1])
-             elif isinstance(pos_args[0], ast.Name): 
-                 action_ref = arg0_val
-                 node_name = action_ref 
+                 if len(pos_args) >= 2 and action_ref is None: action_ref = self.extract_argument_value(pos_args[1])
+             elif isinstance(pos_args[0], ast.Name) or isinstance(pos_args[0], ast.Attribute):
+                 action_ref = self.extract_argument_value(pos_args[0])
+                 node_name = action_ref
 
-        description = action_ref if action_ref else node_name
         if 'metadata' in kw_args and isinstance(kw_args['metadata'], ast.Dict):
-            meta_dict = kw_args['metadata']
-            try:
-                 metadata = {self.extract_argument_value(k): self.extract_argument_value(v)
-                             for k, v in zip(meta_dict.keys, meta_dict.values)}
+            try: metadata = {self.extract_argument_value(k): self.extract_argument_value(v) for k, v in zip(kw_args['metadata'].keys, kw_args['metadata'].values)}
             except Exception: metadata = {"error": "Cannot parse metadata dict"}
 
-        if node_name:
-            self._add_node_if_not_exists(node_name, description, metadata)
-            if action_ref and isinstance(action_ref, str): # Ensure it's a name string
-                self.node_function_map[node_name] = action_ref
+        if node_name and isinstance(node_name, str):
+            actual_func_name = action_ref if isinstance(action_ref, str) else node_name
+            print(action_ref)
+            self._add_node_if_not_exists(node_name, actual_func_name, metadata, location)
+            if actual_func_name:
+                self.node_function_map[node_name] = actual_func_name
         else:
-            print(f"Warning: Could not determine node name for add_node call: {self._stringify_ast_node(node)}")
-
+            print(f"Warning: Could not determine node name for add_node call at {location}")
 
     def process_add_edge(self, node: ast.Call):
         source = None
         target = None
         pos_args = node.args
         kw_args = {kw.arg: kw.value for kw in node.keywords if kw.arg}
+        location = self._get_location_dict(node)
 
         if 'start_key' in kw_args: source = self.extract_argument_value(kw_args['start_key'])
         if 'end_key' in kw_args: target = self.extract_argument_value(kw_args['end_key'])
-
         if source is None and len(pos_args) >= 1: source = self.extract_argument_value(pos_args[0])
         if target is None and len(pos_args) >= 2: target = self.extract_argument_value(pos_args[1])
 
-        if source == "__start__": self._add_node_if_not_exists("__start__", "Implicit START node", {})
-        if target == "__end__": self._add_node_if_not_exists("__end__", "Implicit END node", {})
+        if source == "__start__": self._add_node_if_not_exists("START", None, {}, None)
+        if target == "__end__": self._add_node_if_not_exists("END", None, {}, None)
 
         if source and target:
-             if isinstance(source, list):
-                 for s_item in source:
-                     s_item_norm = "__start__" if s_item == "START" else s_item # Normalize if needed in list
-                     if s_item_norm == "__start__": self._add_node_if_not_exists("__start__", "Implicit START node", {})
-                     if s_item_norm and target: # Ensure items are valid
-                        self.edges.append({"source": s_item_norm, "target": target, "conditional": "no", "condition": "", "metadata": {}})
-             else: # Single source
-                 self.edges.append({"source": source, "target": target, "conditional": "no", "condition": "", "metadata": {}})
+             sources = source if isinstance(source, list) else [source]
+             for s_item in sources:
+                 s_item_norm = "__start__" if s_item == "START" else s_item
+                 if s_item_norm == "__start__": self._add_node_if_not_exists("START", None, {}, None)
+                 if s_item_norm and target:
+                     self.edges.append({
+                         "source": s_item_norm,
+                         "target": target,
+                         "condition": {"type": "static"},
+                         "metadata": {"definition_location": location}
+                     })
         else:
-            print(f"Warning: Could not extract source/target from add_edge: {self._stringify_ast_node(node)}")
+            print(f"Warning: Could not extract source/target from add_edge at {location}")
 
 
     def process_add_conditional_edges(self, node: ast.Call):
         source = None
-        path_arg = None 
-        path_map_arg = None 
+        path_arg = None
+        path_map_arg = None
         pos_args = node.args
         kw_args = {kw.arg: kw.value for kw in node.keywords if kw.arg}
+        location = self._get_location_dict(node)
 
         if 'source' in kw_args: source = self.extract_argument_value(kw_args['source'])
         elif len(pos_args) >= 1: source = self.extract_argument_value(pos_args[0])
@@ -465,203 +589,267 @@ class GraphVisitor(ast.NodeVisitor):
         elif len(pos_args) >= 3: path_map_arg = pos_args[2]
 
         if not source:
-            print(f"Warning: Missing source in add_conditional_edges: {self._stringify_ast_node(node)}")
+            print(f"Warning: Missing source in add_conditional_edges at {location}")
             return
 
         path_func_name = None
-        if isinstance(path_arg, ast.Name):
-            path_func_name = path_arg.id
-        condition_func_info = f" (condition func: {path_func_name})" if path_func_name else ""
+        if isinstance(path_arg, ast.Name): path_func_name = path_arg.id
+        elif isinstance(path_arg, ast.Attribute): path_func_name = get_func_name(path_arg)
 
-        # --- Case 1: path_map is provided ---
         if path_map_arg:
             resolved_path_map = None
-            path_map_source_desc = ""
+            map_source_detail = ""
+            resolution_status = "unknown"
 
             if isinstance(path_map_arg, ast.Name):
                 var_name = path_map_arg.id
-                path_map_source_desc = f" (from var: {var_name})"
-                if var_name in self.variable_values:
-                    resolved_path_map = self.variable_values[var_name] # Should be List or Dict AST node
+                map_source_detail = f"variable: {var_name}"
+                if var_name in self.variable_values and isinstance(self.variable_values[var_name], (ast.Dict, ast.List)):
+                    resolved_path_map = self.variable_values[var_name]
+                    resolution_status = "resolved_variable"
                 else:
-                    print(f"Warning: Cannot resolve path_map variable '{var_name}' for source '{source}'.")
+                    print(f"Warning: Cannot resolve path_map variable '{var_name}' for source '{source}' at {location}.")
+                    resolution_status = "unresolved_variable"
+                    self.edges.append({
+                        "source": source, "target": "?",
+                        "condition": {
+                            "type": "conditional_map",
+                            "value": None,
+                            "condition_function": path_func_name,
+                            # "resolution": {"status": resolution_status, "detail": map_source_detail}
+                        },
+                        "metadata": {"definition_location": location}
+                    })
                     return
             elif isinstance(path_map_arg, (ast.Dict, ast.List)):
                 resolved_path_map = path_map_arg
+                resolution_status = "resolved_literal"
+                map_source_detail = "literal"
             else:
-                 print(f"Warning: Unsupported path_map type '{type(path_map_arg)}' for source '{source}'.")
+                 print(f"Warning: Unsupported path_map type '{type(path_map_arg)}' for source '{source}' at {location}.")
+                 resolution_status = "unresolved_type"
+                 map_source_detail = type(path_map_arg).__name__
+                 self.edges.append({ "source": source, "target": "?", "condition": { "type": "conditional_map", "value": None, "condition_function": path_func_name, "resolution": {"status": resolution_status, "detail": map_source_detail}}, "metadata": {"definition_location": location}})
                  return
 
             if isinstance(resolved_path_map, ast.Dict):
                 for key_node, value_node in zip(resolved_path_map.keys, resolved_path_map.values):
                     condition_val = self.extract_argument_value(key_node)
                     target_val = self.extract_argument_value(value_node)
-                    if target_val == "__end__": self._add_node_if_not_exists("__end__", "Implicit END node", {})
+                    if target_val == "__end__": self._add_node_if_not_exists("END", None, {}, None)
                     if condition_val is not None and target_val:
                         self.edges.append({
-                            "source": source, "target": target_val, "conditional": "yes",
-                            "condition": f"{condition_val}{condition_func_info}{path_map_source_desc}",
-                            "metadata": {}
+                            "source": source, "target": target_val,
+                            "condition": {
+                                "type": "conditional_map",
+                                "value": condition_val,
+                                "condition_function": path_func_name,
+                                # "resolution": {"status": resolution_status, "detail": map_source_detail}
+                            },
+                            "metadata": {"definition_location": location}
                         })
             elif isinstance(resolved_path_map, ast.List):
-                 # List map: condition is unknown, target is list element
                  for element_node in resolved_path_map.elts:
                      target_val = self.extract_argument_value(element_node)
-                     if target_val == "__end__": self._add_node_if_not_exists("__end__", "Implicit END node", {})
+                     if target_val == "__end__": self._add_node_if_not_exists("END", None, {}, None)
                      if target_val:
                           self.edges.append({
-                              "source": source, "target": target_val, "conditional": "yes",
-                              "condition": f"dynamic_list_map{condition_func_info}{path_map_source_desc}",
-                              "metadata": {}
+                              "source": source, "target": target_val,
+                              "condition": {
+                                  "type": "conditional_map_list",
+                                  "value": None,
+                                  "condition_function": path_func_name,
+                                #   "resolution": {"status": resolution_status, "detail": map_source_detail}
+                              },
+                              "metadata": {"definition_location": location}
                           })
 
-        # --- Case 2: Only path function is provided (no path_map) ---
         elif path_func_name:
-             print(f"  Analyzing path function '{path_func_name}' for conditional edges from '{source}'...")
              func_def = self.function_defs.get(path_func_name)
              if func_def:
-                 analyzer = FunctionAnalyzer(self)
+                 analyzer = FunctionAnalyzer(self, self.current_filename)
                  analyzer.visit(func_def)
-                 possible_targets = analyzer.potential_returns - {f"variable({var})" for var in analyzer.variables} # Exclude unresolved variable returns for now
+                 possible_targets = analyzer.potential_returns
 
-                 if not possible_targets and analyzer.potential_returns:
-                      print(f"    Warning: Path function '{path_func_name}' returns unresolved variables: {analyzer.potential_returns}. Cannot determine static targets.")
-                      self.edges.append({"source": source, "target": "?", "conditional": "yes", "condition": f"dynamic_unresolved_func{condition_func_info}", "metadata": {}})
-
+                 if not possible_targets and analyzer.unresolved_reasons:
+                      detail = ", ".join([f"{t}:{d}" for t, d in analyzer.unresolved_reasons])
+                      print("Warning : no target")
+                      self.edges.append({
+                            "source": source, "target": "?",
+                            "condition": {
+                                "type": "conditional_func_return",
+                                "value": None,
+                                "condition_function": path_func_name,
+                                # "resolution": {"status": "unresolved_function_analysis", "detail": detail}
+                            },
+                            "metadata": {"definition_location": location}
+                      })
                  elif not possible_targets:
-                     print(f"    Warning: Could not find any return values in path function '{path_func_name}'.")
+                     print(f"Warning: Path function '{path_func_name}' seems to have no direct string return values at {location}.")
+                     self.edges.append({
+                           "source": source, "target": "?",
+                           "condition": { "type": "conditional_func_return", "value": None, "condition_function": path_func_name, "resolution": {"status": "unresolved_no_returns"}},
+                           "metadata": {"definition_location": location}
+                     })
 
                  for target in possible_targets:
-                     if target == "__end__": self._add_node_if_not_exists("__end__", "Implicit END node", {})
-                     if target: # Ensure target is not empty/None
+                     if target == "__end__": self._add_node_if_not_exists("END", None, {}, None)
+                     if target:
                         self.edges.append({
-                            "source": source, "target": target, "conditional": "yes",
-                            "condition": f"dynamic_func_return{condition_func_info}",
-                            "metadata": {"potential_return": True}
+                            "source": source, "target": target,
+                            "condition": {
+                                "type": "conditional_func_return",
+                                "value": target,
+                                "condition_function": path_func_name,
+                                # "resolution": {"status": "resolved"}
+                            },
+                            "metadata": {"definition_location": location, "potential_return": True}
                         })
              else:
-                  print(f"    Warning: Path function '{path_func_name}' definition not found. Cannot determine targets.")
-                  self.edges.append({"source": source, "target": "?", "conditional": "yes", "condition": f"dynamic_unknown_func{condition_func_info}", "metadata": {}})
-
+                  print(f"Warning: Path function '{path_func_name}' definition not found at {location}.")
+                  self.edges.append(
+                      {"source": source,
+                       "target": "?",
+                       "condition": {"type": "conditional_func_return", "value": None,
+                                      "condition_function": path_func_name,
+                                    # "resolution": {"status": "unresolved_function_not_found"}
+                                    },
+                                    "metadata": {"definition_location": location}})
         else:
-             print(f"Warning: Insufficient arguments for add_conditional_edges from '{source}'.")
+             print(f"Warning: Insufficient arguments for add_conditional_edges from '{source}' at {location}.")
 
 
     def process_add_sequence(self, node: ast.Call):
+        location = self._get_location_dict(node)
         if len(node.args) == 1 and isinstance(node.args[0], ast.List):
             seq_nodes_ast = node.args[0].elts
             last_node_name = None
             for i, item_ast in enumerate(seq_nodes_ast):
-                current_node_name = None
-                if isinstance(item_ast, ast.Name): current_node_name = item_ast.id
-                elif isinstance(item_ast, ast.Constant) and isinstance(item_ast.value, str): current_node_name = item_ast.value
-                elif isinstance(item_ast, ast.Tuple) and len(item_ast.elts) >= 1:
-                     name_part = item_ast.elts[0]
-                     if isinstance(name_part, ast.Constant) and isinstance(name_part.value, str): current_node_name = name_part.value
+                current_node_name = self.extract_argument_value(item_ast)
+                if isinstance(current_node_name, list) and len(current_node_name) > 0 and isinstance(current_node_name[0], str):
+                    current_node_name = current_node_name[0]
 
-                if current_node_name:
-                    self._add_node_if_not_exists(current_node_name, current_node_name, {})
+                if isinstance(current_node_name, str):
+                    self._add_node_if_not_exists(current_node_name, current_node_name, {}, self._get_location_dict(item_ast))
                     if last_node_name:
-                        self.edges.append({"source": last_node_name, "target": current_node_name, "conditional": "no", "condition": "", "metadata": {}})
+                        self.edges.append({
+                            "source": last_node_name,
+                            "target": current_node_name,
+                            "condition": {"type": "sequence"},
+                            "metadata": {"definition_location": location}
+                        })
                     last_node_name = current_node_name
                 else:
-                     print(f"Warning: Could not determine node name for item {i} in add_sequence.")
-                     last_node_name = None 
-        else: print("Warning: add_sequence call did not have a single List argument. Skipping.")
+                     print(f"Warning: Could not determine node name for item {i} in add_sequence at {location}.")
+                     last_node_name = None
+        else: print(f"Warning: add_sequence call malformed at {location}.")
 
 
     def process_set_entry_point(self, node: ast.Call):
         target = None
+        location = self._get_location_dict(node)
         if len(node.args) == 1: target = self.extract_argument_value(node.args[0])
         for kw in node.keywords:
             if kw.arg == 'key': target = self.extract_argument_value(kw.value)
 
         if target:
-            self._add_node_if_not_exists("__start__", "Implicit START node", {})
-            self.edges.append({"source": "__start__", "target": target, "conditional": "no", "condition": "", "metadata": {}})
-        else: print("Warning: Could not extract target from set_entry_point call.")
-
+            self._add_node_if_not_exists("START", None, {}, None)
+            self.edges.append({
+                "source": "__start__",
+                "target": target,
+                "condition": {"type": "entry_point"},
+                "metadata": {"definition_location": location}
+            })
+        else: print(f"Warning: Could not extract target from set_entry_point at {location}.")
 
     def process_set_conditional_entry_point(self, node: ast.Call):
-        path_arg = None
-        path_map_arg = None
-        pos_args = node.args
-        kw_args = {kw.arg: kw.value for kw in node.keywords if kw.arg}
-        source = "__start__" 
+         path_arg = None
+         path_map_arg = None
+         pos_args = node.args
+         kw_args = {kw.arg: kw.value for kw in node.keywords if kw.arg}
+         location = self._get_location_dict(node)
+         source = "__start__"
 
-        self._add_node_if_not_exists("__start__", "Implicit START node", {})
+         self._add_node_if_not_exists("START", None, {}, None)
 
-        if 'path' in kw_args: path_arg = kw_args['path']
-        elif len(pos_args) >= 1: path_arg = pos_args[0] 
+         if 'path' in kw_args: path_arg = kw_args['path']
+         elif len(pos_args) >= 1: path_arg = pos_args[0]
 
-        if 'path_map' in kw_args: path_map_arg = kw_args['path_map']
-        elif len(pos_args) >= 2: path_map_arg = pos_args[1] 
+         if 'path_map' in kw_args: path_map_arg = kw_args['path_map']
+         elif len(pos_args) >= 2: path_map_arg = pos_args[1]
 
-        path_func_name = None
-        if isinstance(path_arg, ast.Name): path_func_name = path_arg.id
-        condition_func_info = f" (condition func: {path_func_name})" if path_func_name else ""
+         path_func_name = None
+         if isinstance(path_arg, ast.Name): path_func_name = path_arg.id
+         elif isinstance(path_arg, ast.Attribute): path_func_name = get_func_name(path_arg)
 
-        # --- Case 1: path_map is provided ---
-        if path_map_arg:
+         if path_map_arg:
             resolved_path_map = None
-            path_map_source_desc = ""
+            map_source_detail = ""
+            # resolution_status = "unknown"
             if isinstance(path_map_arg, ast.Name):
-                var_name = path_map_arg.id
-                path_map_source_desc = f" (from var: {var_name})"
-                if var_name in self.variable_values: resolved_path_map = self.variable_values[var_name]
-                else: print(f"Warning: Cannot resolve path_map variable '{var_name}' for conditional entry point.") ; return
-            elif isinstance(path_map_arg, (ast.Dict, ast.List)): resolved_path_map = path_map_arg
-            else: print(f"Warning: Unsupported path_map type '{type(path_map_arg)}' for conditional entry point.") ; return
+                 var_name = path_map_arg.id
+                 map_source_detail = f"variable: {var_name}"
+                 if var_name in self.variable_values and isinstance(self.variable_values[var_name], (ast.Dict, ast.List)):
+                      resolved_path_map = self.variable_values[var_name]; resolution_status = "resolved_variable"
+                #  else: resolution_status = "unresolved_variable"
+            elif isinstance(path_map_arg, (ast.Dict, ast.List)):
+                 resolved_path_map = path_map_arg; resolution_status = "resolved_literal"; map_source_detail = "literal"
+            else:
+                # resolution_status = "unresolved_type";
+                map_source_detail = type(path_map_arg).__name__
+
+            # if resolution_status.startswith("unresolved"):
+            #      self.edges.append({"source": source, "target": "?", "condition": {"type": "conditional_entry_map", "value": None, "condition_function": path_func_name, "resolution": {"status": resolution_status, "detail": map_source_detail}}, "metadata": {"definition_location": location}})
+            #      return
 
             if isinstance(resolved_path_map, ast.Dict):
-                for key_node, value_node in zip(resolved_path_map.keys, resolved_path_map.values):
-                    condition_val = self.extract_argument_value(key_node)
-                    target_val = self.extract_argument_value(value_node)
-                    if target_val == "__end__": self._add_node_if_not_exists("__end__", "Implicit END node", {})
-                    if condition_val is not None and target_val:
-                        self.edges.append({"source": source, "target": target_val, "conditional": "yes", "condition": f"{condition_val}{condition_func_info}{path_map_source_desc}", "metadata": {}})
+                 for key_node, value_node in zip(resolved_path_map.keys, resolved_path_map.values):
+                      condition_val = self.extract_argument_value(key_node)
+                      target_val = self.extract_argument_value(value_node)
+                      if target_val == "__end__": self._add_node_if_not_exists("END", None, {}, None)
+                      if condition_val is not None and target_val: self.edges.append({"source": source, "target": target_val, "condition": {"type": "conditional_entry_map", "value": condition_val, "condition_function": path_func_name, "resolution": {"status": resolution_status, "detail": map_source_detail}}, "metadata": {"definition_location": location}})
             elif isinstance(resolved_path_map, ast.List):
-                 for element_node in resolved_path_map.elts:
-                     target_val = self.extract_argument_value(element_node)
-                     if target_val == "__end__": self._add_node_if_not_exists("__end__", "Implicit END node", {})
-                     if target_val: self.edges.append({"source": source, "target": target_val, "conditional": "yes", "condition": f"dynamic_list_map{condition_func_info}{path_map_source_desc}", "metadata": {}})
+                  for element_node in resolved_path_map.elts:
+                       target_val = self.extract_argument_value(element_node)
+                       if target_val == "__end__": self._add_node_if_not_exists("END", None, {}, None)
+                       if target_val: self.edges.append({"source": source, "target": target_val, "condition": {"type": "conditional_entry_map_list", "value": None, "condition_function": path_func_name, "resolution": {"status": resolution_status, "detail": map_source_detail}}, "metadata": {"definition_location": location}})
 
-        # --- Case 2: Only path function is provided ---
-        elif path_func_name:
-             print(f"  Analyzing path function '{path_func_name}' for conditional entry points...")
-             func_def = self.function_defs.get(path_func_name)
-             if func_def:
-                 analyzer = FunctionAnalyzer(self)
-                 analyzer.visit(func_def)
-                 possible_targets = analyzer.potential_returns - {f"variable({var})" for var in analyzer.variables}
-                 if not possible_targets and analyzer.potential_returns:
-                      print(f"    Warning: Path function '{path_func_name}' returns unresolved variables: {analyzer.potential_returns}. Cannot determine static entry targets.")
-                      self.edges.append({"source": source, "target": "?", "conditional": "yes", "condition": f"dynamic_unresolved_func{condition_func_info}", "metadata": {}})
-                 elif not possible_targets: print(f"    Warning: Could not find any return values in path function '{path_func_name}'.")
+         elif path_func_name:
+            func_def = self.function_defs.get(path_func_name)
+            if func_def:
+                 analyzer = FunctionAnalyzer(self, self.current_filename); analyzer.visit(func_def)
+                 possible_targets = analyzer.potential_returns
+                 if not possible_targets and analyzer.unresolved_reasons:
+                      print("Warning :  no target")
+                      detail = ", ".join([f"{t}:{d}" for t, d in analyzer.unresolved_reasons])
+                      self.edges.append({"source": source, "target": "?", "condition": {"type": "conditional_entry_func", "value": None, "condition_function": path_func_name, "resolution": {"status": "unresolved_function_analysis", "detail": detail}}, "metadata": {"definition_location": location}})
+                 elif not possible_targets: self.edges.append({"source": source, "target": "?", "condition": {"type": "conditional_entry_func", "value": None, "condition_function": path_func_name, "resolution": {"status": "unresolved_no_returns"}}, "metadata": {"definition_location": location}})
                  for target in possible_targets:
-                     if target == "__end__": self._add_node_if_not_exists("__end__", "Implicit END node", {})
-                     if target: self.edges.append({"source": source, "target": target, "conditional": "yes", "condition": f"dynamic_func_return{condition_func_info}", "metadata": {"potential_return": True}})
-             else:
-                  print(f"    Warning: Path function '{path_func_name}' definition not found. Cannot determine entry targets.")
-                  self.edges.append({"source": source, "target": "?", "conditional": "yes", "condition": f"dynamic_unknown_func{condition_func_info}", "metadata": {}})
-        else: print("Warning: Insufficient arguments for set_conditional_entry_point.")
+                      if target == "__end__": self._add_node_if_not_exists("END", None, {}, None)
+                      if target: self.edges.append({"source": source, "target": target, "condition": {"type": "conditional_entry_func", "value": target, "condition_function": path_func_name, "resolution": {"status": "resolved"}}, "metadata": {"definition_location": location, "potential_return": True}})
+            else: self.edges.append({"source": source, "target": "?", "condition": {"type": "conditional_entry_func", "value": None, "condition_function": path_func_name, "resolution": {"status": "unresolved_function_not_found"}}, "metadata": {"definition_location": location}})
+         else: print(f"Warning: Insufficient arguments for set_conditional_entry_point at {location}.")
 
 
     def process_set_finish_point(self, node: ast.Call):
         source = None
+        location = self._get_location_dict(node)
         if len(node.args) == 1: source = self.extract_argument_value(node.args[0])
         for kw in node.keywords:
             if kw.arg == 'key': source = self.extract_argument_value(kw.value)
 
         if source:
-            self._add_node_if_not_exists("__end__", "Implicit END node", {})
-            self.edges.append({"source": source, "target": "__end__", "conditional": "no", "condition": "", "metadata": {}})
-        else: print("Warning: Could not extract source from set_finish_point call.")
+            self._add_node_if_not_exists("END", None, {}, None)
+            self.edges.append({
+                "source": source,
+                "target": "__end__",
+                "condition": {"type": "finish_point"},
+                "metadata": {"definition_location": location}
+            })
+        else: print(f"Warning: Could not extract source from set_finish_point at {location}.")
 
 
-    # --- Argument Value Extractor ---
     def extract_argument_value(self, arg: ast.AST) -> Any:
-        """Extracts value from simple AST nodes (Constant, Name, List)."""
         if isinstance(arg, ast.Constant):
             value = arg.value
             if value == "START": return "__start__"
@@ -670,106 +858,126 @@ class GraphVisitor(ast.NodeVisitor):
         elif isinstance(arg, ast.Name):
             if arg.id == "START": return "__start__"
             if arg.id == "END": return "__end__"
-            return arg.id 
+            if arg.id in self.variable_values:
+                 return self.extract_argument_value(self.variable_values[arg.id])
+            return arg.id
         elif isinstance(arg, ast.List):
             return [self.extract_argument_value(elt) for elt in arg.elts]
+        elif isinstance(arg, ast.Dict):
+             try:
+                 return {self.extract_argument_value(k): self.extract_argument_value(v) for k, v in zip(arg.keys, arg.values)}
+             except Exception:
+                 return f"<Dict: {self._stringify_ast_node(arg)}>"
         elif isinstance(arg, ast.Attribute):
-             fqn = get_fqn(arg)
+             fqn = get_func_name(arg)
              if fqn.endswith(".START"): return "__start__"
              if fqn.endswith(".END"): return "__end__"
-             return fqn 
+             return fqn
+        elif isinstance(arg, ast.Call):
+            fqn = get_func_name(arg.func)
+            return fqn
+        print( f"<Unsupported: {self._stringify_ast_node(arg)}>")
+        return "_"
 
-        print(f"Warning: Cannot extract simple value from argument type {type(arg)}")
-        return None
 
-
-    # --- Goto Analysis (Called AFTER initial visit) ---
     def analyze_functions_for_goto(self):
-        """Analyzes mapped functions for Command(goto=...) using FunctionAnalyzer."""
         print("Analyzing functions for dynamic 'goto' edges...")
+        analyzed_signatures = set()
+
         for node_name, function_name in self.node_function_map.items():
             func_def = self.function_defs.get(function_name)
             if func_def:
-                analyzer = FunctionAnalyzer(self, source_node_name=node_name)
-                try:
-                    analyzer.visit(func_def)
-                except Exception as e:
-                    print(f"  Error analyzing function '{function_name}' for gotos: {e}")
-                    continue
+                func_filename = self.current_filename
+                for fn, tree_node in self.function_defs.items():
+                    if fn == function_name and hasattr(tree_node, '_filename'):
+                        func_filename = tree_node._filename
+                        break
 
-                for target in analyzer.potential_gotos:
+                analyzer = FunctionAnalyzer(self, func_filename, source_node_name=node_name)
+                try: analyzer.visit(func_def)
+                except Exception as e: print(f"  Error analyzing function '{function_name}' for gotos: {e}"); continue
+
+                for target, resolution_info in analyzer.potential_gotos.items():
                     edge_signature = (node_name, target)
-                    if target and edge_signature not in self.dynamic_edge_signatures:
-                         condition_detail = "dynamic (goto)"
-                         if analyzer.has_unresolved_goto_var:
-                              condition_detail += f" [Unresolved: {', '.join(analyzer.unresolved_goto_vars)}]"
-
-                         self.edges.append({
-                             "source": node_name, "target": target, "conditional": "yes",
-                             "condition": condition_detail,
-                             "metadata": {"dynamic": True, "origin_function": function_name}
+                    if target and edge_signature not in analyzed_signatures:
+                        origin_location = analyzer.goto_source_locations.get(target)
+                        self.edges.append({
+                             "source": node_name,
+                             "target": target,
+                             "condition": {
+                                 "type": "exit_point" if target == "__end__" else "entry_point" if target == "__start__" else "dynamic_goto"
+                                #  "value": None,
+                                #  "resolution": resolution_info
+                             },
+                             "metadata": {
+                                 "origin_function": function_name,
+                                 "origin_location": origin_location
+                             }
                          })
-                         self.dynamic_edge_signatures.add(edge_signature)
+                        analyzed_signatures.add(edge_signature)
 
-                if not analyzer.potential_gotos and analyzer.has_unresolved_goto_var:
-                     edge_signature = (node_name, "?")
-                     if edge_signature not in self.dynamic_edge_signatures:
-                          unresolved_vars = ', '.join(analyzer.unresolved_goto_vars)
-                          self.edges.append({
-                              "source": node_name, "target": "?", "conditional": "yes",
-                              "condition": f"dynamic (goto) [Unresolved: {unresolved_vars}]",
-                              "metadata": {"dynamic": True, "origin_function": function_name, "unresolved": True}
-                          })
-                          self.dynamic_edge_signatures.add(edge_signature)
-
+                # if not analyzer.potential_gotos and analyzer.unresolved_reasons:
+                #     edge_signature = (node_name, "?")
+                #     if edge_signature not in analyzed_signatures:
+                #          details = ", ".join(sorted([f"{t}:{d}" for t, d in analyzer.unresolved_reasons]))
+                #          origin_location = None
+                #          self.edges.append({
+                #              "source": node_name, "target": "?",
+                #              "condition": {
+                #                 "type": "unknown"
+                #                 #  "value": None,
+                #                 #  "resolution": {"status": "unresolved", "detail": details}
+                #              },
+                #              "metadata": {"origin_function": function_name, "origin_location": origin_location, "unresolved": True}
+                #          })
+                #          analyzed_signatures.add(edge_signature)
             else:
                 if node_name not in ["__start__", "__end__"]:
                     print(f"  Warning: Function '{function_name}' mapped to node '{node_name}' not found in definitions.")
 
-
+# --- Main Extraction Function (Modified) ---
 def extract_graph_structure(directory_path=".") -> Dict[str, List[Dict[str, Any]]]:
-    """
-    Extracts graph structure using the enhanced GraphVisitor.
-    """
     visitor = GraphVisitor()
     print(f"Starting graph extraction in directory: {directory_path}")
 
+    all_files_processed = []
+
     for root, _, files in os.walk(directory_path):
         for filename in files:
-            if filename.endswith(".py"): # todo -> add ipynb handling
+            if filename.endswith(".py"):
                 filepath = os.path.join(root, filename)
+                all_files_processed.append(filepath)
                 print(f"Processing file: {filepath}")
                 try:
                     with open(filepath, "r", encoding='utf-8') as f: content = f.read()
                     tree = ast.parse(content, filename=filepath)
-                    visitor.visit(tree)
+
+                    for node in ast.walk(tree):
+                         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                             node._filename = filepath
+
+                    visitor.visit_file(tree, filepath)
 
                 except SyntaxError as e: print(f"Warning: Skipping file {filepath} due to SyntaxError: {e}")
                 except Exception as e:
                     print(f"Warning: Skipping file {filepath} due to unexpected error: {e}")
-                    import traceback
-                    traceback.print_exc()
+                    import traceback; traceback.print_exc()
 
     visitor.analyze_functions_for_goto()
 
-    if visitor.has_start: visitor._add_node_if_not_exists("__start__", "Implicit START node", {})
-    if visitor.has_end: visitor._add_node_if_not_exists("__end__", "Implicit END node", {})
-
 
     graph_data = {"nodes": visitor.nodes, "edges": visitor.edges}
-    print(f"Finished graph extraction. Found {len(visitor.nodes)} nodes and {len(visitor.edges)} edges.")
+    print(f"Finished graph extraction. Found {len(visitor.nodes)} nodes and {len(visitor.edges)} edges across {len(all_files_processed)} files.")
     return graph_data
 
-# --- Main Execution Block ---
 if __name__ == "__main__":
-    target_directory = "--name-of-target-directory--" 
-
+    target_directory = "examples/cs" 
     graph_data = extract_graph_structure(target_directory)
 
-    output_filename = "graph_data.json"
+    output_filename = "graph_data_enhanced.json"
     try:
         with open(output_filename, "w", encoding='utf-8') as outfile:
-            json.dump(graph_data, outfile, indent=4) # Pretty print
-        print(f"Combined graph data written to {output_filename}")
+            json.dump(graph_data, outfile, indent=4)
+        print(f"Enhanced graph data written to {output_filename}")
     except Exception as e:
         print(f"Error writing JSON output to {output_filename}: {e}")
