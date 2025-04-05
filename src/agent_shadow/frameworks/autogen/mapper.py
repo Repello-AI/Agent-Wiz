@@ -307,7 +307,7 @@ def merge_visitors(visitors: list[AutoGenMapper]) -> AutoGenMapper:
 
 
 
-def extract_autogen_graph_from_code(target_directory: str, output_filename: str):
+def extract_autogen_graph(target_directory: str, output_filename: str):
     """
     Extracts the AutoGen agentic graph structure from a python project and saves it as a JSON file.
     """
@@ -344,10 +344,15 @@ def extract_autogen_graph_from_code(target_directory: str, output_filename: str)
     merged_visitor = merge_visitors(visitors)
     graph_data = build_graph_data(merged_visitor)
 
+    if graph_data:
+        graph_data["metadata"] = {
+            "framework": "AutoGen Core",
+        }
+
     # Write to output file
     try:
         with open(output_filename, "w", encoding='utf-8') as outfile:
-            json.dump(graph_data, outfile, indent=4)  # Pretty print
+            json.dump(graph_data, outfile, indent=4)
         print(f"AutoGen graph data written to {output_filename}")
     except Exception as e:
         print(f"Error writing JSON output to {output_filename}: {e}")
@@ -362,12 +367,12 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description="Extract AutoGen structure from Python files into a LangGraph-compatible format.")
     parser.add_argument("--directory", "-d", type=str, default=".", help="Directory to search for Python files")
-    parser.add_argument("--output", "-o", type=str, default="graph_data.json", help="Output JSON file path")
+    parser.add_argument("--output", "-o", type=str, default="autogen_graph.json", help="Output JSON file path")
     
     args = parser.parse_args()
     
     target_directory = args.directory
     output_filename = args.output
 
-    extract_autogen_graph_from_code(target_directory, output_filename)
+    extract_autogen_graph(target_directory, output_filename)
 

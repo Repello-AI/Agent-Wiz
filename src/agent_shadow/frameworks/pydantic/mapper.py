@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+import argparse
 import ast
 import json
 import os
 import sys
-from collections import defaultdict
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 from enum import Enum
 import inspect
@@ -404,11 +404,23 @@ class PydanticAIStructureExtractor(ast.NodeVisitor):
     def get_graph_data(self) -> Dict[str, List[Dict[str, Any]]]:
         return {"nodes": self.output_nodes, "edges": self.output_edges}
 
-def extract_pydantic_ai_graph(directory_path: str) -> Dict[str, List[Dict[str, Any]]]:
+def extract_pydantic_ai_graph(directory_path: str, output_filename: str):
+    """
+    Extracts the Pydantic-AI graph structure from the given directory and saves it to a JSON file.
+
+    Args:
+        directory_path (str): The directory to scan for Python files.
+        output_filename (str): The file path to save the extracted graph data.
+
+    Returns:
+        Dict[str, List[Dict[str, Any]]]: The extracted graph data containing nodes and edges.
+    """
     extractor = PydanticAIStructureExtractor()
     print(f"Starting Pydantic-AI structure extraction in: {directory_path}")
     if not os.path.isdir(directory_path):
-         print(f"Error: Provided path '{directory_path}' is not a valid directory.", file=sys.stderr); return {"nodes": [], "edges": []}
+        print(f"Error: Provided path '{directory_path}' is not a valid directory.", file=sys.stderr)
+        return {"nodes": [], "edges": []}
+
     parsed_files = 0
     filepaths_processed = []
     for root, dirs, files in os.walk(directory_path):
@@ -418,29 +430,45 @@ def extract_pydantic_ai_graph(directory_path: str) -> Dict[str, List[Dict[str, A
                 filepath = os.path.join(root, filename)
                 filepaths_processed.append(filepath)
                 try:
-                    with open(filepath, "r", encoding='utf-8') as f: content = f.read()
+                    with open(filepath, "r", encoding='utf-8') as f:
+                        content = f.read()
                     tree = ast.parse(content, filename=filepath)
                     extractor.visit(tree, filepath=filepath)
                     parsed_files += 1
-                except SyntaxError as e: print(f"Warning: Skipping file {filepath} due to SyntaxError: {e}", file=sys.stderr); filepaths_processed.pop()
-                except Exception as e: print(f"Warning: Skipping file {filepath} due to error: {e}", file=sys.stderr); import traceback; traceback.print_exc(); filepaths_processed.pop()
+                except SyntaxError as e:
+                    print(f"Warning: Skipping file {filepath} due to SyntaxError: {e}", file=sys.stderr)
+                    filepaths_processed.pop()
+                except Exception as e:
+                    print(f"Warning: Skipping file {filepath} due to error: {e}", file=sys.stderr)
+                    import traceback
+                    traceback.print_exc()
+                    filepaths_processed.pop()
+
     print(f"AST parsing complete ({parsed_files} files processed). Finalizing graph structure...")
     extractor.finalize_graph()
     print(f"Extraction finished. Found {len(extractor.output_nodes)} nodes and {len(extractor.output_edges)} edges.")
-    return extractor.get_graph_data()
 
-if __name__ == "__main__":
-    target_dir = "."
-    output_file = "pydantic_ai_graph_output.json"
-    if len(sys.argv) > 1: target_dir = sys.argv[1]; print(f"Using target directory: {target_dir}")
-    if len(sys.argv) > 2: output_file = sys.argv[2]; print(f"Using output file: {output_file}")
-    graph_structure = extract_pydantic_ai_graph(target_dir)
+    graph_structure = extractor.get_graph_data()
+
     if graph_structure["nodes"] or graph_structure["edges"]:
         try:
             graph_structure["nodes"].sort(key=lambda x: (x["node_type"], x["name"]))
             graph_structure["edges"].sort(key=lambda x: (x["source"], x["target"], x["condition"]))
-            with open(output_file, "w", encoding='utf-8') as f: json.dump(graph_structure, f, indent=2)
-            print(f"Successfully wrote graph data to {output_file}")
-        except IOError as e: print(f"Error writing output file {output_file}: {e}", file=sys.stderr)
-        except Exception as e: print(f"An unexpected error occurred during JSON serialization: {e}", file=sys.stderr)
-    else: print("No graph structure extracted. Output file not written.")
+            with open(output_filename, "w", encoding='utf-8') as f:
+                json.dump(graph_structure, f, indent=2)
+            print(f"Successfully wrote graph data to {output_filename}")
+        except IOError as e:
+            print(f"Error writing output file {output_filename}: {e}", file=sys.stderr)
+        except Exception as e:
+            print(f"An unexpected error occurred during JSON serialization: {e}", file=sys.stderr)
+    else:
+        print("No graph structure extracted. Output file not written.")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--directory", "-d", type=str, default=".", help="Target directory")
+    parser.add_argument("--output", "-o", type=str, default="pydantic_ai_graph_output.json", help="Output file")
+    args = parser.parse_args()
+
+    extract_pydantic_ai_graph(args.directory, args.output)

@@ -1,0 +1,327 @@
+{
+    "nodes": [
+        {
+            "name": "__start__",
+            "function_name": null,
+            "docstring": null,
+            "node_type": "Special",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "__end__",
+            "function_name": null,
+            "docstring": null,
+            "node_type": "Special",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "PlanningAgent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "WebSearchAgent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "WebSearchAgent_search_web_tool",
+            "function_name": "search_web_tool",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/agent_chat/agent_chat2.py",
+                "line": 11,
+                "col": 0,
+                "end_line": 23,
+                "end_col": 27
+            },
+            "metadata": {}
+        },
+        {
+            "name": "DataAnalystAgent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "DataAnalystAgent_percentage_change_tool",
+            "function_name": "percentage_change_tool",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/agent_chat/agent_chat2.py",
+                "line": 26,
+                "col": 0,
+                "end_line": 27,
+                "end_col": 40
+            },
+            "metadata": {}
+        },
+        {
+            "name": "Google_Search_Agent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "Google_Search_Agent_google_search",
+            "function_name": "google_search",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/agent_chat/agent_chat.py",
+                "line": 10,
+                "col": 0,
+                "end_line": 61,
+                "end_col": 27
+            },
+            "metadata": {}
+        },
+        {
+            "name": "Stock_Analysis_Agent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "Stock_Analysis_Agent_analyze_stock",
+            "function_name": "analyze_stock",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/agent_chat/agent_chat.py",
+                "line": 64,
+                "col": 0,
+                "end_line": 155,
+                "end_col": 17
+            },
+            "metadata": {}
+        },
+        {
+            "name": "Report_Agent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "team",
+            "function_name": null,
+            "docstring": null,
+            "node_type": "Team",
+            "source_location": null,
+            "metadata": {
+                "chat": "SelectorGroupChat"
+            }
+        }
+    ],
+    "edges": [
+        {
+            "source": "__start__",
+            "target": "PlanningAgent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "PlanningAgent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "WebSearchAgent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "WebSearchAgent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "WebSearchAgent",
+            "target": "WebSearchAgent_search_web_tool",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "DataAnalystAgent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "DataAnalystAgent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "DataAnalystAgent",
+            "target": "DataAnalystAgent_percentage_change_tool",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "Google_Search_Agent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Google_Search_Agent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Google_Search_Agent",
+            "target": "Google_Search_Agent_google_search",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "Stock_Analysis_Agent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Stock_Analysis_Agent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Stock_Analysis_Agent",
+            "target": "Stock_Analysis_Agent_analyze_stock",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "Report_Agent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Report_Agent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "team",
+            "target": "PlanningAgent",
+            "condition": {
+                "type": "member_of_team"
+            },
+            "metadata": {
+                "chat": "SelectorGroupChat"
+            }
+        },
+        {
+            "source": "team",
+            "target": "WebSearchAgent",
+            "condition": {
+                "type": "member_of_team"
+            },
+            "metadata": {
+                "chat": "SelectorGroupChat"
+            }
+        },
+        {
+            "source": "team",
+            "target": "DataAnalystAgent",
+            "condition": {
+                "type": "member_of_team"
+            },
+            "metadata": {
+                "chat": "SelectorGroupChat"
+            }
+        },
+        {
+            "source": "Stock_Analysis_Agent",
+            "target": "Google_Search_Agent",
+            "condition": {
+                "type": "group_sequence"
+            },
+            "metadata": {
+                "chat": "RoundRobinGroupChat"
+            }
+        },
+        {
+            "source": "Google_Search_Agent",
+            "target": "Report_Agent",
+            "condition": {
+                "type": "group_sequence"
+            },
+            "metadata": {
+                "chat": "RoundRobinGroupChat"
+            }
+        },
+        {
+            "source": "Report_Agent",
+            "target": "Stock_Analysis_Agent",
+            "condition": {
+                "type": "group_sequence"
+            },
+            "metadata": {
+                "chat": "RoundRobinGroupChat"
+            }
+        }
+    ],
+    "metadata": {
+        "framework": "AgentChat"
+    }
+}

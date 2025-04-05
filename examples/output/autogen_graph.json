@@ -1,0 +1,367 @@
+{
+    "nodes": [
+        {
+            "name": "__start__",
+            "function_name": null,
+            "docstring": null,
+            "node_type": "Special",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "__end__",
+            "function_name": null,
+            "docstring": null,
+            "node_type": "Special",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "BookingManager",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "FlightAgent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "FlightAgent_search_flights",
+            "function_name": "search_flights",
+            "docstring": "Search for flights based on origin, destination, and date.",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/autogen/autogen.py",
+                "line": 211,
+                "col": 0,
+                "end_line": 219,
+                "end_col": 5
+            },
+            "metadata": {}
+        },
+        {
+            "name": "HotelAgent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "HotelAgent_get_hotel_prices",
+            "function_name": "get_hotel_prices",
+            "docstring": "Get hotel prices for a specific location and dates.",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/autogen/autogen.py",
+                "line": 221,
+                "col": 0,
+                "end_line": 229,
+                "end_col": 5
+            },
+            "metadata": {}
+        },
+        {
+            "name": "CarRentalAgent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "CarRentalAgent_search_rental_cars",
+            "function_name": "search_rental_cars",
+            "docstring": "Search for rental cars based on location and dates.",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/autogen/autogen.py",
+                "line": 231,
+                "col": 0,
+                "end_line": 239,
+                "end_col": 5
+            },
+            "metadata": {}
+        },
+        {
+            "name": "CostCalculatorAgent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "CostCalculatorAgent_calculate_trip_cost",
+            "function_name": "calculate_trip_cost",
+            "docstring": "Calculate the total cost of a trip based on selected options.",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/autogen/autogen.py",
+                "line": 241,
+                "col": 0,
+                "end_line": 255,
+                "end_col": 5
+            },
+            "metadata": {}
+        },
+        {
+            "name": "MathGreetAgent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "MathGreetAgent_calculator",
+            "function_name": "calculator",
+            "docstring": "Performs basic arithmetic operations.",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/autogen/autogen2.py",
+                "line": 96,
+                "col": 0,
+                "end_line": 111,
+                "end_col": 5
+            },
+            "metadata": {}
+        },
+        {
+            "name": "MathGreetAgent_greet",
+            "function_name": "greet",
+            "docstring": "Greets a person by name.",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/autogen/autogen2.py",
+                "line": 113,
+                "col": 0,
+                "end_line": 117,
+                "end_col": 5
+            },
+            "metadata": {}
+        },
+        {
+            "name": "MathGreetAgent_greet_and_calculate",
+            "function_name": "greet_and_calculate",
+            "docstring": "Greets a person and performs a calculation for them.",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/autogen/autogen2.py",
+                "line": 119,
+                "col": 0,
+                "end_line": 126,
+                "end_col": 5
+            },
+            "metadata": {}
+        }
+    ],
+    "edges": [
+        {
+            "source": "__start__",
+            "target": "BookingManager",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {
+                "reason": "per-visitor entry point"
+            }
+        },
+        {
+            "source": "BookingManager",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {
+                "reason": "per-visitor exit point"
+            }
+        },
+        {
+            "source": "__start__",
+            "target": "FlightAgent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {
+                "reason": "per-visitor entry point"
+            }
+        },
+        {
+            "source": "FlightAgent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {
+                "reason": "per-visitor exit point"
+            }
+        },
+        {
+            "source": "FlightAgent",
+            "target": "FlightAgent_search_flights",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "HotelAgent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {
+                "reason": "per-visitor entry point"
+            }
+        },
+        {
+            "source": "HotelAgent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {
+                "reason": "per-visitor exit point"
+            }
+        },
+        {
+            "source": "HotelAgent",
+            "target": "HotelAgent_get_hotel_prices",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "CarRentalAgent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {
+                "reason": "per-visitor entry point"
+            }
+        },
+        {
+            "source": "CarRentalAgent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {
+                "reason": "per-visitor exit point"
+            }
+        },
+        {
+            "source": "CarRentalAgent",
+            "target": "CarRentalAgent_search_rental_cars",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "CostCalculatorAgent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {
+                "reason": "per-visitor entry point"
+            }
+        },
+        {
+            "source": "CostCalculatorAgent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {
+                "reason": "per-visitor exit point"
+            }
+        },
+        {
+            "source": "CostCalculatorAgent",
+            "target": "CostCalculatorAgent_calculate_trip_cost",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "MathGreetAgent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {
+                "reason": "per-visitor entry point"
+            }
+        },
+        {
+            "source": "MathGreetAgent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {
+                "reason": "per-visitor exit point"
+            }
+        },
+        {
+            "source": "MathGreetAgent",
+            "target": "MathGreetAgent_calculator",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "MathGreetAgent",
+            "target": "MathGreetAgent_greet",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "MathGreetAgent",
+            "target": "MathGreetAgent_greet_and_calculate",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "MathGreetAgent_greet_and_calculate",
+            "target": "MathGreetAgent_calculator",
+            "condition": {
+                "type": "internal_call"
+            },
+            "metadata": {
+                "reason": "greet_and_calculate calls calculator"
+            }
+        },
+        {
+            "source": "MathGreetAgent_greet_and_calculate",
+            "target": "MathGreetAgent_greet",
+            "condition": {
+                "type": "internal_call"
+            },
+            "metadata": {
+                "reason": "greet_and_calculate calls greet"
+            }
+        }
+    ],
+    "metadata": {
+        "framework": "AutoGen Core"
+    }
+}

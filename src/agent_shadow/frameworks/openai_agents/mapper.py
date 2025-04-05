@@ -594,7 +594,7 @@ def build_graph_json(
 
     return {"nodes": nodes, "edges": edges}
 
-def analyze_agent_directory(scan_path: str) -> Dict[str, List[Dict[str, Any]]]:
+def extract_openai_agents_graph(scan_path: str) -> Dict[str, List[Dict[str, Any]]]:
     if not os.path.isdir(scan_path):
         print(f"Error: Path '{scan_path}' is not a valid directory.")
         return {"nodes": [], "edges": []}
@@ -633,7 +633,7 @@ if __name__ == "__main__":
     output_file = args.output
     existing_tools_file = args.existing_tools 
 
-    final_graph = analyze_agent_directory(target_scan_dir) 
+    final_graph = extract_openai_agents_graph(target_scan_dir) 
 
     if final_graph["nodes"] or final_graph["edges"]:
         try:

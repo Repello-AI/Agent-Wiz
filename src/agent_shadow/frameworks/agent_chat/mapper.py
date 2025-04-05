@@ -338,7 +338,6 @@ def extract_agentchat_graph(target_directory, output_filename):
                     visitor.visit(tree)
                     visitors.append(visitor)
 
-                    print(visitor.agents)
                 except SyntaxError as e:
                     print(f"Syntax error in file {filepath}: {e}")
                     continue
@@ -346,9 +345,14 @@ def extract_agentchat_graph(target_directory, output_filename):
     merged_visitor = merge_visitors(visitors)
     graph_data = build_graph_data(merged_visitor)
 
+    if graph_data:
+        graph_data["metadata"] = {
+            "framework": "AgentChat",
+        }
+
     try:
         with open(output_filename, "w", encoding='utf-8') as outfile:
-            json.dump(graph_data, outfile, indent=2)
+            json.dump(graph_data, outfile, indent=4)
         print(f"Graph written to {output_filename}")
     except Exception as e:
         print(f"Error writing output: {e}")

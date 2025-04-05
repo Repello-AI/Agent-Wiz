@@ -181,15 +181,17 @@ def extract_llamaindex_graph(directory, output_file):
                     print(f"Syntax error in {filepath}: {e}")
                     continue
 
-    nodes, edges = [], []
-    for visitor in visitors:
-        graph = build_graph_data(visitor)
-        nodes.extend(graph["nodes"])
-        edges.extend(graph["edges"])
+    
+    graph_data = build_graph_data(visitor)
+
+    if graph_data:
+        graph_data["metadata"] = {
+            "framework": "LlamaIndex",
+        }
 
     try:
         with open(output_file, "w", encoding="utf-8") as f:
-            json.dump({"nodes": nodes, "edges": edges}, f, indent=2)
+            json.dump(graph_data, f, indent=4)
         print(f"Graph saved to {output_file}")
     except Exception as e:
         print(f"Error writing file: {e}")

@@ -247,9 +247,15 @@ def extract_swarm_graph(directory, output_file):
         all_nodes.extend(graph["nodes"])
         all_edges.extend(graph["edges"])
 
+    graph_data = {
+        "framework": "OpenAI Swarm",
+        "nodes": all_nodes,
+        "edges": all_edges
+    }
+
     try:
         with open(output_file, "w", encoding="utf-8") as f:
-            json.dump({"nodes": all_nodes, "edges": all_edges}, f, indent=2)
+            json.dump(graph_data, f, indent=4)
         print(f"[✓] Swarm agent graph written to {output_file}")
     except Exception as e:
         print(f"Error writing JSON output: {e}")

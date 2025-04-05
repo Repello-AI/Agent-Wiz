@@ -936,7 +936,7 @@ class GraphVisitor(ast.NodeVisitor):
                     print(f"  Warning: Function '{function_name}' mapped to node '{node_name}' not found in definitions.")
 
 # --- Main Extraction Function (Modified) ---
-def extract_graph_structure(directory_path=".") -> Dict[str, List[Dict[str, Any]]]:
+def extract_langgraph_graph(directory_path=".") -> Dict[str, List[Dict[str, Any]]]:
     visitor = GraphVisitor()
     print(f"Starting graph extraction in directory: {directory_path}")
 
@@ -972,7 +972,7 @@ def extract_graph_structure(directory_path=".") -> Dict[str, List[Dict[str, Any]
 
 if __name__ == "__main__":
     target_directory = "examples/cs" 
-    graph_data = extract_graph_structure(target_directory)
+    graph_data = extract_langgraph_graph(target_directory)
 
     output_filename = "graph_data_enhanced.json"
     try:
