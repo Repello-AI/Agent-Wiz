@@ -1,6 +1,8 @@
+import argparse
 import ast
 import json
 import os
+from pathlib import Path
 import sys
 from collections import defaultdict
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
@@ -849,19 +851,18 @@ class CrewAIStructureExtractor(ast.NodeVisitor):
     def get_graph_data(self) -> Dict[str, List[Dict[str, Any]]]:
         return {"nodes": self.output_nodes, "edges": self.output_edges}
 
-
-def extract_crewai_graph(directory_path: str) -> Dict[str, List[Dict[str, Any]]]:
+def extract_crewai_graph(directory_path: str, output_file: str):
     extractor = CrewAIStructureExtractor()
     print(f"Starting CrewAI structure extraction in: {directory_path}")
 
     if not os.path.isdir(directory_path):
          print(f"Error: Provided path '{directory_path}' is not a valid directory.", file=sys.stderr)
-         return {"nodes": [], "edges": []}
+         sys.exit(1)
 
     parsed_files = 0
     for root, _, files in os.walk(directory_path):
-        if any(part.startswith('.') or part in ['venv', 'env', '__pycache__', 'node_modules', '.git']
-               for part in root.split(os.sep)):
+        path_parts = Path(root).parts
+        if any(part.startswith('.') or part in ['venv', 'env', '__pycache__', 'node_modules', '.git'] for part in path_parts):
             continue
 
         for filename in files:
@@ -877,41 +878,50 @@ def extract_crewai_graph(directory_path: str) -> Dict[str, List[Dict[str, Any]]]
                     print(f"Warning: Skipping file {filepath} due to SyntaxError: {e}", file=sys.stderr)
                 except Exception as e:
                     print(f"Warning: Skipping file {filepath} due to error: {e}", file=sys.stderr)
-                    import traceback
-                    traceback.print_exc(file=sys.stderr)
 
     print(f"AST parsing complete ({parsed_files} files processed). Finalizing graph structure...")
     extractor.finalize_graph()
-    print(f"Extraction finished. Found {len(extractor.output_nodes)} nodes and {len(extractor.output_edges)} edges.")
-    return extractor.get_graph_data()
+    graph_structure = extractor.get_graph_data()
+    print(f"Extraction finished. Found {len(graph_structure['nodes'])} nodes and {len(graph_structure['edges'])} edges.")
 
-
-if __name__ == "__main__":
-    target_dir = "."
-    output_file = "crewai_graph_output.json"
-
-    if len(sys.argv) > 1:
-        target_dir = sys.argv[1]
-        print(f"Using target directory from command line: {target_dir}")
-    if len(sys.argv) > 2:
-         output_file = sys.argv[2]
-         print(f"Using output file from command line: {output_file}")
-
-    graph_structure = extract_crewai_graph(target_dir)
 
     if graph_structure["nodes"] or graph_structure["edges"]:
         try:
             graph_structure["nodes"].sort(key=lambda x: (x.get("node_type", ""), x.get("name", "")))
             graph_structure["edges"].sort(key=lambda x: (x.get("source", ""), x.get("target", "")))
 
-            with open(output_file, "w", encoding='utf-8') as f:
+            output_path = Path(output_file)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+
+            with open(output_path, "w", encoding='utf-8') as f:
                 json.dump(graph_structure, f, indent=2)
-            print(f"Successfully wrote graph data to {output_file}")
+            print(f"Successfully wrote graph data to {output_path}")
         except IOError as e:
-            print(f"Error writing output file {output_file}: {e}", file=sys.stderr)
+            print(f"Error writing output file {output_path}: {e}", file=sys.stderr)
+            sys.exit(1)
         except Exception as e:
-             print(f"An unexpected error occurred during JSON serialization: {e}", file=sys.stderr)
-             import traceback
-             traceback.print_exc(file=sys.stderr)
+             print(f"An unexpected error occurred during JSON serialization or path creation: {e}", file=sys.stderr)
+             sys.exit(1)
     else:
         print("No graph structure extracted. Output file not written.")
+        try:
+            output_path = Path(output_file)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(output_path, "w", encoding='utf-8') as f:
+                json.dump({"nodes": [], "edges": []}, f, indent=2)
+            print(f"Empty graph structure written to {output_path}")
+        except Exception as e:
+            print(f"Error writing empty JSON output to {output_path}: {e}")
+            sys.exit(1)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Extract CrewAI structures from Python code into a graph JSON.")
+    parser.add_argument("directory", type=str, nargs='?', default=".", help="Directory containing the Python code (default: current directory).")
+    parser.add_argument("-o", "--output", type=str, default="crewai_graph_output.json", help="Output JSON filename (default: crewai_graph_output.json).")
+    args = parser.parse_args()
+
+    target_dir = args.directory
+    output_file = args.output
+
+    extract_crewai_graph(target_dir, output_file)

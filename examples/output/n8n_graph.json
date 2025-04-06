@@ -1,0 +1,970 @@
+{
+  "nodes": [
+    {
+      "name": "_START_",
+      "function_name": "_START_",
+      "docstring": "Synthetic node representing the workflow entry point(s).",
+      "description": "Workflow Start",
+      "node_type": "WorkflowBoundary",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "_START_",
+        "n8n_type": "synthetic.start",
+        "simplified_n8n_type": "StartBoundary",
+        "category": "Workflow",
+        "subcategory": "Boundary",
+        "n8n_categories_list": [
+          "Workflow"
+        ],
+        "n8n_subcategories_data": [
+          "Boundary"
+        ],
+        "parameters": {}
+      }
+    },
+    {
+      "name": "3a332532-a56e-42f5-a114-4a7e138b5e0f",
+      "function_name": "3a332532-a56e-42f5-a114-4a7e138b5e0f",
+      "docstring": null,
+      "description": "When chat message received",
+      "node_type": "Generic",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "3a332532-a56e-42f5-a114-4a7e138b5e0f",
+        "n8n_type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "simplified_n8n_type": "ChatTrigger",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "options": {}
+        }
+      }
+    },
+    {
+      "name": "6c707ee7-95e9-4ebd-9373-a2dac0ea73a7",
+      "function_name": "6c707ee7-95e9-4ebd-9373-a2dac0ea73a7",
+      "docstring": null,
+      "description": "Execute SQL Query",
+      "node_type": "Generic",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "6c707ee7-95e9-4ebd-9373-a2dac0ea73a7",
+        "n8n_type": "n8n-nodes-base.postgresTool",
+        "simplified_n8n_type": "PostgresTool",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "query": "{{ $fromAI(\"sql_query\", \"SQL Query\") }}",
+          "options": {},
+          "operation": "executeQuery",
+          "descriptionType": "manual",
+          "toolDescription": "Use this tool to query the database with SQL queries"
+        }
+      }
+    },
+    {
+      "name": "1d5572e1-de5a-4e67-8ba1-82196bd62e9b",
+      "function_name": "1d5572e1-de5a-4e67-8ba1-82196bd62e9b",
+      "docstring": null,
+      "description": "When Executed by Another Workflow",
+      "node_type": "Generic",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "1d5572e1-de5a-4e67-8ba1-82196bd62e9b",
+        "n8n_type": "n8n-nodes-base.executeWorkflowTrigger",
+        "simplified_n8n_type": "ExecuteWorkflowTrigger",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "user_prompt"
+              },
+              {
+                "name": "route"
+              },
+              {
+                "name": "db_records"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "e3caa1b3-7bdb-43c1-a749-74ae02912d84",
+      "function_name": "e3caa1b3-7bdb-43c1-a749-74ae02912d84",
+      "docstring": null,
+      "description": "query_db_tool",
+      "node_type": "Tool",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "e3caa1b3-7bdb-43c1-a749-74ae02912d84",
+        "n8n_type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "simplified_n8n_type": "ToolWorkflow",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "name": "query_database_tool",
+          "workflowId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "={{  $workflow.id }}"
+          },
+          "description": "Use this tool to query the database",
+          "workflowInputs": {
+            "value": {
+              "route": "query_database_tool",
+              "user_prompt": "={{ $('When chat message received').item.json.chatInput }}"
+            },
+            "schema": [
+              {
+                "id": "user_prompt",
+                "type": "string",
+                "display": true,
+                "removed": false,
+                "required": false,
+                "displayName": "user_prompt",
+                "defaultMatch": false,
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "route",
+                "type": "string",
+                "display": true,
+                "removed": false,
+                "required": false,
+                "displayName": "route",
+                "defaultMatch": false,
+                "canBeUsedToMatch": true
+              }
+            ],
+            "mappingMode": "defineBelow",
+            "matchingColumns": [
+              "user_prompt"
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        }
+      }
+    },
+    {
+      "name": "594e6fd3-084a-4100-ac16-1cc4068e03c1",
+      "function_name": "594e6fd3-084a-4100-ac16-1cc4068e03c1",
+      "docstring": null,
+      "description": "generate_quickchart_tool",
+      "node_type": "Tool",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "594e6fd3-084a-4100-ac16-1cc4068e03c1",
+        "n8n_type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "simplified_n8n_type": "ToolWorkflow",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "name": "generate_chart_tool",
+          "workflowId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "={{  $workflow.id }}"
+          },
+          "description": "Use this tool to generate a chart with QuickChart",
+          "workflowInputs": {
+            "value": {
+              "route": "generate_chart_tool",
+              "db_records": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('db_records', `The database records`, 'string') }}",
+              "user_prompt": "={{ $('When chat message received').item.json.chatInput }}"
+            },
+            "schema": [
+              {
+                "id": "user_prompt",
+                "type": "string",
+                "display": true,
+                "removed": false,
+                "required": false,
+                "displayName": "user_prompt",
+                "defaultMatch": false,
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "route",
+                "type": "string",
+                "display": true,
+                "removed": false,
+                "required": false,
+                "displayName": "route",
+                "defaultMatch": false,
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "db_records",
+                "type": "string",
+                "display": true,
+                "removed": false,
+                "required": false,
+                "displayName": "db_records",
+                "defaultMatch": false,
+                "canBeUsedToMatch": true
+              }
+            ],
+            "mappingMode": "defineBelow",
+            "matchingColumns": [
+              "user_prompt"
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        }
+      }
+    },
+    {
+      "name": "580426ac-0fb7-4f14-af7b-e497b7cb08f8",
+      "function_name": "580426ac-0fb7-4f14-af7b-e497b7cb08f8",
+      "docstring": null,
+      "description": "Create QuickChart",
+      "node_type": "Generic",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "580426ac-0fb7-4f14-af7b-e497b7cb08f8",
+        "n8n_type": "n8n-nodes-base.httpRequest",
+        "simplified_n8n_type": "HttpRequest",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "url": "={{ encodeURI($json.url) }}",
+          "options": {}
+        }
+      }
+    },
+    {
+      "name": "b7085357-ebe9-4564-868d-b31fc2e9734a",
+      "function_name": "b7085357-ebe9-4564-868d-b31fc2e9734a",
+      "docstring": null,
+      "description": "QuickChart Object Schema",
+      "node_type": "Generic",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "b7085357-ebe9-4564-868d-b31fc2e9734a",
+        "n8n_type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "simplified_n8n_type": "OutputParserStructured",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"type\": \"bar\",\n  \"data\": {\n    \"labels\": [\"R270684\", \"R274295\", \"R276352\", \"R277914\", \"R280108\"],\n    \"datasets\": [\n      {\n        \"label\": \"List Price\",\n        \"data\": [2149000, 924900, 924900, 1288000, 1198000],\n        \"backgroundColor\": \"#FF6384\"\n      },\n      {\n        \"label\": \"Days On Market\",\n        \"data\": [101, 91, 123, 136, 185],\n        \"backgroundColor\": \"#36A2EB\"\n      }\n    ]\n  },\n  \"options\": {\n    \"scales\": {\n      \"y\": {\n        \"min\": 0,\n        \"max\": 2200000\n      }\n    }\n  }\n}"
+        }
+      }
+    },
+    {
+      "name": "b1037112-f5af-4e61-8bd1-0d9b0a9ad2e1",
+      "function_name": "b1037112-f5af-4e61-8bd1-0d9b0a9ad2e1",
+      "docstring": null,
+      "description": "gpt-4o-mini",
+      "node_type": "Generic",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "b1037112-f5af-4e61-8bd1-0d9b0a9ad2e1",
+        "n8n_type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "simplified_n8n_type": "LmChatOpenAi",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-4o-mini"
+          },
+          "options": {
+            "responseFormat": "text"
+          }
+        }
+      }
+    },
+    {
+      "name": "5ea5ba56-2368-4e95-a98f-2c7548a66a9b",
+      "function_name": "5ea5ba56-2368-4e95-a98f-2c7548a66a9b",
+      "docstring": null,
+      "description": "gpt-4o-mini-2",
+      "node_type": "Generic",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "5ea5ba56-2368-4e95-a98f-2c7548a66a9b",
+        "n8n_type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "simplified_n8n_type": "LmChatOpenAi",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "id",
+            "value": "=gpt-4o-mini"
+          },
+          "options": {
+            "responseFormat": "text"
+          }
+        }
+      }
+    },
+    {
+      "name": "f6534374-cc07-429a-b27c-b38835c96465",
+      "function_name": "f6534374-cc07-429a-b27c-b38835c96465",
+      "docstring": null,
+      "description": "🤖Primary Agent",
+      "node_type": "Agent",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "f6534374-cc07-429a-b27c-b38835c96465",
+        "n8n_type": "@n8n/n8n-nodes-langchain.agent",
+        "simplified_n8n_type": "Agent",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "options": {
+            "systemMessage": "You are a helpful assistant that answers the users questions by using the tools provided.\n\n## TOOLS\n- query_database_tool: Use this tool to query the database\n- generate_chart_tool: Use this tool to generate a chart with QuickChart\n\nAlways provide the results of the database query and the link for the chart when applicable."
+          }
+        }
+      }
+    },
+    {
+      "name": "cf246e46-b3e4-4c9f-96f9-be1b91c0a3eb",
+      "function_name": "cf246e46-b3e4-4c9f-96f9-be1b91c0a3eb",
+      "docstring": null,
+      "description": "🤖Secondary Postgres Agent",
+      "node_type": "Agent",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "cf246e46-b3e4-4c9f-96f9-be1b91c0a3eb",
+        "n8n_type": "@n8n/n8n-nodes-langchain.agent",
+        "simplified_n8n_type": "Agent",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "text": "={{ $json.user_prompt }}",
+          "options": {
+            "systemMessage": "You are a helpful assistant with tools for querying a SQL database.  Use the tools provided to query the database."
+          },
+          "promptType": "define"
+        }
+      }
+    },
+    {
+      "name": "02d741d3-4b6e-4e19-8aca-3e15175e9667",
+      "function_name": "02d741d3-4b6e-4e19-8aca-3e15175e9667",
+      "docstring": null,
+      "description": "🤖Secondary QuickChart Agent",
+      "node_type": "Agent",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "02d741d3-4b6e-4e19-8aca-3e15175e9667",
+        "n8n_type": "@n8n/n8n-nodes-langchain.agent",
+        "simplified_n8n_type": "Agent",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "text": "=Your task is to generate a Chart.js configuration object with the following specifications:\n- Chart type: bar unless otherwise indicated\n- Labels: Use the ML # from each record unless otherwise indicated\n- Show bar for list price if not otherwise indicated\n- Return only the raw JSON object without code fences or explanations\n\nThis is the user prompt: {{ $json.user_prompt }}\nThis is the result of the SQL query: {{ $json.db_records }}",
+          "options": {},
+          "promptType": "define",
+          "hasOutputParser": true
+        }
+      }
+    },
+    {
+      "name": "4f41690b-313a-4ce3-ba65-a2ce2c3ee9b9",
+      "function_name": "4f41690b-313a-4ce3-ba65-a2ce2c3ee9b9",
+      "docstring": null,
+      "description": "🔀Tool Agent Router",
+      "node_type": "Agent",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "4f41690b-313a-4ce3-ba65-a2ce2c3ee9b9",
+        "n8n_type": "n8n-nodes-base.switch",
+        "simplified_n8n_type": "Switch",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "outputKey": "🔍query",
+                "conditions": {
+                  "options": {
+                    "version": 2,
+                    "leftValue": "",
+                    "caseSensitive": true,
+                    "typeValidation": "strict"
+                  },
+                  "combinator": "and",
+                  "conditions": [
+                    {
+                      "id": "35b1e13e-6157-48d0-85af-3cd33260eae1",
+                      "operator": {
+                        "name": "filter.operator.equals",
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "leftValue": "={{ $json.route }}",
+                      "rightValue": "=query_database_tool"
+                    }
+                  ]
+                },
+                "renameOutput": true
+              },
+              {
+                "outputKey": "📊chart",
+                "conditions": {
+                  "options": {
+                    "version": 2,
+                    "leftValue": "",
+                    "caseSensitive": true,
+                    "typeValidation": "strict"
+                  },
+                  "combinator": "and",
+                  "conditions": [
+                    {
+                      "id": "ff5f97fb-0f18-4bf9-b16c-3d0b3bc3c7f4",
+                      "operator": {
+                        "name": "filter.operator.equals",
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "leftValue": "={{ $json.route }}",
+                      "rightValue": "=generate_chart_tool"
+                    }
+                  ]
+                },
+                "renameOutput": true
+              }
+            ]
+          },
+          "options": {}
+        }
+      }
+    },
+    {
+      "name": "27c30d2c-3af3-4d05-aadb-9f18751fb9ce",
+      "function_name": "27c30d2c-3af3-4d05-aadb-9f18751fb9ce",
+      "docstring": null,
+      "description": "Table Definitions",
+      "node_type": "Generic",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "27c30d2c-3af3-4d05-aadb-9f18751fb9ce",
+        "n8n_type": "n8n-nodes-base.postgresTool",
+        "simplified_n8n_type": "PostgresTool",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "query": "select\n  c.column_name,\n  c.data_type,\n  c.is_nullable,\n  c.column_default,\n  tc.constraint_type,\n  ccu.table_name AS referenced_table,\n  ccu.column_name AS referenced_column\nfrom\n  information_schema.columns c\nLEFT join\n  information_schema.key_column_usage kcu\n  ON c.table_name = kcu.table_name\n  AND c.column_name = kcu.column_name\nLEFT join\n  information_schema.table_constraints tc\n  ON kcu.constraint_name = tc.constraint_name\n  AND tc.constraint_type = 'FOREIGN KEY'\nLEFT join\n  information_schema.constraint_column_usage ccu\n  ON tc.constraint_name = ccu.constraint_name\nwhere\n  c.table_name = '{{ $fromAI(\"table_name\") }}'\n  AND c.table_schema = '{{ $fromAI(\"schema_name\") }}'\norder by\n  c.ordinal_position",
+          "options": {},
+          "operation": "executeQuery",
+          "descriptionType": "manual",
+          "toolDescription": "Use this tool to get table definition to find all columns and types"
+        }
+      }
+    },
+    {
+      "name": "59dfd315-fb02-425c-a6ca-2d63167c2e24",
+      "function_name": "59dfd315-fb02-425c-a6ca-2d63167c2e24",
+      "docstring": null,
+      "description": "Postgres Chat Memory",
+      "node_type": "Generic",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "59dfd315-fb02-425c-a6ca-2d63167c2e24",
+        "n8n_type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+        "simplified_n8n_type": "MemoryPostgresChat",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "tableName": "={{ $workflow.id }}_chat_history"
+        }
+      }
+    },
+    {
+      "name": "5b125fa6-8017-437e-bb20-b9deb5d52c63",
+      "function_name": "5b125fa6-8017-437e-bb20-b9deb5d52c63",
+      "docstring": null,
+      "description": "Final QuickChart URL",
+      "node_type": "Generic",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "5b125fa6-8017-437e-bb20-b9deb5d52c63",
+        "n8n_type": "n8n-nodes-base.set",
+        "simplified_n8n_type": "Set",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "options": {},
+          "assignments": {
+            "assignments": [
+              {
+                "id": "63bab42a-9b9b-4756-88d2-f41cff9a1ded",
+                "name": "quickchart_url",
+                "type": "string",
+                "value": "={{ encodeURI($json.url) }}"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "2c66055d-1ca2-40f3-a082-57232402fdd1",
+      "function_name": "2c66055d-1ca2-40f3-a082-57232402fdd1",
+      "docstring": null,
+      "description": "QuickChart GET URL",
+      "node_type": "Generic",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "2c66055d-1ca2-40f3-a082-57232402fdd1",
+        "n8n_type": "n8n-nodes-base.set",
+        "simplified_n8n_type": "Set",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "options": {},
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d69995ae-413e-49e7-b6ec-17e9e034e4b6",
+                "name": "url",
+                "type": "string",
+                "value": "={{ \"https://quickchart.io/chart?width=250&height=150&chart=\" + $json.output.toJsonString() }}"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "6c9be4d2-46e9-44ae-8751-f4f4964323e9",
+      "function_name": "6c9be4d2-46e9-44ae-8751-f4f4964323e9",
+      "docstring": null,
+      "description": "DB Schema and Tables",
+      "node_type": "Generic",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "6c9be4d2-46e9-44ae-8751-f4f4964323e9",
+        "n8n_type": "n8n-nodes-base.postgresTool",
+        "simplified_n8n_type": "PostgresTool",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "query": "SELECT \n    table_schema,\n    table_name\nFROM information_schema.tables\nWHERE table_type = 'BASE TABLE'\n    AND table_schema NOT IN ('pg_catalog', 'information_schema')\nORDER BY table_schema, table_name;",
+          "options": {},
+          "operation": "executeQuery",
+          "descriptionType": "manual",
+          "toolDescription": "Use this tool to get a list of all tables with their schema in the database"
+        }
+      }
+    },
+    {
+      "name": "4e779b6f-963c-4efb-af43-bec0e5c3228c",
+      "function_name": "4e779b6f-963c-4efb-af43-bec0e5c3228c",
+      "docstring": null,
+      "description": "gpt-40-mini-1",
+      "node_type": "Generic",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "4e779b6f-963c-4efb-af43-bec0e5c3228c",
+        "n8n_type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "simplified_n8n_type": "LmChatOpenAi",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-4o-mini"
+          },
+          "options": {
+            "responseFormat": "text"
+          }
+        }
+      }
+    },
+    {
+      "name": "_END_",
+      "function_name": "_END_",
+      "docstring": "Synthetic node representing the workflow terminal point(s).",
+      "description": "Workflow End",
+      "node_type": "WorkflowBoundary",
+      "source_location": "multi_agent.json",
+      "metadata": {
+        "n8n_id": "_END_",
+        "n8n_type": "synthetic.end",
+        "simplified_n8n_type": "EndBoundary",
+        "category": "Workflow",
+        "subcategory": "Boundary",
+        "n8n_categories_list": [
+          "Workflow"
+        ],
+        "n8n_subcategories_data": [
+          "Boundary"
+        ],
+        "parameters": {}
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "b1037112-f5af-4e61-8bd1-0d9b0a9ad2e1",
+      "target": "f6534374-cc07-429a-b27c-b38835c96465",
+      "condition": "ai_languageModel",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "ai_languageModel",
+        "target_handle": "ai_languageModel"
+      }
+    },
+    {
+      "source": "4e779b6f-963c-4efb-af43-bec0e5c3228c",
+      "target": "cf246e46-b3e4-4c9f-96f9-be1b91c0a3eb",
+      "condition": "ai_languageModel",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "ai_languageModel",
+        "target_handle": "ai_languageModel"
+      }
+    },
+    {
+      "source": "5ea5ba56-2368-4e95-a98f-2c7548a66a9b",
+      "target": "02d741d3-4b6e-4e19-8aca-3e15175e9667",
+      "condition": "ai_languageModel",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "ai_languageModel",
+        "target_handle": "ai_languageModel"
+      }
+    },
+    {
+      "source": "e3caa1b3-7bdb-43c1-a749-74ae02912d84",
+      "target": "f6534374-cc07-429a-b27c-b38835c96465",
+      "condition": "ai_tool",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "ai_tool",
+        "target_handle": "ai_tool"
+      }
+    },
+    {
+      "source": "580426ac-0fb7-4f14-af7b-e497b7cb08f8",
+      "target": "5b125fa6-8017-437e-bb20-b9deb5d52c63",
+      "condition": "main",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "main",
+        "target_handle": "main"
+      }
+    },
+    {
+      "source": "6c707ee7-95e9-4ebd-9373-a2dac0ea73a7",
+      "target": "cf246e46-b3e4-4c9f-96f9-be1b91c0a3eb",
+      "condition": "ai_tool",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "ai_tool",
+        "target_handle": "ai_tool"
+      }
+    },
+    {
+      "source": "27c30d2c-3af3-4d05-aadb-9f18751fb9ce",
+      "target": "cf246e46-b3e4-4c9f-96f9-be1b91c0a3eb",
+      "condition": "ai_tool",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "ai_tool",
+        "target_handle": "ai_tool"
+      }
+    },
+    {
+      "source": "2c66055d-1ca2-40f3-a082-57232402fdd1",
+      "target": "580426ac-0fb7-4f14-af7b-e497b7cb08f8",
+      "condition": "main",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "main",
+        "target_handle": "main"
+      }
+    },
+    {
+      "source": "6c9be4d2-46e9-44ae-8751-f4f4964323e9",
+      "target": "cf246e46-b3e4-4c9f-96f9-be1b91c0a3eb",
+      "condition": "ai_tool",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "ai_tool",
+        "target_handle": "ai_tool"
+      }
+    },
+    {
+      "source": "59dfd315-fb02-425c-a6ca-2d63167c2e24",
+      "target": "f6534374-cc07-429a-b27c-b38835c96465",
+      "condition": "ai_memory",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "ai_memory",
+        "target_handle": "ai_memory"
+      }
+    },
+    {
+      "source": "4f41690b-313a-4ce3-ba65-a2ce2c3ee9b9",
+      "target": "cf246e46-b3e4-4c9f-96f9-be1b91c0a3eb",
+      "condition": "main",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "main",
+        "target_handle": "main"
+      }
+    },
+    {
+      "source": "4f41690b-313a-4ce3-ba65-a2ce2c3ee9b9",
+      "target": "02d741d3-4b6e-4e19-8aca-3e15175e9667",
+      "condition": "main",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "main",
+        "target_handle": "main"
+      }
+    },
+    {
+      "source": "b7085357-ebe9-4564-868d-b31fc2e9734a",
+      "target": "02d741d3-4b6e-4e19-8aca-3e15175e9667",
+      "condition": "ai_outputParser",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "ai_outputParser",
+        "target_handle": "ai_outputParser"
+      }
+    },
+    {
+      "source": "594e6fd3-084a-4100-ac16-1cc4068e03c1",
+      "target": "f6534374-cc07-429a-b27c-b38835c96465",
+      "condition": "ai_tool",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "ai_tool",
+        "target_handle": "ai_tool"
+      }
+    },
+    {
+      "source": "3a332532-a56e-42f5-a114-4a7e138b5e0f",
+      "target": "f6534374-cc07-429a-b27c-b38835c96465",
+      "condition": "main",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "main",
+        "target_handle": "main"
+      }
+    },
+    {
+      "source": "02d741d3-4b6e-4e19-8aca-3e15175e9667",
+      "target": "2c66055d-1ca2-40f3-a082-57232402fdd1",
+      "condition": "main",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "main",
+        "target_handle": "main"
+      }
+    },
+    {
+      "source": "1d5572e1-de5a-4e67-8ba1-82196bd62e9b",
+      "target": "4f41690b-313a-4ce3-ba65-a2ce2c3ee9b9",
+      "condition": "main",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "main",
+        "target_handle": "main"
+      }
+    },
+    {
+      "source": "_START_",
+      "target": "b7085357-ebe9-4564-868d-b31fc2e9734a",
+      "condition": "trigger",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "start",
+        "target_handle": "input"
+      }
+    },
+    {
+      "source": "_START_",
+      "target": "3a332532-a56e-42f5-a114-4a7e138b5e0f",
+      "condition": "trigger",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "start",
+        "target_handle": "input"
+      }
+    },
+    {
+      "source": "_START_",
+      "target": "1d5572e1-de5a-4e67-8ba1-82196bd62e9b",
+      "condition": "trigger",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "start",
+        "target_handle": "input"
+      }
+    },
+    {
+      "source": "_START_",
+      "target": "6c707ee7-95e9-4ebd-9373-a2dac0ea73a7",
+      "condition": "trigger",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "start",
+        "target_handle": "input"
+      }
+    },
+    {
+      "source": "_START_",
+      "target": "59dfd315-fb02-425c-a6ca-2d63167c2e24",
+      "condition": "trigger",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "start",
+        "target_handle": "input"
+      }
+    },
+    {
+      "source": "_START_",
+      "target": "b1037112-f5af-4e61-8bd1-0d9b0a9ad2e1",
+      "condition": "trigger",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "start",
+        "target_handle": "input"
+      }
+    },
+    {
+      "source": "_START_",
+      "target": "e3caa1b3-7bdb-43c1-a749-74ae02912d84",
+      "condition": "trigger",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "start",
+        "target_handle": "input"
+      }
+    },
+    {
+      "source": "_START_",
+      "target": "5ea5ba56-2368-4e95-a98f-2c7548a66a9b",
+      "condition": "trigger",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "start",
+        "target_handle": "input"
+      }
+    },
+    {
+      "source": "_START_",
+      "target": "594e6fd3-084a-4100-ac16-1cc4068e03c1",
+      "condition": "trigger",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "start",
+        "target_handle": "input"
+      }
+    },
+    {
+      "source": "_START_",
+      "target": "27c30d2c-3af3-4d05-aadb-9f18751fb9ce",
+      "condition": "trigger",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "start",
+        "target_handle": "input"
+      }
+    },
+    {
+      "source": "_START_",
+      "target": "6c9be4d2-46e9-44ae-8751-f4f4964323e9",
+      "condition": "trigger",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "start",
+        "target_handle": "input"
+      }
+    },
+    {
+      "source": "_START_",
+      "target": "4e779b6f-963c-4efb-af43-bec0e5c3228c",
+      "condition": "trigger",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "start",
+        "target_handle": "input"
+      }
+    },
+    {
+      "source": "5b125fa6-8017-437e-bb20-b9deb5d52c63",
+      "target": "_END_",
+      "condition": "terminal",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "output",
+        "target_handle": "end"
+      }
+    },
+    {
+      "source": "cf246e46-b3e4-4c9f-96f9-be1b91c0a3eb",
+      "target": "_END_",
+      "condition": "terminal",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "output",
+        "target_handle": "end"
+      }
+    },
+    {
+      "source": "f6534374-cc07-429a-b27c-b38835c96465",
+      "target": "_END_",
+      "condition": "terminal",
+      "metadata": {
+        "definition_location": "multi_agent.json",
+        "source_handle": "output",
+        "target_handle": "end"
+      }
+    }
+  ]
+}

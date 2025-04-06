@@ -1,4 +1,3 @@
-# agentic_graph/cli.py
 import argparse
 from .frameworks import agent_chat, autogen, crewai, langgraph, llama_index, n8n, openai_agents, pydantic, swarm
 from .analyzers import generate_maestro_analysis_report
@@ -36,6 +35,10 @@ def main():
                 pydantic.extract_pydantic_ai_graph(args.directory, args.output)
             case "swarm":
                 swarm.extract_swarm_graph(args.directory, args.output)
+            case "n8n":
+                n8n.extract_n8n_graph(args.directory, args.output)
+            case "openai_agents":
+                openai_agents.extract_openai_agents_graph(args.directory, args.output)
             case _:
                 print(f"Unknown framework: {args.framework}")
     elif args.command == "analyze":

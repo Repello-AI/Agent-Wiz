@@ -359,55 +359,148 @@ def process_file(input_path, output_dir, categories_data):
         traceback.print_exc()
         return False
 
+def extract_n8n_graph (input_path_str, output_arg_str):
 
-
-def main():
-    parser = argparse.ArgumentParser(description="Parse n8n workflow JSON files into a standardized graph format.")
-    parser.add_argument("input_path", help="Path to a single n8n .json file or a directory containing .json files.")
-    parser.add_argument("-o", "--output", default=".", help="Directory to save the parsed output JSON files (default: current directory).")
-    parser.add_argument("--categories", default="nodes_categorized.json", help="Path to the node categories JSON file (relative to script location or absolute).")
-    args = parser.parse_args()
-
-    categories_data = load_categories(args.categories)
-
-
-    input_path = Path(args.input_path)
-    output_dir = Path(args.output)
+    categories_filepath = "nodes_categorized.json"
+    input_path = Path(input_path_str)
+    output_arg = Path(output_arg_str)
 
     if not input_path.exists():
         print(f"Error: Input path does not exist: {input_path}", file=sys.stderr)
         sys.exit(1)
 
     if input_path.is_dir():
-        print(f"Processing directory: {input_path}")
-        json_files = list(input_path.glob('*.json'))
-        if not json_files:
-            print(f"No .json files found in directory: {input_path}")
-            sys.exit(0)
+        print(f"Input is a directory: {input_path}")
 
-        success_count = 0
-        fail_count = 0
-        for file_path in json_files:
-            if process_file(file_path, output_dir, categories_data):
-                success_count += 1
-            else:
-                fail_count += 1
-        print(f"\nFinished processing directory.")
-        print(f"Successfully processed: {success_count} file(s)")
-        print(f"Failed to process: {fail_count} file(s)")
-        if fail_count > 0:
+        if output_arg.suffix.lower() == ".json":
+            output_filename = output_arg
+        else:
+            output_filename = output_arg / "combined_n8n_graph.json"
+            output_arg.mkdir(parents=True, exist_ok=True)
+
+        print(f"Output will be combined into: {output_filename}")
+
+        print(f"Loading categories from: {categories_filepath}")
+        categories_data = load_categories(categories_filepath)
+
+        input_dir = Path(input_path)
+        output_file = Path(output_filename)
+
+        if not input_dir.is_dir():
+            print(f"Error: Input path is not a directory: {input_dir}", file=sys.stderr)
             sys.exit(1)
 
+
+        json_files = sorted(list(input_dir.glob('*.json')))
+        if not json_files:
+            print(f"Warning: No .json files found in directory: {input_dir}", file=sys.stderr)
+            final_graph = {"nodes": [], "edges": []}
+            try:
+                output_file.parent.mkdir(parents=True, exist_ok=True)
+                with open(output_file, 'w', encoding='utf-8') as f:
+                    json.dump(final_graph, f, indent=2, ensure_ascii=False)
+                print(f"Empty combined graph data written to: {output_file}")
+                sys.exit(0)
+            except Exception as e:
+                 print(f"Error: Could not write empty output file {output_file}: {e}", file=sys.stderr)
+                 sys.exit(1)
+
+
+        all_nodes = []
+        all_edges = []
+        processed_files_count = 0
+        failed_files_count = 0
+
+        print(f"\nStarting processing for directory: {input_dir}")
+        print(f"Found {len(json_files)} JSON file(s).")
+
+        for file_path in json_files:
+            input_filename_str_loop = str(file_path.name)
+            print(f"---\nProcessing: {file_path.name}")
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    n8n_data = json.load(f)
+
+                parser = N8nWorkflowParser(n8n_data, input_filename_str_loop, categories_data)
+                graph_data = parser.parse()
+
+                if graph_data:
+                    if graph_data.get("nodes"):
+                        all_nodes.extend(graph_data["nodes"])
+                        all_edges.extend(graph_data["edges"])
+                        print(f"Successfully parsed and added graph data from: {file_path.name}")
+                    else:
+                        print(f"Info: No functional nodes found in {file_path.name}. Skipping addition to combined graph.")
+                    processed_files_count += 1
+                else:
+                    print(f"Warning: Parsing {file_path.name} returned None or empty data.")
+                    failed_files_count += 1
+
+            except json.JSONDecodeError as e:
+                print(f"Error: Invalid JSON in file {file_path.name}: {e}", file=sys.stderr)
+                failed_files_count += 1
+            except Exception as e:
+                print(f"Error: An unexpected error occurred while processing {file_path.name}: {e}", file=sys.stderr)
+                failed_files_count += 1
+
+        combined_graph = {"nodes": all_nodes, "edges": all_edges}
+
+        print(f"\n---\nFinished processing directory.")
+        print(f"Successfully processed: {processed_files_count} file(s)")
+        print(f"Failed to process: {failed_files_count} file(s)")
+        print(f"Total nodes extracted: {len(all_nodes)}")
+        print(f"Total edges extracted: {len(all_edges)}")
+
+        if failed_files_count > 0:
+             print(f"Warning: {failed_files_count} file(s) failed to process. The combined graph may be incomplete.", file=sys.stderr)
+
+        try:
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(combined_graph, f, indent=2, ensure_ascii=False)
+            print(f"Combined graph data written to: {output_file}")
+
+        except Exception as e:
+            print(f"Error: Could not write combined output file {output_file}: {e}", file=sys.stderr)
+            sys.exit(1)
+
+        if failed_files_count > 0:
+            sys.exit(1)
+
+
     elif input_path.is_file():
+        print(f"Input is a single file: {input_path}")
         if input_path.suffix.lower() != '.json':
             print(f"Error: Input file is not a .json file: {input_path}", file=sys.stderr)
             sys.exit(1)
-        print(f"Processing single file: {input_path}")
+
+        if output_arg.suffix.lower() == ".json":
+             print(f"Warning: Output argument '{output_arg}' looks like a file for single file input. Using its parent directory '{output_arg.parent}' for output.", file=sys.stderr)
+             output_dir = output_arg.parent
+        else:
+             output_dir = output_arg
+
+        print(f"Output directory for parsed file: {output_dir}")
+
+        print(f"Loading categories from: {categories_filepath}")
+        categories_data = load_categories(categories_filepath)
+
         if not process_file(input_path, output_dir, categories_data):
+             print(f"Failed to process single file: {input_path}", file=sys.stderr)
              sys.exit(1)
+
     else:
          print(f"Error: Input path is neither a file nor a directory: {input_path}", file=sys.stderr)
          sys.exit(1)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Parse n8n workflow JSON files into a standardized graph format.")
+    parser.add_argument("input_path", help="Path to a single n8n .json file or a directory containing .json files.")
+    parser.add_argument("-o", "--output", default=".", help="Directory to save the parsed output JSON files (default: current directory).")
+    args = parser.parse_args()
+
+    extract_n8n_graph(args.input_path, args.output)
 
 
 if __name__ == "__main__":

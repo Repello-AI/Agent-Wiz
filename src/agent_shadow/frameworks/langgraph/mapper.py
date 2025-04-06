@@ -1,7 +1,10 @@
+import argparse
 import ast
 import json
 import os
+from pathlib import Path
 import re
+import sys
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 def get_func_name(node: Union[ast.Name, ast.Attribute]) -> str:
@@ -11,8 +14,6 @@ def get_func_name(node: Union[ast.Name, ast.Attribute]) -> str:
         base = get_func_name(node.value)
         return f"{base}.{node.attr}" if base else node.attr
     return ""
-
-# --- Enhanced FunctionAnalyzer ---
 
 class FunctionAnalyzer(ast.NodeVisitor):
     def __init__(self, outer_visitor, filename: str, source_node_name: Optional[str] = None, call_site_context: Optional[Dict[str, ast.AST]] = None, depth=0):
@@ -935,14 +936,21 @@ class GraphVisitor(ast.NodeVisitor):
                 if node_name not in ["__start__", "__end__"]:
                     print(f"  Warning: Function '{function_name}' mapped to node '{node_name}' not found in definitions.")
 
-# --- Main Extraction Function (Modified) ---
-def extract_langgraph_graph(directory_path=".") -> Dict[str, List[Dict[str, Any]]]:
+
+def extract_langgraph_graph(directory_path: str, output_filename: str):
     visitor = GraphVisitor()
     print(f"Starting graph extraction in directory: {directory_path}")
 
-    all_files_processed = []
+    if not os.path.isdir(directory_path):
+         print(f"Error: Provided path '{directory_path}' is not a valid directory.", file=sys.stderr)
+         sys.exit(1)
 
-    for root, _, files in os.walk(directory_path):
+    all_files_processed = []
+    parse_errors = 0
+
+    for root, dirs, files in os.walk(directory_path):
+        dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ['venv', 'env', '__pycache__', 'node_modules', '.git']]
+
         for filename in files:
             if filename.endswith(".py"):
                 filepath = os.path.join(root, filename)
@@ -954,30 +962,51 @@ def extract_langgraph_graph(directory_path=".") -> Dict[str, List[Dict[str, Any]
 
                     for node in ast.walk(tree):
                          if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                             node._filename = filepath
+                             node._filename = filepath 
 
-                    visitor.visit_file(tree, filepath)
+                    visitor.visit_file(tree, filepath) 
 
-                except SyntaxError as e: print(f"Warning: Skipping file {filepath} due to SyntaxError: {e}")
+                except SyntaxError as e:
+                    print(f"Warning: Skipping file {filepath} due to SyntaxError: {e}", file=sys.stderr)
+                    parse_errors += 1
                 except Exception as e:
-                    print(f"Warning: Skipping file {filepath} due to unexpected error: {e}")
-                    import traceback; traceback.print_exc()
+                    print(f"Warning: Skipping file {filepath} due to unexpected error: {e}", file=sys.stderr)
+                    parse_errors += 1
 
-    visitor.analyze_functions_for_goto()
+    try:
+        visitor.analyze_functions_for_goto()
+    except Exception as e:
+        print(f"Error during post-processing analysis: {e}", file=sys.stderr)
+        sys.exit(1)
 
 
     graph_data = {"nodes": visitor.nodes, "edges": visitor.edges}
-    print(f"Finished graph extraction. Found {len(visitor.nodes)} nodes and {len(visitor.edges)} edges across {len(all_files_processed)} files.")
-    return graph_data
+    print(f"Finished graph extraction. Found {len(visitor.nodes)} nodes and {len(visitor.edges)} edges across {len(all_files_processed)} files ({parse_errors} file processing errors).")
+
+
+    output_path = Path(output_filename)
+    try:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        graph_data["nodes"].sort(key=lambda x: x.get("id", ""))
+        graph_data["edges"].sort(key=lambda x: (x.get("source", ""), x.get("target", "")))
+
+        with open(output_path, "w", encoding='utf-8') as outfile:
+            json.dump(graph_data, outfile, indent=2) 
+        print(f"Combined graph data written to {output_path}")
+
+    except Exception as e:
+        print(f"Error writing JSON output to {output_path}: {e}", file=sys.stderr)
+        sys.exit(1)
+
 
 if __name__ == "__main__":
-    target_directory = "examples/cs" 
-    graph_data = extract_langgraph_graph(target_directory)
+    parser = argparse.ArgumentParser(description="Extract LangGraph structures from Python code into a graph JSON.")
+    parser.add_argument("directory", type=str, nargs='?', default=".", help="Directory containing the Python code (default: current directory).")
+    parser.add_argument("-o", "--output", type=str, default="langgraph_graph_output.json", help="Output JSON filename (default: langgraph_graph_output.json).")
+    args = parser.parse_args()
 
-    output_filename = "graph_data_enhanced.json"
-    try:
-        with open(output_filename, "w", encoding='utf-8') as outfile:
-            json.dump(graph_data, outfile, indent=4)
-        print(f"Combined graph data written to {output_filename}")
-    except Exception as e:
-        print(f"Error writing JSON output to {output_filename}: {e}")
+    target_directory = args.directory
+    output_filename = args.output
+
+    extract_langgraph_graph(target_directory, output_filename)
