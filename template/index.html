@@ -6,31 +6,76 @@
     <title>Agent Workflow visualization</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; font-family: sans-serif; }
-        svg { display: block; background-color: #f9f9f9; }
-        .link { stroke-opacity: 0.6; }
-        .node circle { cursor: pointer; }
+        @font-face {
+          font-family: 'Manrope Variable';
+          src: url('assets/Manrope-VariableFont_wght.ttf') format('truetype-variations');
+          font-weight: 200 800; /* Variable font weight range */
+          font-style: normal;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            /* Use the specified background */
+            background: url(assets/mapper_bg.svg) no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Manrope Variable', sans-serif; /* Added fallback */
+        }
+        .link { stroke-opacity: 1; } /* Default opacity is now handled by color */
+        .node image { cursor: pointer; }
         .node text { pointer-events: none; fill: #333; }
         .link-text { pointer-events: none; fill: #555; }
-        .label-text { pointer-events: none; }
-        .legend { font-size: 12px; }
-        .tooltip {
-            font-family: sans-serif;
-            font-size: 12px;
-            line-height: 1.4;
+        .label-text {
+            pointer-events: none;
+            font-size: 16px; /* Standardized font size for node labels */
+            font-weight: 700;
         }
-        .tooltip strong { display: block; margin-bottom: 5px; }
+        .legend {
+             font-size: 16px; /* Keep legend text smaller */
+             line-height: 1.6;
+        }
+
+        /* --- Tooltip Styling --- */
+        .tooltip {
+            font-family: 'Manrope Variable', sans-serif; /* Use Manrope */
+            font-size: 14px; /* Slightly smaller for better fit */
+            line-height: 1.4;
+            position: absolute;
+            background: rgba(255, 255, 255, 0.97); /* Slightly less transparent */
+            border: 1px solid #ccc;
+            padding: 12px; /* More padding */
+            border-radius: 6px; /* Slightly larger radius */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* More pronounced shadow */
+            pointer-events: none; /* Default: non-interactive */
+            opacity: 0;
+            z-index: 9999;
+            max-width: 450px; /* Limit width */
+            transition: opacity 0.2s ease-in-out; /* Smooth fade */
+        }
+        .tooltip.interactive {
+            pointer-events: auto; /* Make it interactive when pinned */
+        }
+        .tooltip strong {
+            display: block;
+            margin-bottom: 6px; /* Increased margin */
+            font-size: 15px; /* Slightly larger title */
+            font-weight: 700;
+        }
         .tooltip pre {
+            font-family: monospace; /* Use monospace for code */
             font-size: 11px;
-            background-color: #eee;
-            padding: 5px;
-            border-radius: 3px;
-            margin: 5px 0 0 0;
-            max-height: 100px;
-            overflow-y: auto;
+            background-color: #f0f0f0; /* Lighter gray */
+            padding: 8px; /* More padding */
+            border-radius: 4px; /* Consistent radius */
+            border: 1px solid #e0e0e0; /* Subtle border */
+            margin: 8px 0 0 0; /* Increased top margin */
+            max-height: 150px; /* Allow more height for scrolling */
+            overflow-y: auto; /* Enable vertical scroll */
             white-space: pre-wrap; /* Allow wrapping */
             word-wrap: break-word; /* Break long words */
         }
+        /* --- End Tooltip Styling --- */
+
         button {
             background-color: #e0e0e0;
             border: 1px solid #ccc;
@@ -39,10 +84,44 @@
             margin-right: 5px;
             cursor: pointer;
             font-size: 12px;
+            font-family: 'Manrope Variable', sans-serif;
         }
         button:hover {
             background-color: #d0d0d0;
         }
+
+        /* Specific styles for node label backgrounds */
+        .label-bg {
+            fill: white;
+            opacity: 1;
+            rx: 3;
+            ry: 3;
+            transition: fill 0.2s ease-in-out; /* Smooth transition for hover */
+        }
+        .node:hover .label-bg {
+            fill: #F7FFAD; /* Hover background color */
+        }
+
+        /* Style for the legend background */
+        .legend-bg {
+          fill: #EBEBEB; /* Menu background color */
+          /* stroke: #ccc; */
+          /* stroke-width: 1px; */
+          rx: 12px;
+          ry: 12px;
+        }
+
+        /* Style for selected/pinned elements (optional but good UX) */
+        .node.selected image {
+             /* Example: Add a subtle glow or border */
+             filter: drop-shadow(0px 0px 3px rgba(0, 100, 255, 0.7));
+        }
+         .link.selected {
+            /* stroke: #0056b3;  */
+            stroke-width: 2;
+         }
+
+
     </style>
 </head>
 <body>
@@ -73,37 +152,62 @@ svg.call(zoomHandler);
 const container = svg.append("g")
     .attr("class", "container");
 
+// --- Tooltip State Management ---
+let pinnedElementData = null; // Data of the element whose tooltip is pinned
+let pinnedElement = null;     // The D3 selection of the pinned element
+let hoverTimeout = null;      // Timeout for delaying hover tooltip hide
+
 // Create tooltip div
 const tooltip = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("position", "absolute")
-    .style("background", "rgba(255, 255, 255, 0.95)") 
-    .style("border", "1px solid #ccc")
-    .style("padding", "10px")
-    .style("border-radius", "5px")
-    .style("box-shadow", "0 3px 8px rgba(0,0,0,0.15)")
-    .style("pointer-events", "none")
-    .style("opacity", 0)
-    .style("z-index", "9999"); 
+    .attr("class", "tooltip"); // Base class
 
-function formatSourceLocation(loc) {
-    if (!loc) return "N/A";
-    return `${loc.file} (L${loc.line}:${loc.col} - L${loc.end_line}:${loc.end_col})`;
+// --- Mappings and Constants ---
+const nodeIconSize = 32;
+const iconMap = { /* ... (iconMap definition remains the same) ... */ };
+iconMap["Agent"] = "assets/agent.svg";
+iconMap["LLM"] = "assets/agent.svg";
+iconMap["Orchestrator"] = "assets/agent.svg";
+iconMap["Tool"] = "assets/tool.svg";
+iconMap["Start"] = "assets/start.svg";
+iconMap["End"] = "assets/end.svg";
+iconMap["_default"] = "assets/generic.svg";
+
+const edgeColors = { /* ... (edgeColors definition remains the same) ... */ };
+edgeColors.agentToTool = "#FFB026";
+edgeColors.toolToTool = "#A738D6";
+edgeColors.agentToAgent = "#164EAF";
+edgeColors.default = "rgba(0, 0, 0, 0.3)";
+
+function getLinkColor(d) { /* ... (getLinkColor function remains the same) ... */
+    const source_type = d.source.node_type;
+    const target_type = d.target.node_type;
+    const agentTypes = ["Agent", "LLM", "Orchestrator"];
+    if (agentTypes.includes(source_type) && target_type === "Tool") return edgeColors.agentToTool;
+    if (source_type === "Tool" && target_type === "Tool") return edgeColors.toolToTool;
+    if (agentTypes.includes(source_type) && agentTypes.includes(target_type)) return edgeColors.agentToAgent;
+    return edgeColors.default;
 }
-
-function formatMetadata(meta) {
+function formatSourceLocation(loc) { /* ... (formatSourceLocation function remains the same) ... */
+    if (!loc || typeof loc !== 'string') {
+        if (loc && loc.file && loc.line !== undefined && loc.col !== undefined) { return `${loc.file} (L${loc.line}:${loc.col})`; }
+        return "N/A";
+    }
+    const parts = loc.split(':');
+    if (parts.length >= 3) { return `${parts[0]} (L${parts[1]}:${parts[2]})`; }
+    return loc;
+}
+function formatMetadata(meta) { /* ... (formatMetadata function remains the same) ... */
     if (!meta || Object.keys(meta).length === 0) return "None";
     let html = "<pre>";
     for (const key in meta) {
         if (Object.hasOwnProperty.call(meta, key)) {
             let value = meta[key];
             if (typeof value === 'object' && value !== null) {
-                if(key === 'origin_location' || key === 'definition_location') {
-                    value = formatSourceLocation(value);
-                } else {
-                    value = JSON.stringify(value, null, 2); 
-                }
-            }
+                 if ((key === 'definition_location' || key === 'agent_definition') && value.file) { value = formatSourceLocation(value); }
+                 else { value = JSON.stringify(value, null, 2); }
+            } else if (typeof value === 'string' && (key === 'definition_location' || key === 'agent_definition') && value.includes(':')) {
+                 value = formatSourceLocation(value);
+             }
             html += `${key}: ${value}\n`;
         }
     }
@@ -111,42 +215,98 @@ function formatMetadata(meta) {
     return html;
 }
 
-const colorMap = {
-    "Input": "#2ca02c",         // Green
-    "Output": "#d62728",        // Red
-    "Agent/LLM": "#1f77b4",     // Blue
-    "ToolExecutor": "#ff7f0e",  // Orange
-    "Generic": "#bcbd22",       // Olive
-    "Special": "#7f7f7f",       // Grey
-    "_default": "#9467bd"       // Purple (fallback)
-};
-const nodeTypes = [...new Set(data.nodes.map(n => n.node_type))].sort(); 
+// --- Tooltip Helper Functions ---
 
+// Generates the HTML content for the tooltip
+function getTooltipHTML(d) {
+    if (d.source && d.target) { // It's an edge
+        return `
+            <strong>Edge: ${d.source.name} → ${d.target.name}</strong>
+            Condition: ${d.condition || 'N/A'}
+            <br>Metadata: ${formatMetadata(d.metadata)}
+        `;
+    } else { // It's a node
+        return `
+            <strong>${d.name} (${d.node_type})</strong>
+            ${d.description ? `Desc: ${d.description}<br>` : ''}
+            Function: ${d.function_name || 'N/A'}
+            <br>Location: ${formatSourceLocation(d.location)}
+            ${d.docstring ? `<br>Doc: <pre>${d.docstring}</pre>` : ''}
+            <br>Metadata: ${formatMetadata(d.metadata)}
+        `;
+    }
+}
+
+// Shows the tooltip (either hover or pinned)
+function showTooltip(event, d, isPinned = false) {
+    clearTimeout(hoverTimeout); // Clear any pending hide action
+
+    tooltip.html(getTooltipHTML(d))
+        .style("left", (event.pageX + 15) + "px")
+        .style("top", (event.pageY - 28) + "px")
+        .style("opacity", 1);
+
+    if (isPinned) {
+        tooltip.classed("interactive", true); // Make it interactive
+    } else {
+        tooltip.classed("interactive", false); // Ensure it's not interactive for hover
+    }
+}
+
+// Hides the tooltip (if it's not pinned)
+function hideTooltip(force = false) {
+    if (pinnedElementData && !force) return; // Don't hide if pinned, unless forced
+
+    clearTimeout(hoverTimeout); // Clear any pending hide
+    hoverTimeout = setTimeout(() => { // Delay hiding slightly for hover
+         if (pinnedElementData && !force) return; // Double check pin status before hiding
+         tooltip.style("opacity", 0);
+          // Remove interactive class only if forced (meaning we are unpinning)
+         if (force) {
+            tooltip.classed("interactive", false);
+         }
+    }, force ? 0 : 150); // Hide immediately if forced, otherwise delay for hover
+}
+
+// Unpins any currently pinned element and hides its tooltip
+function unpinTooltip() {
+    if (pinnedElementData) {
+        if (pinnedElement) {
+            pinnedElement.classed('selected', false); // Remove selected class
+        }
+        pinnedElementData = null;
+        pinnedElement = null;
+        hideTooltip(true); // Force hide immediately
+    }
+}
+
+// --- Simulation Setup ---
 const simulation = d3.forceSimulation(data.nodes)
-    .force("link", d3.forceLink(data.edges)
-        .id(d => d.name)
-        .distance(300)) 
-    .force("charge", d3.forceManyBody()
-        .strength(-2400) 
-        .distanceMax(750)) 
+    .force("link", d3.forceLink(data.edges).id(d => d.name).distance(250))
+    .force("charge", d3.forceManyBody().strength(-1500).distanceMax(600))
     .force("center", d3.forceCenter(width / 2, height / 2).strength(0.1))
-    .force("collision", d3.forceCollide()
-        .radius(80) 
-        .iterations(3))
+    .force("collision", d3.forceCollide().radius(nodeIconSize * 1.5).iterations(3))
     .alphaDecay(0.01)
-    .velocityDecay(0.3); 
+    .velocityDecay(0.3);
+
+const nodePadding = 12;
+function calculatePathEndPoint(sourceX, sourceY, targetX, targetY, nodeRadius) { /* ... */
+    const dx = targetX - sourceX;
+    const dy = targetY - sourceY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance <= nodeRadius + 5) { return { x: targetX, y: targetY }; }
+    const ratio = (distance - (nodeRadius + nodePadding)) / distance;
+    return { x: sourceX + dx * ratio, y: sourceY + dy * ratio };
+}
+
+// --- Arrowhead Definition ---
 const defs = container.append("defs");
-defs.append("marker")
-    .attr("id", "arrowhead")
-    .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 28) 
-    .attr("refY", 0)
-    .attr("orient", "auto")
-    .attr("markerWidth", 7)
-    .attr("markerHeight", 7)
-    .append("path")
-    .attr("d", "M0,-5L10,0L0,5")
-    .attr("fill", "#777"); 
+defs.selectAll("marker").remove();
+const uniqueColors = Array.from(new Set(data.edges.map(d => getLinkColor(d))));
+uniqueColors.forEach(color => { /* ... arrowhead creation ... */
+  defs.append("marker").attr("id", `arrowhead-${color.replace(/[^a-zA-Z0-9]/g, '')}`).attr("viewBox", "0 -5 10 10").attr("refX", 0).attr("refY", -0.5).attr("orient", "auto").attr("markerWidth", 6).attr("markerHeight", 6).append("path").attr("d", "M0,-5L10,0L0,5").attr("markerUnits", "userSpaceOnUse").attr("fill", color);
+});
+defs.append("marker").attr("id", "arrowhead-hover").attr("viewBox", "0 -5 10 10").attr("refX", 0).attr("refY", 0).attr("orient", "auto").attr("markerWidth", 6).attr("markerHeight", 6).append("path").attr("d", "M0,-5L10,0L0,5").attr("fill", "#000000"); // Black hover arrowhead
 
 // --- Links ---
 const link = container.append("g")
@@ -155,95 +315,56 @@ const link = container.append("g")
     .data(data.edges)
     .join("path")
     .attr("class", "link")
-    .attr("marker-end", "url(#arrowhead)")
-    .attr("stroke", "#aaa") 
-    .attr("stroke-width", 2.5)
+    .attr("marker-end", d => `url(#arrowhead-${getLinkColor(d).replace(/[^a-zA-Z0-9]/g, '')})`)
+    .attr("stroke", d => getLinkColor(d))
+    .attr("stroke-width", 2)
     .attr("fill", "none")
     .on("mouseover", function(event, d) {
-        d3.select(this)
-            .attr("stroke", "#333")
-            .attr("stroke-width", 3.5);
-
-        linkText.filter(t => t === d)
-            .transition().duration(150)
-            .attr("opacity", 1);
-        linkTextBg.filter(t => t === d)
-            .transition().duration(150)
-            .attr("opacity", 0.8);
-
-        tooltip.transition()
-            .duration(200)
-            .style("opacity", 1);
-        tooltip.html(`
-            <strong>Edge: ${d.source.name} -> ${d.target.name}</strong>
-            Condition Type: ${d.condition?.type || 'N/A'}
-            <br>Metadata: ${formatMetadata(d.metadata)}
-        `)
-            .style("left", (event.pageX + 15) + "px")
-            .style("top", (event.pageY - 28) + "px");
+        // Always show hover tooltip if nothing is pinned
+        if (!pinnedElementData) {
+            showTooltip(event, d, false); // Show non-interactive tooltip
+        }
+        // Apply visual hover style only if not the selected element
+        if (pinnedElementData !== d) {
+            d3.select(this)
+              .attr("stroke", "#000000")
+              .attr("marker-end", "url(#arrowhead-hover)");
+        }
     })
     .on("mouseout", function(event, d) {
-        d3.select(this)
-            .attr("stroke", "#aaa")
-            .attr("stroke-width", 1.5);
-
-         linkText.filter(t => t === d)
-            .transition().duration(300)
-            .attr("opacity", 0);
-        linkTextBg.filter(t => t === d)
-            .transition().duration(300)
-            .attr("opacity", 0);
-
-        tooltip.transition()
-            .duration(500)
-            .style("opacity", 0);
+        // Hide hover tooltip (will be delayed and won't hide if pinned)
+        hideTooltip();
+        // Reset visual style only if not the selected element
+        if (pinnedElementData !== d) {
+            d3.select(this)
+              .attr("stroke", getLinkColor(d))
+              .attr("stroke-width", 2)
+              .attr("marker-end", `url(#arrowhead-${getLinkColor(d).replace(/[^a-zA-Z0-9]/g, '')})`);
+        }
     })
-    .on("click", function(event, d) { 
-        focusOnElement(d, 1.5); 
+    .on("click", function(event, d) {
+        event.stopPropagation(); // Prevent SVG click
+        const currentSelection = d3.select(this);
+
+        if (pinnedElementData === d) {
+            // Clicked the same pinned element: unpin it
+            unpinTooltip(); // This handles removing class and hiding tooltip
+        } else {
+            // Clicked a new or different element
+            unpinTooltip(); // Unpin previous element first
+
+            pinnedElementData = d;
+            pinnedElement = currentSelection;
+            pinnedElement.classed('selected', true); // Add selected class for persistent styling
+            showTooltip(event, d, true); // Show interactive tooltip
+
+             // Ensure the selected style overrides hover styles if mouse is still over
+             currentSelection
+                 .attr("stroke", "#000000") // Use selected color
+                 .attr("marker-end", "url(#arrowhead-hover)"); // Keep hover marker maybe? Or make a selected one
+        }
+        // focusOnElement(d, 1.5); // Optional: zoom on click
     });
-
-
-const linkLabelBackgrounds = container.append("g")
-    .attr("class", "link-label-backgrounds");
-
-const linkTextBg = linkLabelBackgrounds.selectAll("rect")
-    .data(data.edges.filter(d => d.condition && d.condition.type)) 
-    .join("rect")
-    .attr("rx", 4)
-    .attr("ry", 3)
-    .attr("fill", "white")
-    .attr("opacity", 0) 
-    .style("pointer-events", "none");
-
-const linkText = container.append("g")
-    .attr("class", "link-labels")
-    .selectAll("text")
-    .data(data.edges.filter(d => d.condition && d.condition.type)) 
-    .join("text")
-    .attr("class", "link-text")
-    .attr("font-size", "10px")
-    .attr("text-anchor", "middle")
-    .attr("fill", "#444")
-    .attr("dy", -5)
-    .attr("opacity", 0) 
-    .style("pointer-events", "none")
-    .text(d => d.condition.type)
-    .each(function(d) { 
-        const bbox = this.getBBox();
-        d.linkLabelWidth = bbox.width;
-        d.linkLabelHeight = bbox.height;
-    });
-
-linkTextBg.each(function(d, i) {
-    const correspondingTextData = linkText.data()[i];
-    if (correspondingTextData && correspondingTextData.linkLabelWidth !== undefined) {
-        const padding = 3;
-        d3.select(this)
-            .attr("width", correspondingTextData.linkLabelWidth + (padding * 2))
-            .attr("height", correspondingTextData.linkLabelHeight + (padding * 2));
-    }
-});
-
 
 // --- Nodes ---
 const node = container.append("g")
@@ -254,394 +375,211 @@ const node = container.append("g")
     .attr("class", "node")
     .call(drag(simulation))
     .on("mouseover", function(event, d) {
-        d3.select(this).select("circle")
-            .transition().duration(150)
-            .attr("r", 12) 
-            .attr("stroke", "#333")
-            .attr("stroke-width", 2.5);
-
-        link.attr("stroke", l => l.source === d || l.target === d ? "#333" : "#ccc") // Use object reference
-            .attr("stroke-width", l => l.source === d || l.target === d ? 2.5 : 1.5)
-            .attr("stroke-opacity", l => l.source === d || l.target === d ? 1 : 0.3);
-
-        labels.filter(l => l === d)
-           .attr("font-weight", "bold")
-           .attr("font-size", "16px"); 
-        labelsBackground.filter(l => l === d)
-           .attr("fill", "#f0f0f0")
-           .attr("stroke", "#555")
-           .attr("stroke-width", );
-
-        tooltip.transition()
-            .duration(200)
-            .style("opacity", 1);
-        tooltip.html(`
-            <strong>${d.name}</strong>
-            Type: ${d.node_type || 'N/A'}
-            <br>Function: ${d.function_name || 'N/A'}
-            <br>Location: ${formatSourceLocation(d.source_location)}
-            ${d.docstring ? `<br>Doc: <pre>${d.docstring}</pre>` : ''}
-            <br>Metadata: ${formatMetadata(d.metadata)}
-        `)
-            .style("left", (event.pageX + 15) + "px")
-            .style("top", (event.pageY - 28) + "px");
+        if (!pinnedElementData) {
+            showTooltip(event, d, false); // Show hover tooltip
+        }
+         // Apply visual hover style only if not the selected element
+        if (pinnedElementData !== d) {
+            d3.select(this).raise(); // Bring node to front
+             // Highlight connected links differently on node hover if needed
+             link.filter(l => l.source === d || l.target === d)
+                 .attr("stroke", "#000000")
+                 .attr("marker-end", "url(#arrowhead-hover)");
+        }
     })
     .on("mouseout", function(event, d) {
-        d3.select(this).select("circle")
-            .transition().duration(200)
-            .attr("r", 9) 
-            .attr("stroke", "white")
-            .attr("stroke-width", 1.5);
-
-        link.attr("stroke", "#aaa")
-            .attr("stroke-width", 1.5)
-            .attr("stroke-opacity", 0.6);
-
-        labels.filter(l => l === d)
-            .attr("font-weight", "normal")
-            .attr("font-size", "16px");
-        labelsBackground.filter(l => l === d)
-            .attr("fill", "white")
-            .attr("stroke", "none");
-
-        tooltip.transition()
-            .duration(500)
-            .style("opacity", 0);
+        hideTooltip(); // Attempt to hide hover tooltip
+         // Reset visual style only if not the selected element
+        if (pinnedElementData !== d) {
+            // Reset connected link highlights
+             link.filter(l => l.source === d || l.target === d)
+                .filter(l => pinnedElementData !== l) // Don't reset if the LINK is pinned
+                .attr("stroke", l => getLinkColor(l))
+                .attr("stroke-width", 2)
+                .attr("marker-end", l => `url(#arrowhead-${getLinkColor(l).replace(/[^a-zA-Z0-9]/g, '')})`);
+        }
     })
-    .on("click", function(event, d) { 
-       focusOnElement(d, 2); 
+    .on("click", function(event, d) {
+        event.stopPropagation();
+        const currentSelection = d3.select(this);
+
+        if (pinnedElementData === d) {
+            // Clicked same pinned node: unpin
+            unpinTooltip();
+        } else {
+            // Clicked new node
+            unpinTooltip(); // Unpin previous first
+
+            pinnedElementData = d;
+            pinnedElement = currentSelection;
+            pinnedElement.classed('selected', true);
+            showTooltip(event, d, true); // Show interactive tooltip
+             // Ensure selected style persists over hover
+             // Example: Highlight connected links persistently
+            link.filter(l => l.source === d || l.target === d)
+                .classed('selected', true) // Add selected class to links too if desired
+                // .attr("stroke", "#0056b3")
+                .attr("marker-end", "url(#arrowhead-hover)");
+        }
+       // focusOnElement(d, 2); // Optional: zoom on click
     });
 
-node.append("circle")
-    .attr("r", 16) 
-    .attr("fill", d => colorMap[d.node_type] || colorMap._default)
-    .attr("stroke", "white")
-    .attr("stroke-width", 1.5);
+// Append Image Icons
+node.append("image")
+    .attr("xlink:href", d => iconMap[d.node_type] || iconMap._default)
+    .attr("width", nodeIconSize)
+    .attr("height", nodeIconSize)
+    .attr("x", -nodeIconSize / 2)
+    .attr("y", -nodeIconSize / 2);
 
+// --- Labels ---
 const labelsLayer = container.append("g").attr("class", "labels-layer");
-
 const labelsBackground = labelsLayer.selectAll(".label-bg")
     .data(data.nodes)
     .join("rect")
-    .attr("class", "label-bg")
-    .attr("fill", "white")
-    .attr("opacity", 0.8)
-    .attr("rx", 3)
-    .attr("ry", 3)
-    .style("pointer-events", "none");
-
+    .attr("class", "label-bg");
 const labels = labelsLayer.selectAll(".label-text")
     .data(data.nodes)
     .join("text")
     .attr("class", "label-text")
     .text(d => d.name)
-    .attr("font-size", "16px")
-    .attr("dy", ".35em")
-    .attr("text-anchor", "start") 
+    .attr("dy", nodeIconSize / 2 + 15)
+    .attr("dx", 0)
+    .attr("text-anchor", "middle")
     .each(function(d) {
         const bbox = this.getBBox();
-        d.labelWidth = bbox.width + 10; 
+        d.labelWidth = bbox.width + 10;
         d.labelHeight = bbox.height + 6;
     });
-
 labelsBackground
     .attr("width", d => d.labelWidth)
     .attr("height", d => d.labelHeight)
-    .attr("x", -5) 
-    .attr("y", d => -d.labelHeight / 2);
+    .attr("x", d => -d.labelWidth / 2)
+    .attr("y", d => nodeIconSize / 2 + 15 - d.labelHeight / 2);
 
 
-function adjustLabelPositions() {
-    const labelPadding = 5; 
-    const sortedNodes = data.nodes.slice().sort((a, b) => a.y - b.y); 
+// --- Legend ---
+const legendWidth = 180;
+const legendPadding = 25;
+const legendIconHeight = 65;
+const legendEdgeIconHeight = 40;
+const legendIconSize = 36;
+const uniqueNodeTypesInData = Array.from(new Set(data.nodes.map(node => node.node_type)));
 
-    for (let i = 0; i < sortedNodes.length - 1; i++) {
-        const nodeA = sortedNodes[i];
-        for (let j = i + 1; j < sortedNodes.length; j++) {
-             const nodeB = sortedNodes[j];
+// 2. Create the legend items based on the unique types found
+const nodeTypesForLegend = uniqueNodeTypesInData.map(nodeType => ({
+    type: nodeType,
+    icon: iconMap[nodeType] || iconMap._default // Use specific icon or default
+})).sort((a, b) => a.type.localeCompare(b.type)); // Optional: Sort alphabetically for consistency
 
-             if (Math.abs(nodeB.y - nodeA.y) > (nodeA.labelHeight + nodeB.labelHeight) / 2 + labelPadding) {
-                 continue; 
-             }
-             if (Math.abs(nodeB.x - nodeA.x) > (nodeA.labelWidth + nodeB.labelWidth) / 2) {
-                  continue; 
-             }
-
-            const dy = nodeB.y - nodeA.y;
-            const requiredDist = (nodeA.labelHeight + nodeB.labelHeight) / 2 + labelPadding;
-            if (Math.abs(dy) < requiredDist) {
-                const overlap = requiredDist - Math.abs(dy);
-                const sign = dy > 0 ? 1 : -1;
-                if (nodeA.fy === null) nodeA.y -= sign * overlap * 0.1; 
-                if (nodeB.fy === null) nodeB.y += sign * overlap * 0.1;
-            }
-        }
-    }
-
-    const labelOffset = 15; 
-    labels.attr("transform", d => `translate(${d.x + labelOffset}, ${d.y})`);
-    labelsBackground.attr("transform", d => `translate(${d.x + labelOffset}, ${d.y})`);
-}
-
-
+const edgeTypesForLegend = [ /* ... edge types for legend ... */];
+edgeTypesForLegend.push({ type: "Agent to tool", color: edgeColors.agentToTool });
+edgeTypesForLegend.push({ type: "Tool to tool", color: edgeColors.toolToTool });
+edgeTypesForLegend.push({ type: "Agent to Agent", color: edgeColors.agentToAgent });
+const numNodeItems = nodeTypesForLegend.length;
+const numEdgeItems = edgeTypesForLegend.length;
+const legendHeight = (numNodeItems * legendIconHeight) + (numEdgeItems * (legendEdgeIconHeight + 30)) + legendPadding * 2.5; // Adjusted height calculation
 const legend = svg.append("g")
-    .attr("class", "legend")
-    .attr("transform", `translate(${width - 160}, 20)`) 
-    .style("pointer-events", "none");
-
-const legendItemHeight = 22;
-const legendPadding = 10;
-const legendHeaderHeight = 25;
-const legendHeight = nodeTypes.length * legendItemHeight + legendHeaderHeight + legendPadding * 2;
-
+  .attr("class", "legend")
+  .attr("transform", `translate(${width - legendWidth} , -10)`);
 legend.append("rect")
-    .attr("width", 140) 
-    .attr("height", legendHeight)
-    .attr("fill", "rgba(255, 255, 255, 0.85)")
-    .attr("rx", 5)
-    .attr("ry", 5);
-
-legend.append("text")
-    .attr("x", legendPadding)
-    .attr("y", legendHeaderHeight - 5)
-    .attr("font-weight", "bold")
-    .text("Node Types");
-
-nodeTypes.forEach((type, i) => {
-    const yPos = legendHeaderHeight + i * legendItemHeight + legendPadding;
-
-    legend.append("circle")
-        .attr("cx", legendPadding + 8) 
-        .attr("cy", yPos)
-        .attr("r", 7)
-        .attr("fill", colorMap[type] || colorMap._default);
-
-    legend.append("text")
-        .attr("x", legendPadding + 25) 
-        .attr("y", yPos + 4)
-        .text(type);
+  .attr("class", "legend-bg")
+  .attr("width", legendWidth)
+  .attr("height", legendHeight);
+let currentY = legendPadding + legendIconHeight / 2;
+nodeTypesForLegend.forEach((item) => { /* ... legend node items ... */
+  legend.append("image").attr("xlink:href", item.icon).attr("width", legendIconSize).attr("height", legendIconSize).attr("x", legendPadding).attr("y", currentY - legendIconSize / 2);
+  legend.append("text").attr("x", legendPadding + legendIconSize + 10).attr("y", currentY).attr("alignment-baseline", "middle").attr("font-size", "16px").attr("font-weight", "bold").text(item.type);
+  currentY += legendIconHeight;
+});
+currentY += legendPadding * 0.5;
+edgeTypesForLegend.forEach((item) => { /* ... legend edge items ... */
+  const lineY = currentY + 10;
+  legend.append("line").attr("x1", legendPadding).attr("x2", legendPadding + 120).attr("y1", lineY).attr("y2", lineY).attr("stroke", item.color).attr("stroke-width", 3);
+  legend.append("text").attr("x", legendPadding).attr("y", lineY + 20).attr("text-anchor", "start").attr("font-size", "16px").attr("font-weight", "bold").text(item.type);
+  currentY += legendEdgeIconHeight + 20;
 });
 
 
 // --- Simulation Tick Function ---
+function adjustLabelPositions() {
+    // Recalculate label positions based on node position
+    labels.attr("transform", d => `translate(${d.x}, ${d.y})`); // Position text relative to node center
+    labelsBackground.attr("transform", d => `translate(${d.x}, ${d.y})`); // Position background relative to node center
+
+    // Reposition backgrounds to be centered below the node icon
+    labelsBackground
+        .attr("x", d => -d.labelWidth / 2) // Center background
+        .attr("y", d => nodeIconSize / 2 + 15 - d.labelHeight + (d.labelHeight/2)); // Position below icon
+
+    // Reposition text to be centered below node icon
+    labels
+        .attr("dy", nodeIconSize / 2 + 15); // Offset below icon
+}
+
 simulation.on("tick", () => {
     link.attr("d", d => {
         const sourceX = d.source.x;
         const sourceY = d.source.y;
         const targetX = d.target.x;
         const targetY = d.target.y;
-
+        const endPoint = calculatePathEndPoint(sourceX, sourceY, targetX, targetY, nodeIconSize / 2);
         const dx = targetX - sourceX;
         const dy = targetY - sourceY;
         const dr = Math.sqrt(dx * dx + dy * dy);
-
-        // Handle self-loops
-        if (dr === 0) {
-            const loopRadius = 30; // Radius of the self-loop
-            const sweepFlag = 1; // Clockwise sweep
-            return `M${sourceX},${sourceY - 9} A${loopRadius},${loopRadius} 0 1,${sweepFlag} ${sourceX + 9},${sourceY}`;
-        }
-
-        // Check for multiple links between the same nodes (including reverse direction)
-        const sameLinks = data.edges.filter(l =>
-            (l.source === d.source && l.target === d.target) ||
-            (l.source === d.target && l.target === d.source)
-        );
-
-        if (sameLinks.length > 1) {
-            let linkIndex = sameLinks.findIndex(l => l === d);
-             if (d.source !== sameLinks[0].source) {
-                linkIndex += 0.5; // Offset reverse links slightly differently
-             }
-
-            const arcScale = 0.3; // Controls the amount of curvature
-            const arcDeviation = (linkIndex - (sameLinks.length - 1) / 2) * arcScale;
-
-             const effectiveDr = Math.max(dr, 50);
-             const curveFactor = Math.sign(arcDeviation) * Math.pow(Math.abs(arcDeviation), 0.7); // Non-linear scaling
-             const curveDr = effectiveDr / (2 * Math.sin(Math.PI / 8)) * (1 + curveFactor * 0.5) ; // Adjust radius based on curve factor
-
-
-             const sweepFlag = arcDeviation > 0 ? 1 : 0;
-             const largeArcFlag = 0;
-
-            return `M${sourceX},${sourceY} A${curveDr},${curveDr} 0 ${largeArcFlag},${sweepFlag} ${targetX},${targetY}`;
-        }
-
-        // return `M${sourceX},${sourceY} L${targetX},${targetY}`; // Straight line
-         return `M${sourceX},${sourceY} A${dr},${dr} 0 0,1 ${targetX},${targetY}`; // Simple arc
+        if (dr < 10) { return `M${sourceX},${sourceY} L${endPoint.x},${endPoint.y}`; }
+        return `M${sourceX},${sourceY} A${dr},${dr*1.25} 0 0,1 ${endPoint.x},${endPoint.y}`;
     });
-
-
     node.attr("transform", d => `translate(${d.x}, ${d.y})`);
-
-    adjustLabelPositions();
-
-    linkText.each(function(d) {
-        if (d.source && d.target) { 
-            const midpoint = getMidpoint(d);
-            d3.select(this)
-                .attr("x", midpoint.x)
-                .attr("y", midpoint.y);
-
-             const bg = linkTextBg.filter(bgData => bgData === d);
-             if (!bg.empty() && d.linkLabelWidth !== undefined) {
-                const padding = 3;
-                bg.attr("x", midpoint.x - d.linkLabelWidth / 2 - padding)
-                  .attr("y", midpoint.y - d.linkLabelHeight / 2 - padding - 5); 
-             }
-        }
-    });
+    adjustLabelPositions(); // Adjust label positions on tick
 });
 
-function getMidpoint(d) {
-    const source = d.source;
-    const target = d.target;
-
-    let midX = (source.x + target.x) / 2;
-    let midY = (source.y + target.y) / 2;
-
-     if (source === target) {
-         const loopRadius = 30;
-         return { x: source.x , y: source.y - loopRadius - 10 }; 
-     }
-
-    const dx = target.x - source.x;
-    const dy = target.y - source.y;
-    const dr = Math.sqrt(dx * dx + dy * dy);
-
-     const sameLinks = data.edges.filter(l =>
-         (l.source === d.source && l.target === d.target) ||
-         (l.source === d.target && l.target === d.source)
-     );
-
-     if (sameLinks.length > 1 && dr > 0) {
-         let linkIndex = sameLinks.findIndex(l => l === d);
-          if (d.source !== sameLinks[0].source) {
-             linkIndex += 0.5;
-          }
-         const arcScale = 0.3;
-         const arcDeviation = (linkIndex - (sameLinks.length - 1) / 2) * arcScale;
-
-          const offsetX = -dy * arcDeviation * 0.5; 
-          const offsetY = dx * arcDeviation * 0.5;
-
-          midX += offsetX;
-          midY += offsetY;
-     } else if (dr > 0) {
-         const offsetAmount = 12; 
-         midX += -dy / dr * offsetAmount * 0.2;
-         midY += dx / dr * offsetAmount * 0.2 - offsetAmount * 0.8;
-     }
-
-
-    return { x: midX, y: midY - 5 }; 
+// --- Drag Behavior ---
+function drag(simulation) { /* ... (drag functions remain the same) ... */
+    function dragstarted(event, d) { if (!event.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; }
+    function dragged(event, d) { d.fx = event.x; d.fy = event.y; }
+    function dragended(event, d) { if (!event.active) simulation.alphaTarget(0); }
+    return d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended);
 }
 
-
-// Drag behavior
-function drag(simulation) {
-    function dragstarted(event, d) {
-        if (!event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-    }
-    function dragged(event, d) {
-        d.fx = event.x;
-        d.fy = event.y;
-    }
-    function dragended(event, d) {
-        if (!event.active) simulation.alphaTarget(0);
-    }
-    return d3.drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended);
-}
-
-// Function to smoothly pan and zoom to a target element (node or edge)
-function focusOnElement(d, targetScale) {
+// --- Focus Function ---
+function focusOnElement(d, targetScale) { /* ... (focusOnElement function remains the same) ... */
     let targetX, targetY;
-
-    if (d.source && d.target) { // It's an edge
-        targetX = (d.source.x + d.target.x) / 2;
-        targetY = (d.source.y + d.target.y) / 2;
-    } else { // It's a node
-        targetX = d.x;
-        targetY = d.y;
-    }
-
-    const transform = d3.zoomIdentity
-        .translate(width / 2, height / 2) // Translate to center first
-        .scale(targetScale)              // Then scale
-        .translate(-targetX, -targetY);  // Then translate target to center
-
-    svg.transition().duration(750).call(
-        zoomHandler.transform,
-        transform
-    );
+    if (d.source && d.target) { targetX = (d.source.x + d.target.x) / 2; targetY = (d.source.y + d.target.y) / 2; }
+    else { targetX = d.x; targetY = d.y; }
+    const transform = d3.zoomIdentity.translate(width / 2, height / 2).scale(targetScale).translate(-targetX, -targetY);
+    svg.transition().duration(750).call(zoomHandler.transform, transform);
 }
 
 // --- Control Buttons ---
-const buttonsContainer = d3.select("body").append("div")
-    .style("position", "fixed")
-    .style("bottom", "20px") // Position at bottom-left
-    .style("left", "10px")
-    .style("z-index", "999");
+const buttonsContainer = d3.select("body").append("div") /* ... (buttonsContainer styling) ... */
+    .style("position", "fixed").style("bottom", "20px").style("left", "10px").style("z-index", "999");
+buttonsContainer.append("button").text("Reset Layout & View").on("click", function() { /* ... (reset button logic) ... */
+    unpinTooltip(); // Unpin any tooltip on reset
+    data.nodes.forEach(d => { d.fx = null; d.fy = null; });
+    svg.transition().duration(750).call(zoomHandler.transform, d3.zoomIdentity);
+    simulation.alpha(1).restart();
+});
+buttonsContainer.append("button").text("Spread Nodes").on("click", function() { /* ... (spread button logic) ... */
+    unpinTooltip(); // Unpin any tooltip on spread
+    simulation.force("charge", d3.forceManyBody().strength(-2500).distanceMax(700)).force("collision", d3.forceCollide().radius(nodeIconSize * 2).iterations(4)).alpha(0.5).restart();
+});
 
-// Reset Layout button
-buttonsContainer.append("button")
-    .text("Reset Layout & View")
-    .on("click", function() {
-        // Clear fixed positions
-        data.nodes.forEach(d => {
-            d.fx = null;
-            d.fy = null;
-        });
+// --- SVG Background Click ---
+// Add handler to SVG background to close *pinned* tooltip
+svg.on("click", function(event) {
+    // Check if the click target is the SVG itself (and not something inside it like a node/link)
+    // Also check if the click wasn't inside the *interactive* tooltip itself
+    const isClickInsideTooltip = tooltip.classed('interactive') && tooltip.node().contains(event.target);
 
-        // Reset zoom
-        svg.transition().duration(750).call(
-            zoomHandler.transform,
-            d3.zoomIdentity // Reset to initial scale and position
-        );
+    if (event.target === this && !isClickInsideTooltip && pinnedElementData) {
+         unpinTooltip(); // Unpin if click is on background outside of tooltip
+    }
+});
 
-        // Reset forces and restart simulation
-        simulation
-            .force("link", d3.forceLink(data.edges).id(d => d.name).distance(200))
-            .force("charge", d3.forceManyBody().strength(-900).distanceMax(600))
-            .force("collision", d3.forceCollide().radius(d => 60).iterations(2))
-            .alpha(1) // Reset alpha to reheat
-            .restart();
-    });
 
-// Spread Nodes button
-buttonsContainer.append("button")
-    .text("Spread Nodes")
-    .on("click", function() {
-        // Temporarily increase repulsion and collision
-        simulation
-            .force("charge", d3.forceManyBody().strength(-2000).distanceMax(700))
-            .force("collision", d3.forceCollide().radius(d => 90).iterations(4))
-            .alpha(0.5) // Give it a boost
-            .restart();
-
-        setTimeout(() => {
-            simulation
-                .force("charge", d3.forceManyBody().strength(-900).distanceMax(600))
-                .force("collision", d3.forceCollide().radius(d => 60).iterations(2))
-                .alpha(0.3) // Keep it simmering
-                .restart();
-        }, 2500); // Revert after 2.5 seconds
-    });
-
-simulation.alpha(0.3).restart(); // Start with a bit of energy
-
-// setTimeout(() => {
-//     if (simulation.alpha() > 0.05) { // Only stop if it hasn't settled much
-//         simulation.stop();
-//     }
-// }, 3000); // Stop after 3 seconds if still active
-
+// Initial simulation start
+simulation.alpha(0.3).restart();
 
 </script>
 

@@ -1,6 +1,15 @@
 {
   "nodes": [
     {
+      "id": "End",
+      "name": "End",
+      "node_type": "End",
+      "function_name": null,
+      "docstring": null,
+      "source_location": null,
+      "metadata": {}
+    },
+    {
       "id": "FAQ Agent",
       "name": "FAQ Agent",
       "node_type": "Agent",
@@ -43,6 +52,15 @@
       "docstring": null
     },
     {
+      "id": "Start",
+      "name": "Start",
+      "node_type": "Start",
+      "function_name": null,
+      "docstring": null,
+      "source_location": null,
+      "metadata": {}
+    },
+    {
       "id": "Triage Agent",
       "name": "Triage Agent",
       "node_type": "Agent",
@@ -63,24 +81,6 @@
       },
       "function_name": null,
       "docstring": null
-    },
-    {
-      "id": "__end__",
-      "name": "End",
-      "node_type": "Special",
-      "function_name": null,
-      "docstring": null,
-      "source_location": null,
-      "metadata": {}
-    },
-    {
-      "id": "__start__",
-      "name": "Start",
-      "node_type": "Special",
-      "function_name": null,
-      "docstring": null,
-      "source_location": null,
-      "metadata": {}
     },
     {
       "id": "faq_lookup_tool",
@@ -120,7 +120,7 @@
   "edges": [
     {
       "source": "FAQ Agent",
-      "target": "__end__",
+      "target": "End",
       "edge_type": "implicit_end",
       "condition": {},
       "metadata": {}
@@ -142,7 +142,7 @@
     },
     {
       "source": "Seat Booking Agent",
-      "target": "__end__",
+      "target": "End",
       "edge_type": "implicit_end",
       "condition": {},
       "metadata": {}
@@ -161,6 +161,13 @@
           "end_col": 1
         }
       }
+    },
+    {
+      "source": "Start",
+      "target": "Triage Agent",
+      "edge_type": "implicit_start",
+      "condition": {},
+      "metadata": {}
     },
     {
       "source": "Triage Agent",
@@ -193,13 +200,6 @@
         },
         "handoff_ref": "seat_booking_agent"
       }
-    },
-    {
-      "source": "__start__",
-      "target": "Triage Agent",
-      "edge_type": "implicit_start",
-      "condition": {},
-      "metadata": {}
     }
   ]
 }

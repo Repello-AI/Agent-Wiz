@@ -18,7 +18,8 @@ class NodeType(str, Enum):
     TOOL = "Tool" 
     CUSTOM_TOOL = "CustomTool"
     PREDEFINED_TOOL = "PredefinedTool"
-    SPECIAL = "Special" 
+    START = "Start"
+    END = "End" 
 
 class ToolType(str, Enum): 
     DEFAULT = "Default"
@@ -545,9 +546,9 @@ def build_graph_json(
             else:
                  print(f"Warning: Agent '{agent_id}' handoff ref '{handoff_ref}' (->'{target_id}') not found.")
 
-    start_id, end_id = "__start__", "__end__"
-    if start_id not in processed_ids: nodes.append({"id": start_id, "name": "Start", "node_type": NodeType.SPECIAL.value}); processed_ids.add(start_id)
-    if end_id not in processed_ids: nodes.append({"id": end_id, "name": "End", "node_type": NodeType.SPECIAL.value}); processed_ids.add(end_id)
+    start_id, end_id = "Start", "End"
+    if start_id not in processed_ids: nodes.append({"id": "Start", "name": "Start", "node_type": NodeType.START.value}); processed_ids.add(start_id)
+    if end_id not in processed_ids: nodes.append({"id": "End", "name": "End", "node_type": NodeType.END.value}); processed_ids.add(end_id)
 
     runner_starts = set()
     for agent_ref, loc in start_points:
