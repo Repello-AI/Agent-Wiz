@@ -1,0 +1,283 @@
+{
+  "nodes": [
+    {
+      "name": "chief_qa_engineer_agent",
+      "function_name": "chief_qa_engineer_agent",
+      "docstring": null,
+      "node_type": "Agent",
+      "source_location": {
+        "file": "examples/code/crewai/game-builder-crew/src/game_builder_crew/crew.py",
+        "line": 28,
+        "col": 4,
+        "end_line": 33,
+        "end_col": 9
+      },
+      "metadata": {
+        "config": "self.agents_config['chief_qa_engineer_agent']",
+        "allow_delegation": true,
+        "verbose": true,
+        "config_ref": "self.agents_config['chief_qa_engineer_agent']",
+        "config_resolved": false,
+        "tools": [],
+        "is_decorator": true,
+        "class_context": "GameBuilderCrew"
+      }
+    },
+    {
+      "name": "qa_engineer_agent",
+      "function_name": "qa_engineer_agent",
+      "docstring": null,
+      "node_type": "Agent",
+      "source_location": {
+        "file": "examples/code/crewai/game-builder-crew/src/game_builder_crew/crew.py",
+        "line": 20,
+        "col": 4,
+        "end_line": 25,
+        "end_col": 9
+      },
+      "metadata": {
+        "config": "self.agents_config['qa_engineer_agent']",
+        "allow_delegation": false,
+        "verbose": true,
+        "config_ref": "self.agents_config['qa_engineer_agent']",
+        "config_resolved": false,
+        "tools": [],
+        "is_decorator": true,
+        "class_context": "GameBuilderCrew"
+      }
+    },
+    {
+      "name": "senior_engineer_agent",
+      "function_name": "senior_engineer_agent",
+      "docstring": null,
+      "node_type": "Agent",
+      "source_location": {
+        "file": "examples/code/crewai/game-builder-crew/src/game_builder_crew/crew.py",
+        "line": 12,
+        "col": 4,
+        "end_line": 17,
+        "end_col": 9
+      },
+      "metadata": {
+        "config": "self.agents_config['senior_engineer_agent']",
+        "allow_delegation": false,
+        "verbose": true,
+        "config_ref": "self.agents_config['senior_engineer_agent']",
+        "config_resolved": false,
+        "tools": [],
+        "is_decorator": true,
+        "class_context": "GameBuilderCrew"
+      }
+    },
+    {
+      "name": "code_task",
+      "function_name": "code_task",
+      "docstring": null,
+      "node_type": "Generic",
+      "source_location": {
+        "file": "examples/code/crewai/game-builder-crew/src/game_builder_crew/crew.py",
+        "line": 37,
+        "col": 4,
+        "end_line": 41,
+        "end_col": 9
+      },
+      "metadata": {
+        "config": "self.tasks_config['code_task']",
+        "agent": "senior_engineer_agent",
+        "config_ref": "self.tasks_config['code_task']",
+        "config_resolved": false,
+        "context": [],
+        "output_ref": null,
+        "is_decorator": true,
+        "class_context": "GameBuilderCrew",
+        "dependencies": []
+      }
+    },
+    {
+      "name": "evaluate_task",
+      "function_name": "evaluate_task",
+      "docstring": null,
+      "node_type": "Generic",
+      "source_location": {
+        "file": "examples/code/crewai/game-builder-crew/src/game_builder_crew/crew.py",
+        "line": 52,
+        "col": 4,
+        "end_line": 56,
+        "end_col": 9
+      },
+      "metadata": {
+        "config": "self.tasks_config['evaluate_task']",
+        "agent": "chief_qa_engineer_agent",
+        "config_ref": "self.tasks_config['evaluate_task']",
+        "config_resolved": false,
+        "context": [],
+        "output_ref": null,
+        "is_decorator": true,
+        "class_context": "GameBuilderCrew",
+        "dependencies": []
+      }
+    },
+    {
+      "name": "review_task",
+      "function_name": "review_task",
+      "docstring": null,
+      "node_type": "Generic",
+      "source_location": {
+        "file": "examples/code/crewai/game-builder-crew/src/game_builder_crew/crew.py",
+        "line": 44,
+        "col": 4,
+        "end_line": 49,
+        "end_col": 9
+      },
+      "metadata": {
+        "config": "self.tasks_config['review_task']",
+        "agent": "qa_engineer_agent",
+        "config_ref": "self.tasks_config['review_task']",
+        "config_resolved": false,
+        "context": [],
+        "output_ref": null,
+        "is_decorator": true,
+        "class_context": "GameBuilderCrew",
+        "dependencies": []
+      }
+    },
+    {
+      "name": "__end__",
+      "function_name": null,
+      "docstring": null,
+      "node_type": "Special",
+      "source_location": null,
+      "metadata": {}
+    },
+    {
+      "name": "__start__",
+      "function_name": null,
+      "docstring": null,
+      "node_type": "Special",
+      "source_location": null,
+      "metadata": {}
+    }
+  ],
+  "edges": [
+    {
+      "source": "__start__",
+      "target": "code_task",
+      "condition": {
+        "type": "entry_point"
+      },
+      "metadata": {
+        "crew_name": "GameBuilderCrew",
+        "process_type": "sequential",
+        "definition_location": {
+          "file": "examples/code/crewai/game-builder-crew/src/game_builder_crew/crew.py",
+          "line": 59,
+          "col": 4,
+          "end_line": 66,
+          "end_col": 9
+        }
+      }
+    },
+    {
+      "source": "chief_qa_engineer_agent",
+      "target": "evaluate_task",
+      "condition": {
+        "type": "assignment"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "examples/code/crewai/game-builder-crew/src/game_builder_crew/crew.py",
+          "line": 52,
+          "col": 4,
+          "end_line": 56,
+          "end_col": 9
+        }
+      }
+    },
+    {
+      "source": "code_task",
+      "target": "review_task",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "crew_name": "GameBuilderCrew",
+        "process_type": "sequential",
+        "definition_location": {
+          "file": "examples/code/crewai/game-builder-crew/src/game_builder_crew/crew.py",
+          "line": 59,
+          "col": 4,
+          "end_line": 66,
+          "end_col": 9
+        }
+      }
+    },
+    {
+      "source": "evaluate_task",
+      "target": "__end__",
+      "condition": {
+        "type": "finish_point"
+      },
+      "metadata": {
+        "crew_name": "GameBuilderCrew",
+        "process_type": "sequential",
+        "definition_location": {
+          "file": "examples/code/crewai/game-builder-crew/src/game_builder_crew/crew.py",
+          "line": 59,
+          "col": 4,
+          "end_line": 66,
+          "end_col": 9
+        }
+      }
+    },
+    {
+      "source": "qa_engineer_agent",
+      "target": "review_task",
+      "condition": {
+        "type": "assignment"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "examples/code/crewai/game-builder-crew/src/game_builder_crew/crew.py",
+          "line": 44,
+          "col": 4,
+          "end_line": 49,
+          "end_col": 9
+        }
+      }
+    },
+    {
+      "source": "review_task",
+      "target": "evaluate_task",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "crew_name": "GameBuilderCrew",
+        "process_type": "sequential",
+        "definition_location": {
+          "file": "examples/code/crewai/game-builder-crew/src/game_builder_crew/crew.py",
+          "line": 59,
+          "col": 4,
+          "end_line": 66,
+          "end_col": 9
+        }
+      }
+    },
+    {
+      "source": "senior_engineer_agent",
+      "target": "code_task",
+      "condition": {
+        "type": "assignment"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "examples/code/crewai/game-builder-crew/src/game_builder_crew/crew.py",
+          "line": 37,
+          "col": 4,
+          "end_line": 41,
+          "end_col": 9
+        }
+      }
+    }
+  ]
+}

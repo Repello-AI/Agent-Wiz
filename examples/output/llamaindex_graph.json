@@ -1,0 +1,229 @@
+{
+    "nodes": [
+        {
+            "name": "__start__",
+            "function_name": null,
+            "node_type": "Special",
+            "docstring": null,
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "__end__",
+            "function_name": null,
+            "node_type": "Special",
+            "docstring": null,
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "ResearchAgent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {
+                "inherits": [
+                    "FunctionAgent"
+                ]
+            }
+        },
+        {
+            "name": "ResearchAgent_search_web",
+            "function_name": "search_web",
+            "docstring": "Useful for using the web to answer questions.",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/llama_index/llama_index.py",
+                "line": 20,
+                "col": 0,
+                "end_line": 23,
+                "end_col": 42
+            },
+            "metadata": {}
+        },
+        {
+            "name": "ResearchAgent_record_notes",
+            "function_name": "record_notes",
+            "docstring": "Useful for recording notes on a given topic. Your input should be notes with a title to save the notes under.",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/llama_index/llama_index.py",
+                "line": 26,
+                "col": 0,
+                "end_line": 33,
+                "end_col": 28
+            },
+            "metadata": {}
+        },
+        {
+            "name": "WriteAgent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {
+                "inherits": [
+                    "FunctionAgent"
+                ]
+            }
+        },
+        {
+            "name": "WriteAgent_write_report",
+            "function_name": "write_report",
+            "docstring": "Useful for writing a report on a given topic. Your input should be a markdown formatted report.",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/llama_index/llama_index.py",
+                "line": 36,
+                "col": 0,
+                "end_line": 41,
+                "end_col": 28
+            },
+            "metadata": {}
+        },
+        {
+            "name": "ReviewAgent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {
+                "inherits": [
+                    "FunctionAgent"
+                ]
+            }
+        },
+        {
+            "name": "ReviewAgent_review_report",
+            "function_name": "review_report",
+            "docstring": "Useful for reviewing a report and providing feedback. Your input should be a review of the report.",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/llama_index/llama_index.py",
+                "line": 44,
+                "col": 0,
+                "end_line": 49,
+                "end_col": 29
+            },
+            "metadata": {}
+        }
+    ],
+    "edges": [
+        {
+            "source": "__start__",
+            "target": "ResearchAgent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "ResearchAgent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "ResearchAgent",
+            "target": "ResearchAgent_search_web",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "ResearchAgent",
+            "target": "ResearchAgent_record_notes",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "WriteAgent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "WriteAgent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "WriteAgent",
+            "target": "WriteAgent_write_report",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "ReviewAgent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "ReviewAgent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "ReviewAgent",
+            "target": "ReviewAgent_review_report",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "ResearchAgent",
+            "target": "WriteAgent",
+            "condition": {
+                "type": "handoff"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "WriteAgent",
+            "target": "ReviewAgent",
+            "condition": {
+                "type": "handoff"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "WriteAgent",
+            "target": "ResearchAgent",
+            "condition": {
+                "type": "handoff"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "ReviewAgent",
+            "target": "WriteAgent",
+            "condition": {
+                "type": "handoff"
+            },
+            "metadata": {}
+        }
+    ],
+    "metadata": {
+        "framework": "LlamaIndex"
+    }
+}

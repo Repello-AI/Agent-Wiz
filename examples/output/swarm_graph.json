@@ -1,0 +1,735 @@
+{
+    "framework": "OpenAI Swarm",
+    "nodes": [
+        {
+            "name": "__start__",
+            "function_name": null,
+            "node_type": "Special",
+            "docstring": null,
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "__end__",
+            "function_name": null,
+            "node_type": "Special",
+            "docstring": null,
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "Refunds Agent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {
+                "inherits": [
+                    "Agent"
+                ]
+            }
+        },
+        {
+            "name": "Refunds Agent_refund_item",
+            "function_name": "refund_item",
+            "docstring": "Initiate a refund based on the user ID and item ID.\nTakes as input arguments in the format '{\"user_id\":\"1\",\"item_id\":\"3\"}'",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/swarm/swarm.py",
+                "line": 10,
+                "col": 0,
+                "end_line": 29,
+                "end_col": 29
+            },
+            "metadata": {}
+        },
+        {
+            "name": "Refunds Agent_notify_customer",
+            "function_name": "notify_customer",
+            "docstring": "Notify a customer by their preferred method of either phone or email.\nTakes as input arguments in the format '{\"user_id\":\"1\",\"method\":\"email\"}'",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/swarm/swarm.py",
+                "line": 32,
+                "col": 0,
+                "end_line": 55,
+                "end_col": 46
+            },
+            "metadata": {}
+        },
+        {
+            "name": "Sales Agent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {
+                "inherits": [
+                    "Agent"
+                ]
+            }
+        },
+        {
+            "name": "Sales Agent_order_item",
+            "function_name": "order_item",
+            "docstring": "Place an order for a product based on the user ID and product ID.\nTakes as input arguments in the format '{\"user_id\":\"1\",\"product_id\":\"2\"}'",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/swarm/swarm.py",
+                "line": 58,
+                "col": 0,
+                "end_line": 82,
+                "end_col": 49
+            },
+            "metadata": {}
+        },
+        {
+            "name": "Sales Agent_notify_customer",
+            "function_name": "notify_customer",
+            "docstring": "Notify a customer by their preferred method of either phone or email.\nTakes as input arguments in the format '{\"user_id\":\"1\",\"method\":\"email\"}'",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/swarm/swarm.py",
+                "line": 32,
+                "col": 0,
+                "end_line": 55,
+                "end_col": 46
+            },
+            "metadata": {}
+        },
+        {
+            "name": "Sales Triage Agent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {
+                "inherits": [
+                    "create_triage_agent"
+                ]
+            }
+        },
+        {
+            "name": "Triage Agent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {
+                "inherits": [
+                    "Agent"
+                ]
+            }
+        },
+        {
+            "name": "Triage Agent_transfer_to_flight_modification",
+            "function_name": "transfer_to_flight_modification",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/swarm/airline/configs/agents.py",
+                "line": 9,
+                "col": 0,
+                "end_line": 10,
+                "end_col": 30
+            },
+            "metadata": {}
+        },
+        {
+            "name": "Triage Agent_transfer_to_lost_baggage",
+            "function_name": "transfer_to_lost_baggage",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/swarm/airline/configs/agents.py",
+                "line": 21,
+                "col": 0,
+                "end_line": 22,
+                "end_col": 23
+            },
+            "metadata": {}
+        },
+        {
+            "name": "Flight Modification Agent",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {
+                "inherits": [
+                    "Agent"
+                ]
+            }
+        },
+        {
+            "name": "Flight Modification Agent_transfer_to_flight_cancel",
+            "function_name": "transfer_to_flight_cancel",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/swarm/airline/configs/agents.py",
+                "line": 13,
+                "col": 0,
+                "end_line": 14,
+                "end_col": 24
+            },
+            "metadata": {}
+        },
+        {
+            "name": "Flight Modification Agent_transfer_to_flight_change",
+            "function_name": "transfer_to_flight_change",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/swarm/airline/configs/agents.py",
+                "line": 17,
+                "col": 0,
+                "end_line": 18,
+                "end_col": 24
+            },
+            "metadata": {}
+        },
+        {
+            "name": "Flight cancel traversal",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {
+                "inherits": [
+                    "Agent"
+                ]
+            }
+        },
+        {
+            "name": "Flight cancel traversal_escalate_to_agent",
+            "function_name": "escalate_to_agent",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "Flight cancel traversal_initiate_refund",
+            "function_name": "initiate_refund",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "Flight cancel traversal_initiate_flight_credits",
+            "function_name": "initiate_flight_credits",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "Flight cancel traversal_transfer_to_triage",
+            "function_name": "transfer_to_triage",
+            "docstring": "Call this function when a user needs to be transferred to a different agent and a different policy.\nFor instance, if a user is asking about a topic that is not handled by the current agent, call this function.",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/swarm/airline/configs/agents.py",
+                "line": 25,
+                "col": 0,
+                "end_line": 29,
+                "end_col": 23
+            },
+            "metadata": {}
+        },
+        {
+            "name": "Flight cancel traversal_case_resolved",
+            "function_name": "case_resolved",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "Flight change traversal",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {
+                "inherits": [
+                    "Agent"
+                ]
+            }
+        },
+        {
+            "name": "Flight change traversal_escalate_to_agent",
+            "function_name": "escalate_to_agent",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "Flight change traversal_change_flight",
+            "function_name": "change_flight",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "Flight change traversal_valid_to_change_flight",
+            "function_name": "valid_to_change_flight",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "Flight change traversal_transfer_to_triage",
+            "function_name": "transfer_to_triage",
+            "docstring": "Call this function when a user needs to be transferred to a different agent and a different policy.\nFor instance, if a user is asking about a topic that is not handled by the current agent, call this function.",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/swarm/airline/configs/agents.py",
+                "line": 25,
+                "col": 0,
+                "end_line": 29,
+                "end_col": 23
+            },
+            "metadata": {}
+        },
+        {
+            "name": "Flight change traversal_case_resolved",
+            "function_name": "case_resolved",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "Lost baggage traversal",
+            "function_name": "Assistant",
+            "docstring": null,
+            "node_type": "Generic",
+            "source_location": null,
+            "metadata": {
+                "inherits": [
+                    "Agent"
+                ]
+            }
+        },
+        {
+            "name": "Lost baggage traversal_escalate_to_agent",
+            "function_name": "escalate_to_agent",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "Lost baggage traversal_initiate_baggage_search",
+            "function_name": "initiate_baggage_search",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": null,
+            "metadata": {}
+        },
+        {
+            "name": "Lost baggage traversal_transfer_to_triage",
+            "function_name": "transfer_to_triage",
+            "docstring": "Call this function when a user needs to be transferred to a different agent and a different policy.\nFor instance, if a user is asking about a topic that is not handled by the current agent, call this function.",
+            "node_type": "Tool",
+            "source_location": {
+                "file": "examples/swarm/airline/configs/agents.py",
+                "line": 25,
+                "col": 0,
+                "end_line": 29,
+                "end_col": 23
+            },
+            "metadata": {}
+        },
+        {
+            "name": "Lost baggage traversal_case_resolved",
+            "function_name": "case_resolved",
+            "docstring": null,
+            "node_type": "Tool",
+            "source_location": null,
+            "metadata": {}
+        }
+    ],
+    "edges": [
+        {
+            "source": "__start__",
+            "target": "Refunds Agent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Refunds Agent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Refunds Agent",
+            "target": "Refunds Agent_refund_item",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Refunds Agent",
+            "target": "Refunds Agent_notify_customer",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "Sales Agent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Sales Agent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Sales Agent",
+            "target": "Sales Agent_order_item",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Sales Agent",
+            "target": "Sales Agent_notify_customer",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "Sales Triage Agent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Sales Triage Agent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Sales Triage Agent",
+            "target": "Sales Agent",
+            "condition": {
+                "type": "route"
+            },
+            "metadata": {
+                "via": "create_triage_agent"
+            }
+        },
+        {
+            "source": "Sales Triage Agent",
+            "target": "Refunds Agent",
+            "condition": {
+                "type": "route"
+            },
+            "metadata": {
+                "via": "create_triage_agent"
+            }
+        },
+        {
+            "source": "__start__",
+            "target": "Triage Agent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Triage Agent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "Flight Modification Agent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Flight Modification Agent",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "Flight cancel traversal",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Flight cancel traversal",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Flight cancel traversal",
+            "target": "Flight cancel traversal_escalate_to_agent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Flight cancel traversal",
+            "target": "Flight cancel traversal_initiate_refund",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Flight cancel traversal",
+            "target": "Flight cancel traversal_initiate_flight_credits",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Flight cancel traversal",
+            "target": "Flight cancel traversal_transfer_to_triage",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Flight cancel traversal",
+            "target": "Flight cancel traversal_case_resolved",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "Flight change traversal",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Flight change traversal",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Flight change traversal",
+            "target": "Flight change traversal_escalate_to_agent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Flight change traversal",
+            "target": "Flight change traversal_change_flight",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Flight change traversal",
+            "target": "Flight change traversal_valid_to_change_flight",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Flight change traversal",
+            "target": "Flight change traversal_transfer_to_triage",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Flight change traversal",
+            "target": "Flight change traversal_case_resolved",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "__start__",
+            "target": "Lost baggage traversal",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Lost baggage traversal",
+            "target": "__end__",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Lost baggage traversal",
+            "target": "Lost baggage traversal_escalate_to_agent",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Lost baggage traversal",
+            "target": "Lost baggage traversal_initiate_baggage_search",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Lost baggage traversal",
+            "target": "Lost baggage traversal_case_resolved",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Triage Agent",
+            "target": "Triage Agent_transfer_to_flight_modification",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Triage Agent_transfer_to_flight_modification",
+            "target": "Flight Modification Agent",
+            "condition": {
+                "type": "route"
+            },
+            "metadata": {
+                "via": "function_return"
+            }
+        },
+        {
+            "source": "Flight Modification Agent",
+            "target": "Flight Modification Agent_transfer_to_flight_cancel",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Flight Modification Agent_transfer_to_flight_cancel",
+            "target": "Flight cancel traversal",
+            "condition": {
+                "type": "route"
+            },
+            "metadata": {
+                "via": "function_return"
+            }
+        },
+        {
+            "source": "Flight Modification Agent",
+            "target": "Flight Modification Agent_transfer_to_flight_change",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Flight Modification Agent_transfer_to_flight_change",
+            "target": "Flight change traversal",
+            "condition": {
+                "type": "route"
+            },
+            "metadata": {
+                "via": "function_return"
+            }
+        },
+        {
+            "source": "Triage Agent",
+            "target": "Triage Agent_transfer_to_lost_baggage",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Triage Agent_transfer_to_lost_baggage",
+            "target": "Lost baggage traversal",
+            "condition": {
+                "type": "route"
+            },
+            "metadata": {
+                "via": "function_return"
+            }
+        },
+        {
+            "source": "Lost baggage traversal",
+            "target": "Lost baggage traversal_transfer_to_triage",
+            "condition": {
+                "type": "static"
+            },
+            "metadata": {}
+        },
+        {
+            "source": "Lost baggage traversal_transfer_to_triage",
+            "target": "Triage Agent",
+            "condition": {
+                "type": "route"
+            },
+            "metadata": {
+                "via": "function_return"
+            }
+        }
+    ]
+}

@@ -1,0 +1,160 @@
+{
+  "nodes": [
+    {
+      "name": "extraction_agent",
+      "function_name": "extraction_agent",
+      "docstring": null,
+      "description": "Extract all the flight details from the given text.",
+      "node_type": "Agent",
+      "location": "examples/code/pydantic/flight/flight_booking.py:52:0",
+      "metadata": {
+        "result_type": "list[FlightDetails]",
+        "system_prompt": "Extract all the flight details from the given text.",
+        "model": "openai:gpt-4o",
+        "deps_type": null,
+        "tools": []
+      }
+    },
+    {
+      "name": "search_agent",
+      "function_name": "search_agent",
+      "docstring": null,
+      "description": "Your job is to find the cheapest flight for the user on the given date. ",
+      "node_type": "Agent",
+      "location": "examples/code/pydantic/flight/flight_booking.py:40:0",
+      "metadata": {
+        "result_type": "FlightDetails | NoFlightFound",
+        "retries": 4,
+        "system_prompt": "Your job is to find the cheapest flight for the user on the given date. ",
+        "instrument": true,
+        "model": "openai:gpt-4o",
+        "deps_type": null,
+        "tools": [
+          "extract_flights"
+        ]
+      }
+    },
+    {
+      "name": "seat_preference_agent",
+      "function_name": "seat_preference_agent",
+      "docstring": null,
+      "description": "Extract the user's seat preference. Seats A and F are window seats. Row 1 is the front row and has extra leg room. Rows 14, and 20 also have extra leg room. ",
+      "node_type": "Agent",
+      "location": "examples/code/pydantic/flight/flight_booking.py:104:0",
+      "metadata": {
+        "result_type": "SeatPreference | Failed",
+        "system_prompt": "Extract the user's seat preference. Seats A and F are window seats. Row 1 is the front row and has extra leg room. Rows 14, and 20 also have extra leg room. ",
+        "model": "openai:gpt-4o",
+        "deps_type": null,
+        "tools": []
+      }
+    },
+    {
+      "name": "End",
+      "function_name": null,
+      "docstring": null,
+      "description": "Application Exit Point",
+      "node_type": "End",
+      "location": "system",
+      "metadata": {}
+    },
+    {
+      "name": "find_seat",
+      "function_name": "find_seat",
+      "docstring": null,
+      "description": "Function orchestrating agent calls",
+      "node_type": "Orchestrator",
+      "location": "examples/code/pydantic/flight/flight_booking.py:211:0",
+      "metadata": {
+        "calls": [
+          "seat_preference_agent"
+        ]
+      }
+    },
+    {
+      "name": "main",
+      "function_name": "main",
+      "docstring": null,
+      "description": "Function orchestrating agent calls",
+      "node_type": "Orchestrator",
+      "location": "examples/code/pydantic/flight/flight_booking.py:172:0",
+      "metadata": {
+        "calls": [
+          "search_agent"
+        ]
+      }
+    },
+    {
+      "name": "Start",
+      "function_name": null,
+      "docstring": null,
+      "description": "Application Entry Point",
+      "node_type": "Start",
+      "location": "system",
+      "metadata": {}
+    },
+    {
+      "name": "extract_flights",
+      "function_name": "extract_flights",
+      "docstring": "Get details of all flights.",
+      "description": "Get details of all flights.",
+      "node_type": "Tool",
+      "location": "examples/code/pydantic/flight/flight_booking.py:60:0",
+      "metadata": {
+        "agent": "search_agent"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "Start",
+      "target": "main",
+      "condition": "initiates",
+      "metadata": {
+        "definition_location": "entry_point_detection"
+      }
+    },
+    {
+      "source": "find_seat",
+      "target": "seat_preference_agent",
+      "condition": "calls agent",
+      "metadata": {
+        "definition_location": "examples/code/pydantic/flight/flight_booking.py:216:23"
+      }
+    },
+    {
+      "source": "main",
+      "target": "End",
+      "condition": "terminates",
+      "metadata": {
+        "definition_location": "entry_point_detection"
+      }
+    },
+    {
+      "source": "main",
+      "target": "search_agent",
+      "condition": "calls agent",
+      "metadata": {
+        "definition_location": "examples/code/pydantic/flight/flight_booking.py:183:23"
+      }
+    },
+    {
+      "source": "search_agent",
+      "target": "extract_flights",
+      "condition": "defines tool",
+      "metadata": {
+        "agent_definition": "examples/code/pydantic/flight/flight_booking.py:40:0",
+        "definition_location": "examples/code/pydantic/flight/flight_booking.py:60:0"
+      }
+    },
+    {
+      "source": "search_agent",
+      "target": "extraction_agent",
+      "condition": "calls agent",
+      "metadata": {
+        "via_tool": "extract_flights",
+        "definition_location": "examples/code/pydantic/flight/flight_booking.py:63:19"
+      }
+    }
+  ]
+}
