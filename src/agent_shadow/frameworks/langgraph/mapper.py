@@ -211,11 +211,11 @@ class FunctionAnalyzer(ast.NodeVisitor):
 
 
         def add_target(target_str: str, status: str, type_: str, detail: Optional[str]):
-            actual_target = "__end__" if target_str == "END" else target_str
+            actual_target = "End" if target_str == "END" else target_str
             if actual_target:
                 targets[actual_target] = {"status": status, "type": type_, "detail": detail}
-                if actual_target == "__end__":
-                     self.outer_visitor._add_node_if_not_exists("__end__", "Implicit END node", {}, None)
+                if actual_target == "End":
+                     self.outer_visitor._add_node_if_not_exists("End", "Implicit END node", {}, None)
 
         if isinstance(value_node, ast.Constant) and isinstance(value_node.value, str):
             add_target(value_node.value, "resolved_literal", "literal", None)
@@ -373,7 +373,7 @@ class GraphVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def _add_node_if_not_exists(self, name, function_name, metadata, location_dict):
-        node_name_to_add = "__start__" if name == "START" else "__end__" if name == "END" else name
+        node_name_to_add = "Start" if name == "START" else "End" if name == "END" else name
         is_implicit = name in ["START", "END" , "__start__" , "__end__"]
         if node_name_to_add not in self.node_names:
             node_data = {
@@ -405,8 +405,8 @@ class GraphVisitor(ast.NodeVisitor):
 
             self.nodes.append(node_data)
             self.node_names.add(node_name_to_add)
-            if node_name_to_add == "__start__": self.has_start = True
-            if node_name_to_add == "__end__": self.has_end = True
+            if node_name_to_add == "Start": self.has_start = True
+            if node_name_to_add == "End": self.has_end = True
 
 
     def _classify_node(self, node_name: str, function_name: Optional[str], func_def: Optional[Union[ast.FunctionDef, ast.AsyncFunctionDef]]) -> str:
@@ -416,7 +416,9 @@ class GraphVisitor(ast.NodeVisitor):
         check_func = function_name.lower() if function_name else ""
         combined_check = f"{check_name} {check_func}".strip()
 
-        if check_name in ["input", "input_node", "__start__", "start", "entry", "entry_point"]:
+        if check_name in ["start", "start_node", "__start__", "begin", "begin_node"]:
+            return "Start"
+        if check_name in ["input", "input_node", "entry", "entry_point"]:
             return "Input"
         if check_name in ["output", "output_node", "__end__", "end", "finish", "exit", "finish_point"]:
             return "Output"
@@ -553,14 +555,14 @@ class GraphVisitor(ast.NodeVisitor):
         if source is None and len(pos_args) >= 1: source = self.extract_argument_value(pos_args[0])
         if target is None and len(pos_args) >= 2: target = self.extract_argument_value(pos_args[1])
 
-        if source == "__start__": self._add_node_if_not_exists("START", None, {}, None)
-        if target == "__end__": self._add_node_if_not_exists("END", None, {}, None)
+        if source == "Start": self._add_node_if_not_exists("START", None, {}, None)
+        if target == "End": self._add_node_if_not_exists("END", None, {}, None)
 
         if source and target:
              sources = source if isinstance(source, list) else [source]
              for s_item in sources:
-                 s_item_norm = "__start__" if s_item == "START" else s_item
-                 if s_item_norm == "__start__": self._add_node_if_not_exists("START", None, {}, None)
+                 s_item_norm = "Start" if s_item == "START" else s_item
+                 if s_item_norm == "Start": self._add_node_if_not_exists("START", None, {}, None)
                  if s_item_norm and target:
                      self.edges.append({
                          "source": s_item_norm,
@@ -637,7 +639,7 @@ class GraphVisitor(ast.NodeVisitor):
                 for key_node, value_node in zip(resolved_path_map.keys, resolved_path_map.values):
                     condition_val = self.extract_argument_value(key_node)
                     target_val = self.extract_argument_value(value_node)
-                    if target_val == "__end__": self._add_node_if_not_exists("END", None, {}, None)
+                    if target_val == "End": self._add_node_if_not_exists("END", None, {}, None)
                     if condition_val is not None and target_val:
                         self.edges.append({
                             "source": source, "target": target_val,
@@ -652,7 +654,7 @@ class GraphVisitor(ast.NodeVisitor):
             elif isinstance(resolved_path_map, ast.List):
                  for element_node in resolved_path_map.elts:
                      target_val = self.extract_argument_value(element_node)
-                     if target_val == "__end__": self._add_node_if_not_exists("END", None, {}, None)
+                     if target_val == "End": self._add_node_if_not_exists("END", None, {}, None)
                      if target_val:
                           self.edges.append({
                               "source": source, "target": target_val,
@@ -694,7 +696,7 @@ class GraphVisitor(ast.NodeVisitor):
                      })
 
                  for target in possible_targets:
-                     if target == "__end__": self._add_node_if_not_exists("END", None, {}, None)
+                     if target == "End": self._add_node_if_not_exists("END", None, {}, None)
                      if target:
                         self.edges.append({
                             "source": source, "target": target,
@@ -756,7 +758,7 @@ class GraphVisitor(ast.NodeVisitor):
         if target:
             self._add_node_if_not_exists("START", None, {}, None)
             self.edges.append({
-                "source": "__start__",
+                "source": "Start",
                 "target": target,
                 "condition": {"type": "entry_point"},
                 "metadata": {"definition_location": location}
@@ -769,7 +771,7 @@ class GraphVisitor(ast.NodeVisitor):
          pos_args = node.args
          kw_args = {kw.arg: kw.value for kw in node.keywords if kw.arg}
          location = self._get_location_dict(node)
-         source = "__start__"
+         source = "Start"
 
          self._add_node_if_not_exists("START", None, {}, None)
 
@@ -807,12 +809,12 @@ class GraphVisitor(ast.NodeVisitor):
                  for key_node, value_node in zip(resolved_path_map.keys, resolved_path_map.values):
                       condition_val = self.extract_argument_value(key_node)
                       target_val = self.extract_argument_value(value_node)
-                      if target_val == "__end__": self._add_node_if_not_exists("END", None, {}, None)
+                      if target_val == "End": self._add_node_if_not_exists("END", None, {}, None)
                       if condition_val is not None and target_val: self.edges.append({"source": source, "target": target_val, "condition": {"type": "conditional_entry_map", "value": condition_val, "condition_function": path_func_name, "resolution": {"status": resolution_status, "detail": map_source_detail}}, "metadata": {"definition_location": location}})
             elif isinstance(resolved_path_map, ast.List):
                   for element_node in resolved_path_map.elts:
                        target_val = self.extract_argument_value(element_node)
-                       if target_val == "__end__": self._add_node_if_not_exists("END", None, {}, None)
+                       if target_val == "End": self._add_node_if_not_exists("END", None, {}, None)
                        if target_val: self.edges.append({"source": source, "target": target_val, "condition": {"type": "conditional_entry_map_list", "value": None, "condition_function": path_func_name, "resolution": {"status": resolution_status, "detail": map_source_detail}}, "metadata": {"definition_location": location}})
 
          elif path_func_name:
@@ -826,7 +828,7 @@ class GraphVisitor(ast.NodeVisitor):
                       self.edges.append({"source": source, "target": "?", "condition": {"type": "conditional_entry_func", "value": None, "condition_function": path_func_name, "resolution": {"status": "unresolved_function_analysis", "detail": detail}}, "metadata": {"definition_location": location}})
                  elif not possible_targets: self.edges.append({"source": source, "target": "?", "condition": {"type": "conditional_entry_func", "value": None, "condition_function": path_func_name, "resolution": {"status": "unresolved_no_returns"}}, "metadata": {"definition_location": location}})
                  for target in possible_targets:
-                      if target == "__end__": self._add_node_if_not_exists("END", None, {}, None)
+                      if target == "End": self._add_node_if_not_exists("END", None, {}, None)
                       if target: self.edges.append({"source": source, "target": target, "condition": {"type": "conditional_entry_func", "value": target, "condition_function": path_func_name, "resolution": {"status": "resolved"}}, "metadata": {"definition_location": location, "potential_return": True}})
             else: self.edges.append({"source": source, "target": "?", "condition": {"type": "conditional_entry_func", "value": None, "condition_function": path_func_name, "resolution": {"status": "unresolved_function_not_found"}}, "metadata": {"definition_location": location}})
          else: print(f"Warning: Insufficient arguments for set_conditional_entry_point at {location}.")
@@ -843,7 +845,7 @@ class GraphVisitor(ast.NodeVisitor):
             self._add_node_if_not_exists("END", None, {}, None)
             self.edges.append({
                 "source": source,
-                "target": "__end__",
+                "target": "End",
                 "condition": {"type": "finish_point"},
                 "metadata": {"definition_location": location}
             })
@@ -853,12 +855,12 @@ class GraphVisitor(ast.NodeVisitor):
     def extract_argument_value(self, arg: ast.AST) -> Any:
         if isinstance(arg, ast.Constant):
             value = arg.value
-            if value == "START": return "__start__"
-            if value == "END": return "__end__"
+            if value == "START": return "Start"
+            if value == "END": return "End"
             return value
         elif isinstance(arg, ast.Name):
-            if arg.id == "START": return "__start__"
-            if arg.id == "END": return "__end__"
+            if arg.id == "START": return "Start"
+            if arg.id == "END": return "End"
             if arg.id in self.variable_values:
                  return self.extract_argument_value(self.variable_values[arg.id])
             return arg.id
@@ -871,8 +873,8 @@ class GraphVisitor(ast.NodeVisitor):
                  return f"<Dict: {self._stringify_ast_node(arg)}>"
         elif isinstance(arg, ast.Attribute):
              fqn = get_func_name(arg)
-             if fqn.endswith(".START"): return "__start__"
-             if fqn.endswith(".END"): return "__end__"
+             if fqn.endswith(".START"): return "Start"
+             if fqn.endswith(".END"): return "End"
              return fqn
         elif isinstance(arg, ast.Call):
             fqn = get_func_name(arg.func)
@@ -906,7 +908,7 @@ class GraphVisitor(ast.NodeVisitor):
                              "source": node_name,
                              "target": target,
                              "condition": {
-                                 "type": "exit_point" if target == "__end__" else "entry_point" if target == "__start__" else "dynamic_goto"
+                                 "type": "exit_point" if target == "End" else "entry_point" if target == "Start" else "dynamic_goto"
                                 #  "value": None,
                                 #  "resolution": resolution_info
                              },
@@ -933,7 +935,7 @@ class GraphVisitor(ast.NodeVisitor):
                 #          })
                 #          analyzed_signatures.add(edge_signature)
             else:
-                if node_name not in ["__start__", "__end__"]:
+                if node_name not in ["Start", "End"]:
                     print(f"  Warning: Function '{function_name}' mapped to node '{node_name}' not found in definitions.")
 
 
