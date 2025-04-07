@@ -116,8 +116,8 @@ def build_graph_data(visitor):
             "metadata": {"inherits": agent_data["inherits"]}
         })
 
-        edges.append({"source": "__start__", "target": agent_name, "condition": {"type": "static"}, "metadata": {}})
-        edges.append({"source": agent_name, "target": "__end__", "condition": {"type": "static"}, "metadata": {}})
+        edges.append({"source": "Start", "target": agent_name, "condition": {"type": "static"}, "metadata": {}})
+        edges.append({"source": agent_name, "target": "End", "condition": {"type": "static"}, "metadata": {}})
 
         for func_name in agent_data["tools"]:
             tool_meta = visitor.functions.get(func_name, {})
@@ -238,9 +238,9 @@ def extract_swarm_graph(directory, output_file):
 
     all_nodes, all_edges = [], []
 
-    # Add a single shared __start__ and __end__ node
-    all_nodes.insert(0, {"name": "__start__", "function_name": None, "node_type": "Special", "docstring": None, "source_location": None, "metadata": {}})
-    all_nodes.append({"name": "__end__", "function_name": None, "node_type": "Special", "docstring": None, "source_location": None, "metadata": {}})
+    # Add a single shared Start and End node
+    all_nodes.insert(0, {"name": "Start", "function_name": None, "node_type": "Special", "docstring": None, "source_location": None, "metadata": {}})
+    all_nodes.append({"name": "End", "function_name": None, "node_type": "Special", "docstring": None, "source_location": None, "metadata": {}})
 
     for visitor in visitors:
         graph = build_graph_data(visitor)

@@ -143,8 +143,8 @@ def build_graph_data(visitor):
     nodes = []
     edges = []
 
-    start = "__start__"
-    end = "__end__"
+    start = "Start"
+    end = "End"
 
     nodes.append({
         "name": start,

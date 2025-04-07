@@ -622,9 +622,9 @@ class CrewAIStructureExtractor(ast.NodeVisitor):
     def finalize_graph(self):
         print("Finalizing graph...")
 
-        self._add_output_node(name="__start__", function_name=None, docstring=None,
+        self._add_output_node(name="Start", function_name=None, docstring=None,
                              node_type=NODE_TYPE_MAP["start"], source_location=None, metadata={})
-        self._add_output_node(name="__end__", function_name=None, docstring=None,
+        self._add_output_node(name="End", function_name=None, docstring=None,
                              node_type=NODE_TYPE_MAP["end"], source_location=None, metadata={})
 
         for agent_id, agent_data in self.agents_info.items():
@@ -811,19 +811,19 @@ class CrewAIStructureExtractor(ast.NodeVisitor):
 
             if process_type == CrewProcess.SEQUENTIAL:
                 start_condition = {"type": "entry_point"}
-                self._add_output_edge("__start__", valid_task_node_names[0], start_condition, crew_metadata)
+                self._add_output_edge("Start", valid_task_node_names[0], start_condition, crew_metadata)
                 seq_condition = {"type": "static"}
                 for i in range(len(valid_task_node_names) - 1):
                      self._add_output_edge(valid_task_node_names[i], valid_task_node_names[i+1], seq_condition, crew_metadata)
                 end_condition = {"type": "finish_point"}
-                self._add_output_edge(valid_task_node_names[-1], "__end__", end_condition, crew_metadata)
+                self._add_output_edge(valid_task_node_names[-1], "End", end_condition, crew_metadata)
 
             elif process_type == CrewProcess.HIERARCHICAL:
                  start_condition = {"type": "entry_point", "detail": "hierarchical"}
                  end_condition = {"type": "finish_point", "detail": "hierarchical"}
                  for task_node_name in valid_task_node_names:
-                     self._add_output_edge("__start__", task_node_name, start_condition, crew_metadata)
-                     self._add_output_edge(task_node_name, "__end__", end_condition, crew_metadata)
+                     self._add_output_edge("Start", task_node_name, start_condition, crew_metadata)
+                     self._add_output_edge(task_node_name, "End", end_condition, crew_metadata)
                  # TODO: Optionally add all-to-all task edges if needed for visualization
 
         # 8. Task -> Task (Context & Dependencies)

@@ -169,9 +169,9 @@ def build_graph_data(visitor: AutoGenMapper):
     nodes = []
     edges = []
 
-    # Per-visitor: Add __start__ and __end__
+    # Per-visitor: Add Start and End
     nodes.append({
-        "name": "__start__",
+        "name": "Start",
         "function_name": None,
         "docstring": None,
         "node_type": "Special",
@@ -179,7 +179,7 @@ def build_graph_data(visitor: AutoGenMapper):
         "metadata": {}
     })
     nodes.append({
-        "name": "__end__",
+        "name": "End",
         "function_name": None,
         "docstring": None,
         "node_type": "Special",
@@ -200,14 +200,14 @@ def build_graph_data(visitor: AutoGenMapper):
 
         # ⬅️ These stay inside build_graph_data to avoid merging
         edges.append({
-            "source": "__start__",
+            "source": "Start",
             "target": agent_name,
             "condition": { "type": "static" },
             "metadata": { "reason": "per-visitor entry point" }
         })
         edges.append({
             "source": agent_name,
-            "target": "__end__",
+            "target": "End",
             "condition": { "type": "static" },
             "metadata": { "reason": "per-visitor exit point" }
         })

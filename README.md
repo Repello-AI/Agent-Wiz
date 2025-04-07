@@ -8,6 +8,11 @@
 
 Python CLI for **extracting agentic workflows** from popular AI frameworks and performing **automated security analysis** using threat modeling methodologies.
 
+<div align="center">
+  <img src="./assets/example_vis.png" alt="Workflow Visualization" />
+</div>
+<br/>
+
 Designed for **developers, researchers, and security teams**, ShadowAgent enables the introspection of LLM-based orchestration logic to **visualize flows**, **map tool/agent interactions**, and **generate security reports** via structured threat modeling frameworks.
 
 ## ❓ Why Should You Use It?
@@ -17,7 +22,7 @@ In modern LLM-powered systems, agentic workflows are becoming increasingly compl
 ### Key Benefits
 
 - **Understand Complex Agent Graphs**  
-  Automatically extract and visualize agent-tool-call flows from your existing code — no manual tracing needed.
+  Instantly get clear visibility of agentic workflows in your code, no manual tracing needed! The visualsation clearly specifies various types of connections that can exist in a agentic workflow like Agent-Agent edges, Agent-Tool edges, Tool-Tool chained edges, or even something like Agent Agent edgdes through an intermediate tool.
 
 - **Integrated Security Analysis**  
   Get instant threat modeling reports tailored to your actual orchestration logic. Perfect for audits, red-teaming, or compliance reviews.
@@ -57,7 +62,7 @@ Each framework has its own AST-based static parser to extract:
 
 ## Security Analysis
 
-ShadowAgent currently supports **MAESTRO** as its primary threat modeling framework. It evaluates agent workflows against the following structure:
+ShadowAgent currently supports [**MAESTRO**](https://cloudsecurityalliance.org/blog/2025/02/06/agentic-ai-threat-modeling-framework-maestro) as its primary threat modeling framework. It evaluates agent workflows against the following structure:
 
 - **M**ission
 - **A**ssets
@@ -67,10 +72,19 @@ ShadowAgent currently supports **MAESTRO** as its primary threat modeling framew
 - **R**isks
 - **O**perations
 
-Using LLM-backed analysis (GPT-4), a full security report is generated based on your workflow JSON.
+Using LLM-backed analysis (GPT-4), a full security report is generated based on your workflow JSON. For example:
+
+<img src="./assets/example_report.png" alt="MAESTRO Report" />
+
+Before running any analysis commands, you **must** set your OpenAI API key as an environment variable:
+
+```bash
+export OPENAI_API_KEY=sk-...
+```
+
+You can also add this line to your `.bashrc`, `.zshrc`, or environment setup script for persistent use.
 
 🧪 More threat models analysis (STRIDE, PASTA, LINDDUN, etc.) are under development.
-
 
 ## Installation
 
@@ -84,7 +98,7 @@ pip install agent-shadow
 ### 1. Extract Agentic Workflow
 
 ```bash
-agent-shadow --framework autogen --directory ./examples/autogen --output autogen_graph.json
+agent-shadow --framework agent_chat --directory ./examples/code/agent_chat --output agentchat_graph.json
 ```
 
 This will generate a graph JSON with the following structure:
@@ -102,7 +116,7 @@ This will generate a graph JSON with the following structure:
 ### 2. Analyze against Threat Modeling
 
 ```bash
-agent-shadow --analyze --input autogen_graph.json
+agent-shadow --analyze --input agentchat_graph.json
 ```
 
 This will generate a report like:  `autogen_report.md`  based on the provided graph and threat modeling frameworks.

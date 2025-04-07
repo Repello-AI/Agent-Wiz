@@ -105,8 +105,8 @@ def build_graph_data(visitor):
     nodes = []
     edges = []
 
-    nodes.append({"name": "__start__", "function_name": None, "node_type": "Special", "docstring": None, "source_location": None, "metadata": {}})
-    nodes.append({"name": "__end__", "function_name": None, "node_type": "Special", "docstring": None, "source_location": None, "metadata": {}})
+    nodes.append({"name": "Start", "function_name": None, "node_type": "Special", "docstring": None, "source_location": None, "metadata": {}})
+    nodes.append({"name": "End", "function_name": None, "node_type": "Special", "docstring": None, "source_location": None, "metadata": {}})
 
     for agent_name, agent_data in visitor.agents.items():
         nodes.append({
@@ -120,8 +120,8 @@ def build_graph_data(visitor):
             }
         })
 
-        edges.append({"source": "__start__", "target": agent_name, "condition": {"type": "static"}, "metadata": {}})
-        edges.append({"source": agent_name, "target": "__end__", "condition": {"type": "static"}, "metadata": {}})
+        edges.append({"source": "Start", "target": agent_name, "condition": {"type": "static"}, "metadata": {}})
+        edges.append({"source": agent_name, "target": "End", "condition": {"type": "static"}, "metadata": {}})
 
         for tool in agent_data["tools"]:
             tool_meta = visitor.functions.get(tool, {})
