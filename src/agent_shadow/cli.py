@@ -18,7 +18,7 @@ def main():
     extract_parser.add_argument("--output", "-o", default="graph.json", help="Path to output JSON file")
 
     # --- Analyze command ---
-    analyze_parser = subparsers.add_parser("analyze", help="Run MAESTRO analysis on extracted graph")
+    analyze_parser = subparsers.add_parser("analyze", help="Run threat modeling analysis on extracted graph")
     analyze_parser.add_argument("--input", "-i", required=True, help="Path to JSON graph file")
 
     # --- Visualize command ---

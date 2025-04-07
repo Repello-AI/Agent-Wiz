@@ -8,22 +8,30 @@
 
 Open-source Python CLI and SDK toolkit for **extracting agentic workflows** from popular AI frameworks and performing **automated security analysis** using threat modeling methodologies.
 
-Designed for **developers, researchers, and security teams**, ShadowAgent enables the introspection of LLM-based orchestration logic to **visualize flows**, **map tool/agent interactions**, and **generate security reports** via structured models like MAESTRO.
+Designed for **developers, researchers, and security teams**, ShadowAgent enables the introspection of LLM-based orchestration logic to **visualize flows**, **map tool/agent interactions**, and **generate security reports** via structured threat modeling frameworks.
 
----
+## ❓ Why Should You Use It?
 
-## 🎯 Project Goals
+In modern LLM-powered systems, agentic workflows are becoming increasingly complex — with dozens of autonomous agents, tools, and inter-agent communication chains. **ShadowAgent** helps you bring visibility, structure, and security to these otherwise opaque systems.
 
-- ✅ Build parsers for major agentic frameworks (Autogen, LangGraph, CrewAI, etc.)
-- ✅ Generate standardized JSON graph representations of agent flows
-- ✅ Automate threat modeling using best-practice methodologies (e.g. MAESTRO)
-- 🔜 Extend to STRIDE, PASTA, LINDDUN, etc.
-- 🔜 Interactive graph visualizations
-- 🔜 Agent simulation-based threat exploration
+### ✅ Key Benefits
 
----
+- **🧠 Understand Complex Agent Graphs**  
+  Automatically extract and visualize agent-tool-call flows from your existing code — no manual tracing needed.
 
-## 🧱 Supported Frameworks
+- **🔐 Integrated Security Analysis**  
+  Get instant threat modeling reports tailored to your actual orchestration logic. Perfect for audits, red-teaming, or compliance reviews.
+
+- **📊 Developer & Researcher Friendly**  
+  Simple CLI, extensible SDK, and clean JSON export — ideal for visualization, automation, or integrating with CI/CD pipelines.
+
+- **🧩 Framework Agnostic**  
+  Works with all major LLM orchestration stacks like Autogen, LangGraph, CrewAI, LlamaIndex, Swarm, and more.
+
+- **📈 Built for Scale & Insight**  
+  ShadowAgent grows with your AI system. Whether you're prototyping or in production — it gives you introspection, fast.
+
+## Supported Frameworks
 
 The following orchestration frameworks are currently supported:
 
@@ -46,9 +54,8 @@ Each framework has its own AST-based static parser to extract:
 - Tool call chains
 - Group agents (e.g., selector, round-robin)
 
----
 
-## 🔐 Security Analysis (MAESTRO)
+## 🔐 Security Analysis
 
 ShadowAgent currently supports **MAESTRO** as its primary threat modeling framework. It evaluates agent workflows against the following structure:
 
@@ -64,7 +71,6 @@ Using LLM-backed analysis (GPT-4), a full security report is generated based on 
 
 🧪 More threat models analysis (STRIDE, PASTA, LINDDUN, etc.) are under development.
 
----
 
 ## 📦 Installation
 
@@ -72,7 +78,6 @@ Using LLM-backed analysis (GPT-4), a full security report is generated based on 
 pip install agent-shadow
 ```
 
----
 
 ## 🚀 CLI Usage
 
@@ -94,15 +99,13 @@ This will generate a graph JSON with the following structure:
 }
 ```
 
-### 2. Analyze with MAESTRO Threat Model
+### 2. Analyze against Threat Modeling
 
 ```bash
 agent-shadow --analyze --input autogen_graph.json
 ```
 
-✅ This will generate a report like:  
-`autogen_report.md`  
-Based on the provided graph and MAESTRO methodology.
+This will generate a report like:  `autogen_report.md`  based on the provided graph and threat modeling frameworks.
 
 
 __Run agentic-radar --help for more info:__
@@ -114,7 +117,7 @@ Agentic Shadow CLI: Extract, Analyze, Visualize agentic workflows.
 positional arguments:
   {extract,analyze,visualize}
     extract             Extract graph from source code
-    analyze             Run MAESTRO analysis on extracted graph
+    analyze             Run threat modeling analysis on extracted graph
     visualize           Generate HTML visualization from graph JSON
 
 options:
@@ -122,45 +125,28 @@ options:
 ```
 
 ## 📈 Roadmap
-
-- [x] CLI and SDK interfaces
-- [x] Unified JSON spec for agentic graphs
-- [x] MAESTRO-based security report generation
-- [ ] Multi-model threat model support (STRIDE, PASTA)
-- [ ] Integration with LangChain/Traceloop logs
-- [ ] UI Dashboard for visualizing graphs
-
----
+Planned features (Not in any paricular order)
+- [x] Build parsers for major agentic frameworks (Autogen, LangGraph, CrewAI, etc.)
+- [x] Generate standardized JSON graph representations of agent flows
+- [x] CLI interfaces
+- [x] Security report generation
+- [ ] Extend to STRIDE, PASTA, LINDDUN, etc.
+- [ ] Agent simulation-based threat exploration
 
 ## 🤝 Contributing
 
 We welcome contributions of all kinds!
 
-> ⚠️ Please read [`CONTRIBUTING.md`](./CONTRIBUTING.md) before submitting issues or PRs.
+⚠️ Please read [`CONTRIBUTING.md`](./CONTRIBUTING.md) before submitting issues or PRs.
 
-### To get started:
-
-```bash
-git clone https://github.com/Repello-AI/ShadowAgent.git
-cd ShadowAgent
-python -m venv .venv && source .venv/bin/activate
-pip install -e .
-```
-
----
 
 ## 📜 Changelog
 
 For recent changes and version history, see [`CHANGELOG.md`](./CHANGELOG.md).
 
----
-
 ## 📄 License
 
-Licensed under the **Apache 2.0 License**.  
-See [`LICENSE`](./LICENSE) for full details.
-
----
+Licensed under the **Apache 2.0 License**. See [`LICENSE`](./LICENSE) for full details.
 
 ## 🌐 Links
 
