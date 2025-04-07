@@ -8,6 +8,8 @@
 
 Python CLI for **extracting agentic workflows** from popular AI frameworks and performing **automated security analysis** using threat modeling methodologies.
 
+<div align=center><img src="./assets/example_vis.png" width="75%" /></div>
+
 Designed for **developers, researchers, and security teams**, ShadowAgent enables the introspection of LLM-based orchestration logic to **visualize flows**, **map tool/agent interactions**, and **generate security reports** via structured threat modeling frameworks.
 
 ## ❓ Why Should You Use It?
@@ -57,7 +59,7 @@ Each framework has its own AST-based static parser to extract:
 
 ## Security Analysis
 
-ShadowAgent currently supports **MAESTRO** as its primary threat modeling framework. It evaluates agent workflows against the following structure:
+ShadowAgent currently supports [**MAESTRO**](https://cloudsecurityalliance.org/blog/2025/02/06/agentic-ai-threat-modeling-framework-maestro) as its primary threat modeling framework. It evaluates agent workflows against the following structure:
 
 - **M**ission
 - **A**ssets
