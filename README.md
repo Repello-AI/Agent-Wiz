@@ -69,9 +69,7 @@ ShadowAgent currently supports [**MAESTRO**](https://cloudsecurityalliance.org/b
 - **R**isks
 - **O**perations
 
-Using LLM-backed analysis (GPT-4), a full security report is generated based on your workflow JSON. For example:
-
-<img src="./assets/example_report.png" alt="MAESTRO Report" />
+Using LLM-backed analysis (GPT-4), a full security report is generated based on your workflow JSON.
 
 Before running any analysis commands, you **must** set your OpenAI API key as an environment variable:
 
