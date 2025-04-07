@@ -1,7 +1,8 @@
 import json
-import openai
+import os
 import importlib.resources as pkg_resources
 from agent_shadow import analyzers
+from openai import OpenAI
 
 def generate_maestro_analysis_report(json_path: str):
     # Load embedded files
@@ -21,8 +22,12 @@ def generate_maestro_analysis_report(json_path: str):
     sys_prompt = sys_prompt_template.replace("<MAESTRO>", maestro)
     sys_prompt = sys_prompt.replace("<JSON>", graph_json)
 
-    response = openai.chat.completions.create(
-        model="gpt-4",
+    # Initialize the OpenAI client properly
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+    # Use the client instance to create the completion
+    response = client.chat.completions.create(
+        model="gpt-4o",
         messages=[{"role": "user", "content": sys_prompt}],
         temperature=0.3
     )
