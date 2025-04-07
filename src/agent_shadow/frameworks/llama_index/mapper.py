@@ -105,8 +105,8 @@ def build_graph_data(visitor):
     nodes = []
     edges = []
 
-    nodes.append({"name": "Start", "function_name": None, "node_type": "Special", "docstring": None, "source_location": None, "metadata": {}})
-    nodes.append({"name": "End", "function_name": None, "node_type": "Special", "docstring": None, "source_location": None, "metadata": {}})
+    nodes.append({"name": "Start", "function_name": None, "node_type": "Start", "docstring": None, "source_location": None, "metadata": {}})
+    nodes.append({"name": "End", "function_name": None, "node_type": "End", "docstring": None, "source_location": None, "metadata": {}})
 
     for agent_name, agent_data in visitor.agents.items():
         nodes.append({

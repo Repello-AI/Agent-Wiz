@@ -239,8 +239,8 @@ def extract_swarm_graph(directory, output_file):
     all_nodes, all_edges = [], []
 
     # Add a single shared Start and End node
-    all_nodes.insert(0, {"name": "Start", "function_name": None, "node_type": "Special", "docstring": None, "source_location": None, "metadata": {}})
-    all_nodes.append({"name": "End", "function_name": None, "node_type": "Special", "docstring": None, "source_location": None, "metadata": {}})
+    all_nodes.insert(0, {"name": "Start", "function_name": None, "node_type": "Start", "docstring": None, "source_location": None, "metadata": {}})
+    all_nodes.append({"name": "End", "function_name": None, "node_type": "End", "docstring": None, "source_location": None, "metadata": {}})
 
     for visitor in visitors:
         graph = build_graph_data(visitor)
