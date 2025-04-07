@@ -71,8 +71,15 @@ ShadowAgent currently supports [**MAESTRO**](https://cloudsecurityalliance.org/b
 
 Using LLM-backed analysis (GPT-4), a full security report is generated based on your workflow JSON.
 
-🧪 More threat models analysis (STRIDE, PASTA, LINDDUN, etc.) are under development.
+Before running any analysis commands, you **must** set your OpenAI API key as an environment variable:
 
+```bash
+export OPENAI_API_KEY=sk-...
+```
+
+You can also add this line to your `.bashrc`, `.zshrc`, or environment setup script for persistent use.
+
+🧪 More threat models analysis (STRIDE, PASTA, LINDDUN, etc.) are under development.
 
 ## Installation
 
