@@ -8,7 +8,10 @@
 
 Python CLI for **extracting agentic workflows** from popular AI frameworks and performing **automated security analysis** using threat modeling methodologies.
 
-![](./assets/example_vis.png)
+<p align="center">
+  <img src="./assets/example_vis.png" alt="Workflow Visualization" height="425" />
+  <img src="./assets/example_report.png" alt="MAESTRO Report" height="425" />
+</p>
 
 Designed for **developers, researchers, and security teams**, ShadowAgent enables the introspection of LLM-based orchestration logic to **visualize flows**, **map tool/agent interactions**, and **generate security reports** via structured threat modeling frameworks.
 
