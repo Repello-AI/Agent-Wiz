@@ -6,7 +6,7 @@
 [![Build](https://img.shields.io/github/actions/workflow/status/Repello-AI/ShadowAgent/python-app.yml?label=build)](https://github.com/Repello-AI/ShadowAgent/actions)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 
-Open-source Python CLI and SDK toolkit for **extracting agentic workflows** from popular AI frameworks and performing **automated security analysis** using threat modeling methodologies.
+Python CLI for **extracting agentic workflows** from popular AI frameworks and performing **automated security analysis** using threat modeling methodologies.
 
 Designed for **developers, researchers, and security teams**, ShadowAgent enables the introspection of LLM-based orchestration logic to **visualize flows**, **map tool/agent interactions**, and **generate security reports** via structured threat modeling frameworks.
 
@@ -14,21 +14,21 @@ Designed for **developers, researchers, and security teams**, ShadowAgent enable
 
 In modern LLM-powered systems, agentic workflows are becoming increasingly complex — with dozens of autonomous agents, tools, and inter-agent communication chains. **ShadowAgent** helps you bring visibility, structure, and security to these otherwise opaque systems.
 
-### ✅ Key Benefits
+### Key Benefits
 
-- **🧠 Understand Complex Agent Graphs**  
+- **Understand Complex Agent Graphs**  
   Automatically extract and visualize agent-tool-call flows from your existing code — no manual tracing needed.
 
-- **🔐 Integrated Security Analysis**  
+- **Integrated Security Analysis**  
   Get instant threat modeling reports tailored to your actual orchestration logic. Perfect for audits, red-teaming, or compliance reviews.
 
-- **📊 Developer & Researcher Friendly**  
+- **Developer & Researcher Friendly**  
   Simple CLI, extensible SDK, and clean JSON export — ideal for visualization, automation, or integrating with CI/CD pipelines.
 
-- **🧩 Framework Agnostic**  
+- **Framework Agnostic**  
   Works with all major LLM orchestration stacks like Autogen, LangGraph, CrewAI, LlamaIndex, Swarm, and more.
 
-- **📈 Built for Scale & Insight**  
+- **Built for Scale & Insight**  
   ShadowAgent grows with your AI system. Whether you're prototyping or in production — it gives you introspection, fast.
 
 ## Supported Frameworks
