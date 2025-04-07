@@ -93,7 +93,7 @@ pip install agent-shadow
 ### 1. Extract Agentic Workflow
 
 ```bash
-agent-shadow --framework autogen --directory ./examples/autogen --output autogen_graph.json
+agent-shadow --framework agent_chat --directory ./examples/code/agent_chat --output agentchat_graph.json
 ```
 
 This will generate a graph JSON with the following structure:
@@ -111,7 +111,7 @@ This will generate a graph JSON with the following structure:
 ### 2. Analyze against Threat Modeling
 
 ```bash
-agent-shadow --analyze --input autogen_graph.json
+agent-shadow --analyze --input agentchat_graph.json
 ```
 
 This will generate a report like:  `autogen_report.md`  based on the provided graph and threat modeling frameworks.
