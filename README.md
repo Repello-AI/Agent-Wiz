@@ -10,8 +10,8 @@ Python CLI for **extracting agentic workflows** from popular AI frameworks and p
 
 <div align="center">
   <img src="./assets/example_vis.png" alt="Workflow Visualization" />
-  <img src="./assets/example_report.png" alt="MAESTRO Report" />
 </div>
+<br/>
 
 Designed for **developers, researchers, and security teams**, ShadowAgent enables the introspection of LLM-based orchestration logic to **visualize flows**, **map tool/agent interactions**, and **generate security reports** via structured threat modeling frameworks.
 
@@ -72,7 +72,9 @@ ShadowAgent currently supports [**MAESTRO**](https://cloudsecurityalliance.org/b
 - **R**isks
 - **O**perations
 
-Using LLM-backed analysis (GPT-4), a full security report is generated based on your workflow JSON.
+Using LLM-backed analysis (GPT-4), a full security report is generated based on your workflow JSON. For example:
+
+<img src="./assets/example_report.png" alt="MAESTRO Report" />
 
 Before running any analysis commands, you **must** set your OpenAI API key as an environment variable:
 
