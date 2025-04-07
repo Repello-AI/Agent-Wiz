@@ -193,7 +193,7 @@ def build_graph_data(visitor: AutoGenMapper):
             "name": agent_name,
             "function_name": "Assistant",
             "docstring": None,
-            "node_type": "Generic",
+            "node_type": "Agent",
             "source_location": None,
             "metadata": {}
         })

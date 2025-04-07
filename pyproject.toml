@@ -9,7 +9,7 @@ description = "Generate agentic workflows visualizations & threat modelling repo
 readme = "README.md"
 authors = [{ name = "Aryan Ranjan", email = "aryan@repello.ai" },  { name = "Aaditya Gupta", email = "aadityagupta400@gmail.com" }]
 license = {text = "Apache-2.0"}
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
@@ -37,4 +37,4 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "agent_shadow.analyzers" = ["*.txt"]
-
+"agent_shadow.templates" = ["index.html", "assets/*"]

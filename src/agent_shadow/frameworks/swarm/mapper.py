@@ -111,7 +111,7 @@ def build_graph_data(visitor):
             "name": agent_name,
             "function_name": "Assistant",
             "docstring": None,
-            "node_type": "Generic",
+            "node_type": "Agent",
             "source_location": None,
             "metadata": {"inherits": agent_data["inherits"]}
         })
@@ -248,7 +248,9 @@ def extract_swarm_graph(directory, output_file):
         all_edges.extend(graph["edges"])
 
     graph_data = {
-        "framework": "OpenAI Swarm",
+        "metadata": {
+            "framework":"OpenAI Swarm"
+        },  
         "nodes": all_nodes,
         "edges": all_edges
     }
