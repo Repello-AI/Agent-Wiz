@@ -19,7 +19,7 @@ In modern LLM-powered systems, agentic workflows are becoming increasingly compl
 ### Key Benefits
 
 - **Understand Complex Agent Graphs**  
-  Automatically extract and visualize agent-tool-call flows from your existing code — no manual tracing needed.
+  Instantly get clear visibility of agentic workflows in your code, no manual tracing needed! The visualsation clearly specifies various types of connections that can exist in a agentic workflow like Agent-Agent edges, Agent-Tool edges, Tool-Tool chained edges, or even something like Agent Agent edgdes through an intermediate tool.
 
 - **Integrated Security Analysis**  
   Get instant threat modeling reports tailored to your actual orchestration logic. Perfect for audits, red-teaming, or compliance reviews.
