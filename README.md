@@ -1,4 +1,4 @@
-# 🕵️‍♀️ ShadowAgent
+# ShadowAgent
 
 [![PyPI version](https://img.shields.io/pypi/v/agent-shadow.svg?color=blue)](https://pypi.org/project/agent-shadow/)
 [![License](https://img.shields.io/github/license/Repello-AI/ShadowAgent)](./LICENSE)
@@ -55,7 +55,7 @@ Each framework has its own AST-based static parser to extract:
 - Group agents (e.g., selector, round-robin)
 
 
-## 🔐 Security Analysis
+## Security Analysis
 
 ShadowAgent currently supports **MAESTRO** as its primary threat modeling framework. It evaluates agent workflows against the following structure:
 
@@ -72,7 +72,7 @@ Using LLM-backed analysis (GPT-4), a full security report is generated based on 
 🧪 More threat models analysis (STRIDE, PASTA, LINDDUN, etc.) are under development.
 
 
-## 📦 Installation
+## Installation
 
 ```bash
 pip install agent-shadow
@@ -148,8 +148,8 @@ For recent changes and version history, see [`CHANGELOG.md`](./CHANGELOG.md).
 
 Licensed under the **Apache 2.0 License**. See [`LICENSE`](./LICENSE) for full details.
 
-## 🌐 Links
+## Links
 
-- 🧠 [ShadowAgent GitHub](https://github.com/Repello-AI/ShadowAgent)
-- 🐞 [Issue Tracker](https://github.com/Repello-AI/ShadowAgent/issues)
-- 📦 [PyPI Package](https://pypi.org/project/agent-shadow/)
+- [ShadowAgent GitHub](https://github.com/Repello-AI/ShadowAgent)
+- [Issue Tracker](https://github.com/Repello-AI/ShadowAgent/issues)
+- [PyPI Package](https://pypi.org/project/agent-shadow/)
