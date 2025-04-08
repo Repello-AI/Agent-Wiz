@@ -1,4 +1,5 @@
-# Agent Wiz
+<div align=center><img src=https://github.com/user-attachments/assets/ca54209f-017b-4653-833e-551753e265f8 /></div>
+<br />
 
 [![PyPI version](https://img.shields.io/pypi/v/agent-wiz.svg?color=blue)](https://pypi.org/project/agent-wiz/)
 [![License](https://img.shields.io/github/license/Repello-AI/agent-Wiz)](./LICENSE)
