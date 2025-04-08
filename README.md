@@ -1,9 +1,9 @@
 # Agent Wiz
 
-[![PyPI version](https://img.shields.io/pypi/v/agent-wiz.svg?color=blue)](https://pypi.org/project/repello-agent-wiz/)
-[![License](https://img.shields.io/github/license/Repello-AI/agent-Wiz)](./LICENSE)
-[![Python](https://img.shields.io/pypi/pyversions/agent-wiz.svg)](https://pypi.org/project/repello-agent-wiz/)
+[![PyPI version](https://img.shields.io/pypi/v/repello-agent-wiz.svg?color=blue)](https://pypi.org/project/repello-agent-wiz/)
+[![Python](https://img.shields.io/pypi/pyversions/repello-agent-wiz.svg)](https://pypi.org/project/repello-agent-wiz/)
 [![Build](https://img.shields.io/github/actions/workflow/status/Repello-AI/agent-Wiz/python-app.yml?label=build)](https://github.com/Repello-AI/agent-Wiz/actions)
+[![License](https://img.shields.io/github/license/Repello-AI/agent-Wiz)](./LICENSE)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 
 Python CLI for **extracting agentic workflows** from popular AI frameworks and performing **automated security analysis** using threat modeling methodologies.
