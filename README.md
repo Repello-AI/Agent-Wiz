@@ -110,7 +110,7 @@ pip install repello-agent-wiz
 ### 1. Extract Agentic Workflow
 
 ```bash
-agent-wiz --framework agent_chat --directory ./examples/code/agent_chat --output agentchat_graph.json
+agent-wiz extract --framework agent_chat --directory ./examples/code/agent_chat --output agentchat_graph.json
 ```
 
 This will generate a graph JSON with the following structure:
