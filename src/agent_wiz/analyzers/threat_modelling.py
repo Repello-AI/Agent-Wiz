@@ -35,7 +35,11 @@ def generate_maestro_analysis_report(json_path: str):
         temperature=0.3
     )
 
-    report = response.choices[0].message.content
+    # Extract content and remove markdown code block if present
+    report = response.choices[0].message.content.strip()
+    if report.startswith("```") and report.endswith("```"):
+        report = "\n".join(report.splitlines()[1:-1]).strip()
+    
     output_path = f"{framework}_report.md"
 
     with open(output_path, "w") as f:

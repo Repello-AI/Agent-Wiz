@@ -111,7 +111,14 @@ This will generate a graph JSON with the following structure:
 }
 ```
 
-### 2. Analyze against Threat Modeling
+### 2. Visualize the Agentic workflow
+```bash
+agent-wiz --visualize --input agentchat_graph.json --open
+```
+
+This will generate an html d3 based visualisation of the agentic workflow. The `open` flag (optional) and automatically opens the visualization in your default browser.
+
+### 3. Analyze against Threat Modeling
 
 ```bash
 agent-wiz --analyze --input agentchat_graph.json
@@ -119,12 +126,11 @@ agent-wiz --analyze --input agentchat_graph.json
 
 This will generate a report like:  `autogen_report.md`  based on the provided graph and threat modeling frameworks.
 
-
-__Run agentic-radar --help for more info:__
+__Run agent-wiz --help for more info:__
 ```bash
 usage: agent-wiz [-h] {extract,analyze,visualize} ...
 
-Agentic Shadow CLI: Extract, Analyze, Visualize agentic workflows.
+Agent Wiz CLI: Extract, Analyze, Visualize agentic workflows.
 
 positional arguments:
   {extract,analyze,visualize}
