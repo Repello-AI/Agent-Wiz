@@ -87,7 +87,7 @@ You can also add this line to your `.bashrc`, `.zshrc`, or environment setup scr
 ## Installation
 
 ```bash
-pip install agent-wiz
+pip install repello-agent-wiz
 ```
 
 

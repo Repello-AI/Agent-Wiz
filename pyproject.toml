@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "agent-wiz"
+name = "repello-agent-wiz"
 version = "0.1.0"
 description = "Generate agentic workflows visualizations & threat modelling reports for your agentic projects."
 readme = "README.md"
@@ -23,7 +23,7 @@ dependencies = [
 ]
 
 [project.scripts]
-agent-wiz = "agent_wiz.cli:main"
+agent-wiz = "repello_agent_wiz.cli:main"
 
 [project.urls]
 "Homepage" = "https://github.com/Repello-AI/agent-wiz/"
@@ -36,5 +36,5 @@ package-dir = {"" = "src"}
 where = ["src"]
 
 [tool.setuptools.package-data]
-"agent_wiz.analyzers" = ["*.txt"]
-"agent_wiz.templates" = ["index.html", "assets/*"]
+"repello_agent_wiz.analyzers" = ["*.txt"]
+"repello_agent_wiz.templates" = ["index.html", "assets/*"]

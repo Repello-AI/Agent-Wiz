@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 def generate_visualization(json_path: str, open_browser: bool = False):
-    import agent_wiz.templates
+    import repello_agent_wiz.templates
 
     # Read framework name from JSON
     with open(json_path, "r") as f:
@@ -16,12 +16,12 @@ def generate_visualization(json_path: str, open_browser: bool = False):
     output_dir.mkdir(exist_ok=True)
 
     # Copy assets
-    assets_path = pkg_resources.files(agent_wiz.templates).joinpath("assets")
+    assets_path = pkg_resources.files(repello_agent_wiz.templates).joinpath("assets")
     target_assets_path = output_dir / "assets"
     shutil.copytree(assets_path, target_assets_path, dirs_exist_ok=True)
 
     # Copy index.html and inject graph JSON
-    index_template = pkg_resources.files(agent_wiz.templates).joinpath("index.html")
+    index_template = pkg_resources.files(repello_agent_wiz.templates).joinpath("index.html")
     index_text = index_template.read_text(encoding="utf-8")
 
     json_string = json.dumps(graph, indent=2)
