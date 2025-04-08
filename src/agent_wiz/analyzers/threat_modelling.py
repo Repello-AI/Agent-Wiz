@@ -1,8 +1,11 @@
-import json
 import os
-import importlib.resources as pkg_resources
-from agent_shadow import analyzers
+import json
+
 from openai import OpenAI
+import importlib.resources as pkg_resources
+
+from agent_wiz import analyzers
+
 
 def generate_maestro_analysis_report(json_path: str):
     # Load embedded files

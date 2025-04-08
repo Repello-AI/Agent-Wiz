@@ -1,20 +1,20 @@
-# ShadowAgent
+# Agent Wiz
 
-[![PyPI version](https://img.shields.io/pypi/v/agent-shadow.svg?color=blue)](https://pypi.org/project/agent-shadow/)
-[![License](https://img.shields.io/github/license/Repello-AI/ShadowAgent)](./LICENSE)
-[![Python](https://img.shields.io/pypi/pyversions/agent-shadow.svg)](https://pypi.org/project/agent-shadow/)
-[![Build](https://img.shields.io/github/actions/workflow/status/Repello-AI/ShadowAgent/python-app.yml?label=build)](https://github.com/Repello-AI/ShadowAgent/actions)
+[![PyPI version](https://img.shields.io/pypi/v/agent-wiz.svg?color=blue)](https://pypi.org/project/agent-wiz/)
+[![License](https://img.shields.io/github/license/Repello-AI/agent-Wiz)](./LICENSE)
+[![Python](https://img.shields.io/pypi/pyversions/agent-wiz.svg)](https://pypi.org/project/agent-wiz/)
+[![Build](https://img.shields.io/github/actions/workflow/status/Repello-AI/agent-Wiz/python-app.yml?label=build)](https://github.com/Repello-AI/agent-Wiz/actions)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 
 Python CLI for **extracting agentic workflows** from popular AI frameworks and performing **automated security analysis** using threat modeling methodologies.
 
 ![](./assets/example_vis.png)
 
-Designed for **developers, researchers, and security teams**, ShadowAgent enables the introspection of LLM-based orchestration logic to **visualize flows**, **map tool/agent interactions**, and **generate security reports** via structured threat modeling frameworks.
+Designed for **developers, researchers, and security teams**, Agent Wiz enables the introspection of LLM-based orchestration logic to **visualize flows**, **map tool/agent interactions**, and **generate security reports** via structured threat modeling frameworks.
 
 ## ❓ Why Should You Use It?
 
-In modern LLM-powered systems, agentic workflows are becoming increasingly complex — with dozens of autonomous agents, tools, and inter-agent communication chains. **ShadowAgent** helps you bring visibility, structure, and security to these otherwise opaque systems.
+In modern LLM-powered systems, agentic workflows are becoming increasingly complex — with dozens of autonomous agents, tools, and inter-agent communication chains. **Agent Wiz** helps you bring visibility, structure, and security to these otherwise opaque systems.
 
 ### Key Benefits
 
@@ -31,7 +31,7 @@ In modern LLM-powered systems, agentic workflows are becoming increasingly compl
   Works with all major LLM orchestration stacks like Autogen, LangGraph, CrewAI, LlamaIndex, Swarm, and more.
 
 - **Built for Scale & Insight**  
-  ShadowAgent grows with your AI system. Whether you're prototyping or in production — it gives you introspection, fast.
+  Agent Wiz grows with your AI system. Whether you're prototyping or in production — it gives you introspection, fast.
 
 ## Supported Frameworks
 
@@ -59,7 +59,7 @@ Each framework has its own AST-based static parser to extract:
 
 ## Security Analysis
 
-ShadowAgent currently supports [**MAESTRO**](https://cloudsecurityalliance.org/blog/2025/02/06/agentic-ai-threat-modeling-framework-maestro) as its primary threat modeling framework. It evaluates agent workflows against the following structure:
+Agent Wiz currently supports [**MAESTRO**](https://cloudsecurityalliance.org/blog/2025/02/06/agentic-ai-threat-modeling-framework-maestro) as its primary threat modeling framework. It evaluates agent workflows against the following structure:
 
 - **M**ission
 - **A**ssets
@@ -84,7 +84,7 @@ You can also add this line to your `.bashrc`, `.zshrc`, or environment setup scr
 ## Installation
 
 ```bash
-pip install agent-shadow
+pip install agent-wiz
 ```
 
 
@@ -93,7 +93,7 @@ pip install agent-shadow
 ### 1. Extract Agentic Workflow
 
 ```bash
-agent-shadow --framework agent_chat --directory ./examples/code/agent_chat --output agentchat_graph.json
+agent-wiz --framework agent_chat --directory ./examples/code/agent_chat --output agentchat_graph.json
 ```
 
 This will generate a graph JSON with the following structure:
@@ -111,7 +111,7 @@ This will generate a graph JSON with the following structure:
 ### 2. Analyze against Threat Modeling
 
 ```bash
-agent-shadow --analyze --input agentchat_graph.json
+agent-wiz --analyze --input agentchat_graph.json
 ```
 
 This will generate a report like:  `autogen_report.md`  based on the provided graph and threat modeling frameworks.
@@ -119,7 +119,7 @@ This will generate a report like:  `autogen_report.md`  based on the provided gr
 
 __Run agentic-radar --help for more info:__
 ```bash
-usage: agent-shadow [-h] {extract,analyze,visualize} ...
+usage: agent-wiz [-h] {extract,analyze,visualize} ...
 
 Agentic Shadow CLI: Extract, Analyze, Visualize agentic workflows.
 
@@ -159,6 +159,6 @@ Licensed under the **Apache 2.0 License**. See [`LICENSE`](./LICENSE) for full d
 
 ## Links
 
-- [ShadowAgent GitHub](https://github.com/Repello-AI/ShadowAgent)
-- [Issue Tracker](https://github.com/Repello-AI/ShadowAgent/issues)
-- [PyPI Package](https://pypi.org/project/agent-shadow/)
+- [Agent Wiz GitHub](https://github.com/Repello-AI/agent-wiz)
+- [Issue Tracker](https://github.com/Repello-AI/agent-wiz/issues)
+- [PyPI Package](https://pypi.org/project/agent-wiz/)

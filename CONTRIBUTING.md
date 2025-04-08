@@ -1,6 +1,6 @@
-# 🤝 Contributing to ShadowAgent
+# 🤝 Contributing to Agent Wiz
 
-Thank you for considering contributing to ShadowAgent! 🎉  
+Thank you for considering contributing to Agent Wiz! 🎉  
 We welcome contributions of all types – bug reports, feature requests, documentation, testing, and code.
 
 ---
@@ -10,8 +10,8 @@ We welcome contributions of all types – bug reports, feature requests, documen
 1. **Fork** the repository.
 2. **Clone** your forked repo:
    ```bash
-   git clone https://github.com/your-username/ShadowAgent.git
-   cd ShadowAgent
+   git clone https://github.com/your-username/agent-wiz.git
+   cd agent-wiz
    ```
 3. **Create a virtual environment**:
    ```bash
