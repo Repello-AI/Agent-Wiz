@@ -24,7 +24,7 @@
 ![](./assets/example_vis.png)
 
 ## About Agent Wiz
-Python CLI for **extracting agentic workflows** from popular AI frameworks and performing **automated security analysis** using threat modeling methodologies. Designed for **developers, researchers, and security teams**, Agent Wiz enables the introspection of LLM-based orchestration logic to **visualize flows**, **map tool/agent interactions**, and **generate security reports** via structured threat modeling frameworks.
+Agent Wiz is a python CLI for **extracting agentic workflows** from popular AI frameworks and performing **automated security analysis** using threat modeling methodologies. Designed for **developers, researchers, and security teams**, Agent Wiz enables the introspection of LLM-based orchestration logic to **visualize flows**, **map tool/agent interactions**, and **generate security reports** via structured threat modeling frameworks.
 
 ## ❓ Why Should You Use It?
 
@@ -33,7 +33,7 @@ In modern LLM-powered systems, agentic workflows are becoming increasingly compl
 ### Key Benefits
 
 - **Understand Complex Agent Graphs**  
-  Instantly get clear visibility of agentic workflows in your code, no manual tracing needed! The visualsation clearly specifies various types of connections that can exist in a agentic workflow like Agent-Agent edges, Agent-Tool edges, Tool-Tool chained edges, or even something like Agent Agent edgdes through an intermediate tool.
+  Instantly get clear visibility of agentic workflows in your code, no manual tracing needed! The visualsation clearly specifies various types of connections that can exist in a agentic workflow like Agent-Agent edges, Agent-Tool edges, Tool-Tool chained edges, or even something like Agent Agent edgdes through an intermediate tool. The visualization also highlights the flow of the program by highlighting the start and end nodes.
 
 - **Integrated Security Analysis**  
   Get instant threat modeling reports tailored to your actual orchestration logic. Perfect for audits, red-teaming, or compliance reviews.
