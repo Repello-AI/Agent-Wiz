@@ -150,7 +150,7 @@ def build_graph_data(visitor):
         "name": start,
         "function_name": None,
         "docstring": None,
-        "node_type": "Special",
+        "node_type": "Start",
         "source_location": None,
         "metadata": {}
     })
@@ -158,7 +158,7 @@ def build_graph_data(visitor):
         "name": end,
         "function_name": None,
         "docstring": None,
-        "node_type": "Special",
+        "node_type": "End",
         "source_location": None,
         "metadata": {}
     })

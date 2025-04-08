@@ -5,7 +5,7 @@ from .visualizers.visualizer import generate_visualization
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Agentic Shadow CLI: Extract, Analyze, Visualize agentic workflows.")
+    parser = argparse.ArgumentParser(description="Agent Wiz CLI: Extract, Analyze, Visualize agentic workflows.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     # --- Extract command ---
