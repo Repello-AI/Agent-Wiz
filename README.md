@@ -69,7 +69,10 @@ Agent Wiz currently supports [**MAESTRO**](https://cloudsecurityalliance.org/blo
 - **R**isks
 - **O**perations
 
-Using LLM-backed analysis (GPT-4), a full security report is generated based on your workflow JSON.
+Using LLM-backed analysis (GPT-4), a full security report is generated based on your workflow JSON. For example:
+
+<img src="./assets/example_report.png" alt="Threat Modeling Report" />
+<br/>
 
 Before running any analysis commands, you **must** set your OpenAI API key as an environment variable:
 
