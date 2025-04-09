@@ -24,33 +24,31 @@
 
 ![](./assets/example_vis.png)
 
-## About Agent Wiz
-Agent Wiz is a python CLI for **extracting agentic workflows** from popular AI frameworks and performing **automated security analysis** using threat modeling methodologies. Designed for **developers, researchers, and security teams**, Agent Wiz enables the introspection of LLM-based orchestration logic to **visualize flows**, **map tool/agent interactions**, and **generate security reports** via structured threat modeling frameworks.
+## Overview
+Agent Wiz is a Python CLI for **extracting agentic workflows** from popular AI frameworks and performing **automated threat assessments** using established threat modeling methodologies. Built for **developers, researchers, and security teams** -  Agent Wiz brings visibility to complex LLM-based orchestration to **visualize flows**, **map tool/agent interactions**, and **generate actionable security reports.** 
 
-## ❓ Why Should You Use It?
+## Why Agent Wiz?
 
-In modern LLM-powered systems, agentic workflows are becoming increasingly complex — with dozens of autonomous agents, tools, and inter-agent communication chains. **Agent Wiz** helps you bring visibility, structure, and security to these otherwise opaque systems.
+In modern LLM-powered systems, agentic workflows are becoming increasingly complex, often involving multiple autonomous agents, tools, and inter-agent communication chains. Agent Wiz helps you bring:
 
-### Key Benefits
+- **Visibility**: Clearly visualize complex agent graphs without manual tracing
+- **Structure**: Map relationships between agents, tools, and data flows
+- **Security**: Apply threat modeling frameworks to identify potential vulnerabilities
 
-- **Understand Complex Agent Graphs**  
-  Instantly get clear visibility of agentic workflows in your code, no manual tracing needed! The visualsation clearly specifies various types of connections that can exist in a agentic workflow like Agent-Agent edges, Agent-Tool edges, Tool-Tool chained edges, or even something like Agent Agent edgdes through an intermediate tool. The visualization also highlights the flow of the program by highlighting the start and end nodes.
+### Core Features
 
-- **Integrated Security Analysis**  
-  Get instant threat modeling reports tailored to your actual orchestration logic. Perfect for audits, red-teaming, or compliance reviews.
+| Capability | Description |
+|---------|-------------|
+| **Workflow Extraction** | Extract agent-based workflows from code using AST-based static parsing |
+| **Threat Vector Visualization** | View agent-to-agent, agent-to-tool, and chained connections in an interactive graph |
+| **Automated Threat Assessment** | Generate comprehensive threat assessment report using established threat modeling frameworks for AI agents like MAESTRO|
+| **Framework Agnostic** | Works with all major LLM orchestration frameworks |
+| **Developer Friendly** | Simple CLI, extensible SDK, and clean JSON exports |
 
-- **Developer & Researcher Friendly**  
-  Simple CLI, extensible SDK, and clean JSON export — ideal for visualization, automation, or integrating with CI/CD pipelines.
-
-- **Framework Agnostic**  
-  Works with all major LLM orchestration stacks like Autogen, LangGraph, CrewAI, LlamaIndex, Swarm, and more.
-
-- **Built for Scale & Insight**  
-  Agent Wiz grows with your AI system. Whether you're prototyping or in production — it gives you introspection, fast.
 
 ## Supported Frameworks
 
-The following orchestration frameworks are currently supported:
+The following agent orchestration frameworks are currently supported:
 
 | Framework         | Status  |
 |------------------|---------|
@@ -76,24 +74,19 @@ Each framework has its own AST-based static parser to extract:
 
 Agent Wiz currently supports [**MAESTRO**](https://cloudsecurityalliance.org/blog/2025/02/06/agentic-ai-threat-modeling-framework-maestro) as its primary threat modeling framework. It evaluates agent workflows against the following structure:
 
-- **M**ission
-- **A**ssets
-- **E**ntrypoints
-- **S**ecurity Controls
-- **T**hreats
-- **R**isks
-- **O**perations
+- **M**ission: Defining the system purpose and security objectives
+- **A**ssets: Inventorying critical components (agents, tools, data flows)
+- **E**ntrypoints: Mapping attack surfaces and access vectors
+- **S**ecurity Controls: Evaluating existing defensive measures
+- **T**hreats: Identifying potential vulnerabilities and attack scenarios
+- **R**isks: Calculating impact and likelihood of security events
+- **O**perations: Assessing runtime security considerations
 
-Using LLM-backed analysis (GPT-4), a full security report is generated based on your workflow JSON. For example:
+Sample threat modelling report generated:
 
 <img src="./assets/example_report.png" alt="Threat Modeling Report" />
 <br/>
 
-Before running any analysis commands, you **must** set your OpenAI API key as an environment variable:
-
-```bash
-export OPENAI_API_KEY=sk-...
-```
 
 You can also add this line to your `.bashrc`, `.zshrc`, or environment setup script for persistent use.
 
@@ -105,6 +98,13 @@ You can also add this line to your `.bashrc`, `.zshrc`, or environment setup scr
 pip install repello-agent-wiz
 ```
 
+## Prerequisites
+
+Before running any analysis commands, you must set your OpenAI API key as an environment variable:
+
+```bash
+export OPENAI_API_KEY=sk-...
+```
 
 ## 🚀 CLI Usage
 
@@ -186,3 +186,7 @@ Licensed under the **Apache 2.0 License**. See [`LICENSE`](./LICENSE) for full d
 - [Agent Wiz GitHub](https://github.com/Repello-AI/agent-wiz)
 - [Issue Tracker](https://github.com/Repello-AI/agent-wiz/issues)
 - [PyPI Package](https://pypi.org/project/repello-agent-wiz/)
+
+<p align="center">
+© 2025 Repello AI | <a href="https://repello.ai">Website</a> 
+</p>
