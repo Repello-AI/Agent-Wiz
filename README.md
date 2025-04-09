@@ -12,7 +12,7 @@
     <img src="https://img.shields.io/github/actions/workflow/status/Repello-AI/agent-Wiz/python-app.yml?label=build" alt="Build Status">
   </a> -->
   <a href="./LICENSE">
-    <img src="https://img.shields.io/github/license/Repello-AI/agent-Wiz" alt="License">
+    <img src="https://img.shields.io/github/license/Repello-AI/Agent-Wiz" alt="License">
   </a>
   <a href="code_of_conduct.md">
     <img src="https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg" alt="Contributor Covenant">
