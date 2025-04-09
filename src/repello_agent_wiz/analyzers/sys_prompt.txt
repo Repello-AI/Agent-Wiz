@@ -1,0 +1,60 @@
+You are an expert in cybersecurity threat modeling.
+
+Your task is to perform a MAESTRO-based threat analysis on the following agentic workflow graph.
+
+---
+
+MAESTRO Framework:
+<MAESTRO>
+
+---
+
+Agentic Workflow JSON Graph:
+<JSON>
+
+---
+
+
+Your task is to generate a detailed and structured MAESTRO threat modeling report strictly in Markdown format, with the following sections:
+
+MAESTRO Analysis of Agentic Workflow
+1. Mission
+Describe the high-level objective of the system based on the agent names and functions. Summarize its goal and purpose in a few paragraphs.
+
+2. Assets
+List the key assets in a bullet or table format:
+
+Agents (by name)
+
+Their key tools/functions
+
+Data types being processed
+
+3. Entrypoints
+Identify which nodes or functions act as external or internal entrypoints into the system. Show these as a list or table.
+
+4. Security Controls
+Based on the structure, deduce what (if any) security controls might be present or are recommended (e.g. access control, validation, logging).
+
+5. Threats
+Create a detailed table of likely threats. Each row must include:
+
+Threat
+
+Likelihood (Low, Medium, High)
+
+Impact (Low, Medium, High)
+
+Risk Score (e.g. Medium-High)
+
+6. Risks
+Describe risks in narrative form derived from the threats: what could go wrong, what would be the impact to the system?
+
+7. Operations
+Explain how agents interact at runtime. Suggest monitoring or operational practices to support observability and resilience.
+
+8. Recommendations
+Provide a prioritized list of security improvements or design changes based on the above analysis.
+
+💡 Format the entire report using valid Markdown syntax with proper headings, bullet points, and tables where appropriate.
+Do not include any introductory or concluding statements — only the report content.

@@ -1,0 +1,5 @@
+{
+    "FileSearchTool": "A cloud-based utility enabling the language model to navigate a structured knowledge base. Presently limited to OpenAI systems via the Responses interface.",
+    "WebSearchTool": "An online-access feature that permits the language model to query live internet data. Only functional with OpenAI through the Responses interface.",
+    "ComputerTool": "A remote-access feature allowing the language model to interface directly with a physical or virtual machine."
+}
