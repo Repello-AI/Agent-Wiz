@@ -1,4 +1,4 @@
-<div align=center><img src="./assets/agent_wiz.png" /></div>
+<div align=center><img src="https://github.com/Repello-AI/Agent-Wiz/raw/master/assets/agent_wiz.png" /></div>
 <br />
 
 <div align="center">
@@ -22,7 +22,7 @@
 <br/>
 
 
-![](./assets/example_vis.png)
+![](https://github.com/Repello-AI/Agent-Wiz/raw/master/assets/example_vis.png)
 
 ## Overview
 Agent Wiz is a Python CLI for **extracting agentic workflows** from popular AI frameworks and performing **automated threat assessments** using established threat modeling methodologies. Built for **developers, researchers, and security teams** -  Agent Wiz brings visibility to complex LLM-based orchestration to **visualize flows**, **map tool/agent interactions**, and **generate actionable security reports.** 
@@ -84,7 +84,7 @@ Agent Wiz currently supports [**MAESTRO**](https://cloudsecurityalliance.org/blo
 
 Sample threat modelling report generated:
 
-<img src="./assets/example_report.png" alt="Threat Modeling Report" />
+<img src="https://github.com/Repello-AI/Agent-Wiz/raw/master/assets/example_report.png" alt="Threat Modeling Report" />
 <br/>
 
 
@@ -183,8 +183,8 @@ Licensed under the **Apache 2.0 License**. See [`LICENSE`](./LICENSE) for full d
 
 ## Links
 
-- [Agent Wiz GitHub](https://github.com/Repello-AI/agent-wiz)
-- [Issue Tracker](https://github.com/Repello-AI/agent-wiz/issues)
+- [Agent Wiz GitHub](https://github.com/Repello-AI/Agent-Wiz)
+- [Issue Tracker](https://github.com/Repello-AI/Agent-Wiz/issues)
 - [PyPI Package](https://pypi.org/project/repello-agent-wiz/)
 
 <p align="center">
