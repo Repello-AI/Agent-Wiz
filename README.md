@@ -1,4 +1,4 @@
-<div align=center><img src=https://github.com/user-attachments/assets/ca54209f-017b-4653-833e-551753e265f8 /></div>
+<div align=center><img src="./assets/agent_wiz.png" /></div>
 <br />
 
 <div align="center">
