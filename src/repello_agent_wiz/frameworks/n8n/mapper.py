@@ -341,6 +341,11 @@ def process_file(input_path, output_dir, categories_data):
         parser = N8nWorkflowParser(n8n_data, input_filename_str, categories_data)
         graph_data = parser.parse()
 
+        if graph_data:
+            graph_data["metadata"] = {
+                "framework": "n8n",
+            }
+
         with open(output_filename, 'w', encoding='utf-8') as f:
             json.dump(graph_data, f, indent=2, ensure_ascii=False)
 

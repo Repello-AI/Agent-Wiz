@@ -1,0 +1,18 @@
+save_to_json:
+  description: |
+    State data: {state_data}
+
+    Save the organized data to a JSON file:
+    1. Check if the JSON file already exists
+    2. If it exists, load the existing data array
+    3. Append the new data to the array
+    4. Save the file as "{file_id}.json" in the "output" directory
+    
+    Use the FileWriterTool to write to the JSON file:
+    - First read the existing file to load current data
+    - Append the new data to the array
+    - Write the entire array back to the file
+    
+    Return the path to the saved JSON file.
+  agent: data_organizer
+  expected_output: "Path to the saved JSON file"
