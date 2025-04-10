@@ -199,7 +199,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
                             for target, res_info in goto_target_results.items():
                                 self.potential_gotos[target] = res_info
                                 self.goto_source_locations[target] = self._get_location_dict(node)
-                                if res_info.get("status", "").startswith("unresolved"):
+                                # if res_info.get("status", "").startswith("unresolved"):
                                     # self.unresolved_reasons.add((res_info.get("type", "goto"), res_info.get("detail", "?")))
                             self.is_router = True
                             break
@@ -235,7 +235,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
                         status = "resolved_variable_partial" if has_unresolved_source else "resolved_variable"
                         add_target(val, status, "variable", var_name)
                         resolved_count += 1
-                if resolved_count == 0 and has_unresolved_source:
+                # if resolved_count == 0 and has_unresolved_source:
                     #  targets["?"] = {"status": "unresolved_variable_source", "type": "variable", "detail": var_name}
 
             elif var_name in self.call_site_context:

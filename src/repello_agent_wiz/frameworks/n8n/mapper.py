@@ -330,7 +330,7 @@ def process_file(input_path, output_dir, categories_data):
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    output_filename = output_dir / f"{input_path.stem}_parsed.json"
+    output_filename = output_dir / f"n8n_graph.json"
     input_filename_str = input_path.name
 
     print(f"Processing: {input_path}")
