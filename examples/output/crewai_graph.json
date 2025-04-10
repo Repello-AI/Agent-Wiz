@@ -326,10 +326,10 @@
       "docstring": null,
       "node_type": "ToolExecutor",
       "source_location": {
-        "file": "examples/code/crewai/echo_synth/tools/image_tools.py",
-        "line": 18,
+        "file": "examples/code/crewai/echo_synth/tools/audio_tools.py",
+        "line": 80,
         "col": 0,
-        "end_line": 95,
+        "end_line": 157,
         "end_col": 54
       },
       "metadata": {

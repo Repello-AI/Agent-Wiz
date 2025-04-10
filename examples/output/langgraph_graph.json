@@ -1,0 +1,1214 @@
+{
+  "nodes": [
+    {
+      "name": "assistant",
+      "function_name": "AssistantPart1",
+      "docstring": null,
+      "node_type": "Generic",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 968,
+        "col": 0,
+        "end_line": 968,
+        "end_col": 78
+      },
+      "metadata": {}
+    },
+    {
+      "name": "tools",
+      "function_name": "create_tool_node_with_fallback",
+      "docstring": "Creates a ToolNode with error handling fallback.",
+      "node_type": "ToolExecutor",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 969,
+        "col": 0,
+        "end_line": 969,
+        "end_col": 77
+      },
+      "metadata": {}
+    },
+    {
+      "name": "Start",
+      "function_name": null,
+      "docstring": null,
+      "node_type": "Special",
+      "source_location": null,
+      "metadata": {}
+    },
+    {
+      "name": "fetch_user_info",
+      "function_name": "wrapped_user_info_node_part2",
+      "docstring": null,
+      "node_type": "Generic",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1083,
+        "col": 0,
+        "end_line": 1083,
+        "end_col": 71
+      },
+      "metadata": {}
+    },
+    {
+      "name": "safe_tools",
+      "function_name": "create_tool_node_with_fallback",
+      "docstring": "Creates a ToolNode with error handling fallback.",
+      "node_type": "Tool",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1229,
+        "col": 0,
+        "end_line": 1229,
+        "end_col": 87
+      },
+      "metadata": {}
+    },
+    {
+      "name": "sensitive_tools",
+      "function_name": "create_tool_node_with_fallback",
+      "docstring": "Creates a ToolNode with error handling fallback.",
+      "node_type": "Tool",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1230,
+        "col": 0,
+        "end_line": 1232,
+        "end_col": 1
+      },
+      "metadata": {}
+    },
+    {
+      "name": "End",
+      "function_name": null,
+      "docstring": null,
+      "node_type": "Special",
+      "source_location": null,
+      "metadata": {}
+    },
+    {
+      "name": "enter_update_flight",
+      "function_name": "create_entry_node",
+      "docstring": "Creates a node that signals entry into a specialized workflow.",
+      "node_type": "Generic",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1597,
+        "col": 0,
+        "end_line": 1600,
+        "end_col": 1
+      },
+      "metadata": {}
+    },
+    {
+      "name": "update_flight",
+      "function_name": "Assistant",
+      "docstring": null,
+      "node_type": "Generic",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1601,
+        "col": 0,
+        "end_line": 1601,
+        "end_col": 74
+      },
+      "metadata": {}
+    },
+    {
+      "name": "update_flight_sensitive_tools",
+      "function_name": "create_tool_node_with_fallback",
+      "docstring": "Creates a ToolNode with error handling fallback.",
+      "node_type": "Tool",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1603,
+        "col": 0,
+        "end_line": 1606,
+        "end_col": 1
+      },
+      "metadata": {}
+    },
+    {
+      "name": "update_flight_safe_tools",
+      "function_name": "create_tool_node_with_fallback",
+      "docstring": "Creates a ToolNode with error handling fallback.",
+      "node_type": "Tool",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1607,
+        "col": 0,
+        "end_line": 1610,
+        "end_col": 1
+      },
+      "metadata": {}
+    },
+    {
+      "name": "leave_skill",
+      "function_name": "pop_dialog_state",
+      "docstring": "Pops the dialog stack and returns to the main assistant.",
+      "node_type": "Generic",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1647,
+        "col": 0,
+        "end_line": 1647,
+        "end_col": 55
+      },
+      "metadata": {}
+    },
+    {
+      "name": "enter_book_car_rental",
+      "function_name": "create_entry_node",
+      "docstring": "Creates a node that signals entry into a specialized workflow.",
+      "node_type": "Generic",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1651,
+        "col": 0,
+        "end_line": 1654,
+        "end_col": 1
+      },
+      "metadata": {}
+    },
+    {
+      "name": "book_car_rental",
+      "function_name": "Assistant",
+      "docstring": null,
+      "node_type": "Generic",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1655,
+        "col": 0,
+        "end_line": 1655,
+        "end_col": 78
+      },
+      "metadata": {}
+    },
+    {
+      "name": "book_car_rental_safe_tools",
+      "function_name": "create_tool_node_with_fallback",
+      "docstring": "Creates a ToolNode with error handling fallback.",
+      "node_type": "Tool",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1657,
+        "col": 0,
+        "end_line": 1659,
+        "end_col": 1
+      },
+      "metadata": {}
+    },
+    {
+      "name": "book_car_rental_sensitive_tools",
+      "function_name": "create_tool_node_with_fallback",
+      "docstring": "Creates a ToolNode with error handling fallback.",
+      "node_type": "Tool",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1660,
+        "col": 0,
+        "end_line": 1662,
+        "end_col": 1
+      },
+      "metadata": {}
+    },
+    {
+      "name": "enter_book_hotel",
+      "function_name": "create_entry_node",
+      "docstring": "Creates a node that signals entry into a specialized workflow.",
+      "node_type": "Generic",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1683,
+        "col": 0,
+        "end_line": 1685,
+        "end_col": 1
+      },
+      "metadata": {}
+    },
+    {
+      "name": "book_hotel",
+      "function_name": "Assistant",
+      "docstring": null,
+      "node_type": "Generic",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1686,
+        "col": 0,
+        "end_line": 1686,
+        "end_col": 68
+      },
+      "metadata": {}
+    },
+    {
+      "name": "book_hotel_safe_tools",
+      "function_name": "create_tool_node_with_fallback",
+      "docstring": "Creates a ToolNode with error handling fallback.",
+      "node_type": "Tool",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1688,
+        "col": 0,
+        "end_line": 1688,
+        "end_col": 102
+      },
+      "metadata": {}
+    },
+    {
+      "name": "book_hotel_sensitive_tools",
+      "function_name": "create_tool_node_with_fallback",
+      "docstring": "Creates a ToolNode with error handling fallback.",
+      "node_type": "Tool",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1689,
+        "col": 0,
+        "end_line": 1689,
+        "end_col": 112
+      },
+      "metadata": {}
+    },
+    {
+      "name": "enter_book_excursion",
+      "function_name": "create_entry_node",
+      "docstring": "Creates a node that signals entry into a specialized workflow.",
+      "node_type": "Generic",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1710,
+        "col": 0,
+        "end_line": 1712,
+        "end_col": 1
+      },
+      "metadata": {}
+    },
+    {
+      "name": "book_excursion",
+      "function_name": "Assistant",
+      "docstring": null,
+      "node_type": "Generic",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1713,
+        "col": 0,
+        "end_line": 1713,
+        "end_col": 76
+      },
+      "metadata": {}
+    },
+    {
+      "name": "book_excursion_safe_tools",
+      "function_name": "create_tool_node_with_fallback",
+      "docstring": "Creates a ToolNode with error handling fallback.",
+      "node_type": "Tool",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1715,
+        "col": 0,
+        "end_line": 1715,
+        "end_col": 110
+      },
+      "metadata": {}
+    },
+    {
+      "name": "book_excursion_sensitive_tools",
+      "function_name": "create_tool_node_with_fallback",
+      "docstring": "Creates a ToolNode with error handling fallback.",
+      "node_type": "Tool",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1716,
+        "col": 0,
+        "end_line": 1716,
+        "end_col": 120
+      },
+      "metadata": {}
+    },
+    {
+      "name": "primary_assistant",
+      "function_name": "Assistant",
+      "docstring": null,
+      "node_type": "Generic",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1737,
+        "col": 0,
+        "end_line": 1737,
+        "end_col": 74
+      },
+      "metadata": {}
+    },
+    {
+      "name": "primary_assistant_tools",
+      "function_name": "create_tool_node_with_fallback",
+      "docstring": "Creates a ToolNode with error handling fallback.",
+      "node_type": "Tool",
+      "source_location": {
+        "file": "./examples/code/langgraph/lg.py",
+        "line": 1738,
+        "col": 0,
+        "end_line": 1738,
+        "end_col": 106
+      },
+      "metadata": {}
+    }
+  ],
+  "edges": [
+    {
+      "source": "Start",
+      "target": "assistant",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 970,
+          "col": 0,
+          "end_line": 970,
+          "end_col": 42
+        }
+      }
+    },
+    {
+      "source": "Start",
+      "target": "fetch_user_info",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1084,
+          "col": 0,
+          "end_line": 1084,
+          "end_col": 48
+        }
+      }
+    },
+    {
+      "source": "Start",
+      "target": "fetch_user_info",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1227,
+          "col": 0,
+          "end_line": 1227,
+          "end_col": 48
+        }
+      }
+    },
+    {
+      "source": "Start",
+      "target": "fetch_user_info",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1594,
+          "col": 0,
+          "end_line": 1594,
+          "end_col": 48
+        }
+      }
+    },
+    {
+      "source": "assistant",
+      "target": "End",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_tools_part3"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1249,
+          "col": 0,
+          "end_line": 1251,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "assistant",
+      "target": "safe_tools",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_tools_part3"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1249,
+          "col": 0,
+          "end_line": 1251,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "assistant",
+      "target": "sensitive_tools",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_tools_part3"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1249,
+          "col": 0,
+          "end_line": 1251,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "book_car_rental",
+      "target": "End",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_book_car_rental"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1677,
+          "col": 0,
+          "end_line": 1680,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "book_car_rental",
+      "target": "book_car_rental_safe_tools",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_book_car_rental"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1677,
+          "col": 0,
+          "end_line": 1680,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "book_car_rental",
+      "target": "book_car_rental_sensitive_tools",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_book_car_rental"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1677,
+          "col": 0,
+          "end_line": 1680,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "book_car_rental",
+      "target": "leave_skill",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_book_car_rental"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1677,
+          "col": 0,
+          "end_line": 1680,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "book_car_rental_safe_tools",
+      "target": "book_car_rental",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1676,
+          "col": 0,
+          "end_line": 1676,
+          "end_col": 71
+        }
+      }
+    },
+    {
+      "source": "book_car_rental_sensitive_tools",
+      "target": "book_car_rental",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1675,
+          "col": 0,
+          "end_line": 1675,
+          "end_col": 76
+        }
+      }
+    },
+    {
+      "source": "book_excursion",
+      "target": "End",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_book_excursion"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1731,
+          "col": 0,
+          "end_line": 1734,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "book_excursion",
+      "target": "book_excursion_safe_tools",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_book_excursion"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1731,
+          "col": 0,
+          "end_line": 1734,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "book_excursion",
+      "target": "book_excursion_sensitive_tools",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_book_excursion"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1731,
+          "col": 0,
+          "end_line": 1734,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "book_excursion",
+      "target": "leave_skill",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_book_excursion"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1731,
+          "col": 0,
+          "end_line": 1734,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "book_excursion_safe_tools",
+      "target": "book_excursion",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1730,
+          "col": 0,
+          "end_line": 1730,
+          "end_col": 69
+        }
+      }
+    },
+    {
+      "source": "book_excursion_sensitive_tools",
+      "target": "book_excursion",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1729,
+          "col": 0,
+          "end_line": 1729,
+          "end_col": 74
+        }
+      }
+    },
+    {
+      "source": "book_hotel",
+      "target": "End",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_book_hotel"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1704,
+          "col": 0,
+          "end_line": 1707,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "book_hotel",
+      "target": "book_hotel_safe_tools",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_book_hotel"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1704,
+          "col": 0,
+          "end_line": 1707,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "book_hotel",
+      "target": "book_hotel_sensitive_tools",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_book_hotel"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1704,
+          "col": 0,
+          "end_line": 1707,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "book_hotel",
+      "target": "leave_skill",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_book_hotel"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1704,
+          "col": 0,
+          "end_line": 1707,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "book_hotel_safe_tools",
+      "target": "book_hotel",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1703,
+          "col": 0,
+          "end_line": 1703,
+          "end_col": 61
+        }
+      }
+    },
+    {
+      "source": "book_hotel_sensitive_tools",
+      "target": "book_hotel",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1702,
+          "col": 0,
+          "end_line": 1702,
+          "end_col": 66
+        }
+      }
+    },
+    {
+      "source": "enter_book_car_rental",
+      "target": "book_car_rental",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1656,
+          "col": 0,
+          "end_line": 1656,
+          "end_col": 66
+        }
+      }
+    },
+    {
+      "source": "enter_book_excursion",
+      "target": "book_excursion",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1714,
+          "col": 0,
+          "end_line": 1714,
+          "end_col": 64
+        }
+      }
+    },
+    {
+      "source": "enter_book_hotel",
+      "target": "book_hotel",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1687,
+          "col": 0,
+          "end_line": 1687,
+          "end_col": 56
+        }
+      }
+    },
+    {
+      "source": "enter_update_flight",
+      "target": "update_flight",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1602,
+          "col": 0,
+          "end_line": 1602,
+          "end_col": 62
+        }
+      }
+    },
+    {
+      "source": "fetch_user_info",
+      "target": "assistant",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1087,
+          "col": 0,
+          "end_line": 1087,
+          "end_col": 54
+        }
+      }
+    },
+    {
+      "source": "fetch_user_info",
+      "target": "assistant",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1233,
+          "col": 0,
+          "end_line": 1233,
+          "end_col": 54
+        }
+      }
+    },
+    {
+      "source": "fetch_user_info",
+      "target": "primary_assistant",
+      "condition": {
+        "type": "conditional_func_return",
+        "value": "primary_assistant",
+        "condition_function": "route_to_workflow"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1782,
+          "col": 0,
+          "end_line": 1782,
+          "end_col": 73
+        },
+        "potential_return": true
+      }
+    },
+    {
+      "source": "leave_skill",
+      "target": "primary_assistant",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1648,
+          "col": 0,
+          "end_line": 1648,
+          "end_col": 58
+        }
+      }
+    },
+    {
+      "source": "primary_assistant",
+      "target": "End",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_primary_assistant"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1761,
+          "col": 0,
+          "end_line": 1767,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "primary_assistant",
+      "target": "enter_book_car_rental",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_primary_assistant"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1761,
+          "col": 0,
+          "end_line": 1767,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "primary_assistant",
+      "target": "enter_book_excursion",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_primary_assistant"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1761,
+          "col": 0,
+          "end_line": 1767,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "primary_assistant",
+      "target": "enter_book_hotel",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_primary_assistant"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1761,
+          "col": 0,
+          "end_line": 1767,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "primary_assistant",
+      "target": "enter_update_flight",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_primary_assistant"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1761,
+          "col": 0,
+          "end_line": 1767,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "primary_assistant",
+      "target": "primary_assistant_tools",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_primary_assistant"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1761,
+          "col": 0,
+          "end_line": 1767,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "primary_assistant_tools",
+      "target": "primary_assistant",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1768,
+          "col": 0,
+          "end_line": 1768,
+          "end_col": 70
+        }
+      }
+    },
+    {
+      "source": "safe_tools",
+      "target": "assistant",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1252,
+          "col": 0,
+          "end_line": 1252,
+          "end_col": 49
+        }
+      }
+    },
+    {
+      "source": "sensitive_tools",
+      "target": "assistant",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1253,
+          "col": 0,
+          "end_line": 1253,
+          "end_col": 54
+        }
+      }
+    },
+    {
+      "source": "tools",
+      "target": "assistant",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 972,
+          "col": 0,
+          "end_line": 972,
+          "end_col": 44
+        }
+      }
+    },
+    {
+      "source": "tools",
+      "target": "assistant",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1089,
+          "col": 0,
+          "end_line": 1089,
+          "end_col": 44
+        }
+      }
+    },
+    {
+      "source": "update_flight",
+      "target": "End",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_update_flight"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1625,
+          "col": 0,
+          "end_line": 1628,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "update_flight",
+      "target": "leave_skill",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_update_flight"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1625,
+          "col": 0,
+          "end_line": 1628,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "update_flight",
+      "target": "update_flight_safe_tools",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_update_flight"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1625,
+          "col": 0,
+          "end_line": 1628,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "update_flight",
+      "target": "update_flight_sensitive_tools",
+      "condition": {
+        "type": "conditional_map_list",
+        "value": null,
+        "condition_function": "route_update_flight"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1625,
+          "col": 0,
+          "end_line": 1628,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "update_flight_safe_tools",
+      "target": "update_flight",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1624,
+          "col": 0,
+          "end_line": 1624,
+          "end_col": 67
+        }
+      }
+    },
+    {
+      "source": "update_flight_sensitive_tools",
+      "target": "update_flight",
+      "condition": {
+        "type": "static"
+      },
+      "metadata": {
+        "definition_location": {
+          "file": "./examples/code/langgraph/lg.py",
+          "line": 1623,
+          "col": 0,
+          "end_line": 1623,
+          "end_col": 72
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "framework": "Langgraph"
+  }
+}

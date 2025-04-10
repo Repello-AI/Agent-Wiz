@@ -199,8 +199,8 @@ class FunctionAnalyzer(ast.NodeVisitor):
                             for target, res_info in goto_target_results.items():
                                 self.potential_gotos[target] = res_info
                                 self.goto_source_locations[target] = self._get_location_dict(node)
-                                if res_info.get("status", "").startswith("unresolved"):
-                                    self.unresolved_reasons.add((res_info.get("type", "goto"), res_info.get("detail", "?")))
+                                # if res_info.get("status", "").startswith("unresolved"):
+                                    # self.unresolved_reasons.add((res_info.get("type", "goto"), res_info.get("detail", "?")))
                             self.is_router = True
                             break
 
@@ -235,8 +235,8 @@ class FunctionAnalyzer(ast.NodeVisitor):
                         status = "resolved_variable_partial" if has_unresolved_source else "resolved_variable"
                         add_target(val, status, "variable", var_name)
                         resolved_count += 1
-                if resolved_count == 0 and has_unresolved_source:
-                     targets["?"] = {"status": "unresolved_variable_source", "type": "variable", "detail": var_name}
+                # if resolved_count == 0 and has_unresolved_source:
+                    #  targets["?"] = {"status": "unresolved_variable_source", "type": "variable", "detail": var_name}
 
             elif var_name in self.call_site_context:
                  arg_node = self.call_site_context[var_name]
@@ -244,10 +244,10 @@ class FunctionAnalyzer(ast.NodeVisitor):
                  if isinstance(resolved_arg, str):
                      add_target(resolved_arg, "resolved_parameter", "parameter", var_name)
                  else:
-                      add_target("?", "unresolved_parameter_type", "parameter", var_name)
+                    #   add_target("?", "unresolved_parameter_type", "parameter", var_name)
                       self.unresolved_reasons.add(('parameter', var_name))
             else:
-                add_target("?", "unresolved_variable", "variable", var_name)
+                # add_target("?", "unresolved_variable", "variable", var_name)
                 self.unresolved_reasons.add(('variable', var_name))
 
         elif isinstance(value_node, ast.List):
@@ -264,14 +264,14 @@ class FunctionAnalyzer(ast.NodeVisitor):
                  for ret_val in call_returns:
                      add_target(ret_val, status, "call_result", detail or self.outer_visitor._stringify_ast_node(value_node.func))
              elif status.startswith("unresolved"):
-                  add_target("?", status, "call_result", detail or self.outer_visitor._stringify_ast_node(value_node.func))
+                #   add_target("?", status, "call_result", detail or self.outer_visitor._stringify_ast_node(value_node.func))
                   self.unresolved_reasons.add(('call_result', detail or self.outer_visitor._stringify_ast_node(value_node.func)))
              else:
-                 add_target("?", "unresolved_call_no_string_return", "call_result", detail or self.outer_visitor._stringify_ast_node(value_node.func))
+                #  add_target("?", "unresolved_call_no_string_return", "call_result", detail or self.outer_visitor._stringify_ast_node(value_node.func))
                  self.unresolved_reasons.add(('call_result_no_string', detail or self.outer_visitor._stringify_ast_node(value_node.func)))
         else:
              unrec_type = type(value_node).__name__
-             add_target("?", f"unresolved_goto_value_type", unrec_type, self.outer_visitor._stringify_ast_node(value_node))
+            #  add_target("?", f"unresolved_goto_value_type", unrec_type, self.outer_visitor._stringify_ast_node(value_node))
              self.unresolved_reasons.add(('goto_value_type', unrec_type))
 
         return targets
@@ -613,16 +613,16 @@ class GraphVisitor(ast.NodeVisitor):
                 else:
                     print(f"Warning: Cannot resolve path_map variable '{var_name}' for source '{source}' at {location}.")
                     resolution_status = "unresolved_variable"
-                    self.edges.append({
-                        "source": source, "target": "?",
-                        "condition": {
-                            "type": "conditional_map",
-                            "value": None,
-                            "condition_function": path_func_name,
-                            # "resolution": {"status": resolution_status, "detail": map_source_detail}
-                        },
-                        "metadata": {"definition_location": location}
-                    })
+                    # self.edges.append({
+                    #     "source": source, "target": "?",
+                    #     "condition": {
+                    #         "type": "conditional_map",
+                    #         "value": None,
+                    #         "condition_function": path_func_name,
+                    #         # "resolution": {"status": resolution_status, "detail": map_source_detail}
+                    #     },
+                    #     "metadata": {"definition_location": location}
+                    # })
                     return
             elif isinstance(path_map_arg, (ast.Dict, ast.List)):
                 resolved_path_map = path_map_arg
@@ -632,7 +632,7 @@ class GraphVisitor(ast.NodeVisitor):
                  print(f"Warning: Unsupported path_map type '{type(path_map_arg)}' for source '{source}' at {location}.")
                  resolution_status = "unresolved_type"
                  map_source_detail = type(path_map_arg).__name__
-                 self.edges.append({ "source": source, "target": "?", "condition": { "type": "conditional_map", "value": None, "condition_function": path_func_name, "resolution": {"status": resolution_status, "detail": map_source_detail}}, "metadata": {"definition_location": location}})
+                #  self.edges.append({ "source": source, "target": "?", "condition": { "type": "conditional_map", "value": None, "condition_function": path_func_name, "resolution": {"status": resolution_status, "detail": map_source_detail}}, "metadata": {"definition_location": location}})
                  return
 
             if isinstance(resolved_path_map, ast.Dict):
@@ -677,23 +677,23 @@ class GraphVisitor(ast.NodeVisitor):
                  if not possible_targets and analyzer.unresolved_reasons:
                       detail = ", ".join([f"{t}:{d}" for t, d in analyzer.unresolved_reasons])
                       print("Warning : no target")
-                      self.edges.append({
-                            "source": source, "target": "?",
-                            "condition": {
-                                "type": "conditional_func_return",
-                                "value": None,
-                                "condition_function": path_func_name,
-                                # "resolution": {"status": "unresolved_function_analysis", "detail": detail}
-                            },
-                            "metadata": {"definition_location": location}
-                      })
+                    #   self.edges.append({
+                    #         "source": source, "target": "?",
+                    #         "condition": {
+                    #             "type": "conditional_func_return",
+                    #             "value": None,
+                    #             "condition_function": path_func_name,
+                    #             # "resolution": {"status": "unresolved_function_analysis", "detail": detail}
+                    #         },
+                    #         "metadata": {"definition_location": location}
+                    #   })
                  elif not possible_targets:
                      print(f"Warning: Path function '{path_func_name}' seems to have no direct string return values at {location}.")
-                     self.edges.append({
-                           "source": source, "target": "?",
-                           "condition": { "type": "conditional_func_return", "value": None, "condition_function": path_func_name, "resolution": {"status": "unresolved_no_returns"}},
-                           "metadata": {"definition_location": location}
-                     })
+                    #  self.edges.append({
+                    #        "source": source, "target": "?",
+                    #        "condition": { "type": "conditional_func_return", "value": None, "condition_function": path_func_name, "resolution": {"status": "unresolved_no_returns"}},
+                    #        "metadata": {"definition_location": location}
+                    #  })
 
                  for target in possible_targets:
                      if target == "End": self._add_node_if_not_exists("END", None, {}, None)
@@ -710,14 +710,14 @@ class GraphVisitor(ast.NodeVisitor):
                         })
              else:
                   print(f"Warning: Path function '{path_func_name}' definition not found at {location}.")
-                  self.edges.append(
-                      {"source": source,
-                       "target": "?",
-                       "condition": {"type": "conditional_func_return", "value": None,
-                                      "condition_function": path_func_name,
-                                    # "resolution": {"status": "unresolved_function_not_found"}
-                                    },
-                                    "metadata": {"definition_location": location}})
+                #   self.edges.append(
+                #       {"source": source,
+                #        "target": "?",
+                #        "condition": {"type": "conditional_func_return", "value": None,
+                #                       "condition_function": path_func_name,
+                #                     # "resolution": {"status": "unresolved_function_not_found"}
+                #                     },
+                #                     "metadata": {"definition_location": location}})
         else:
              print(f"Warning: Insufficient arguments for add_conditional_edges from '{source}' at {location}.")
 
@@ -825,12 +825,12 @@ class GraphVisitor(ast.NodeVisitor):
                  if not possible_targets and analyzer.unresolved_reasons:
                       print("Warning :  no target")
                       detail = ", ".join([f"{t}:{d}" for t, d in analyzer.unresolved_reasons])
-                      self.edges.append({"source": source, "target": "?", "condition": {"type": "conditional_entry_func", "value": None, "condition_function": path_func_name, "resolution": {"status": "unresolved_function_analysis", "detail": detail}}, "metadata": {"definition_location": location}})
-                 elif not possible_targets: self.edges.append({"source": source, "target": "?", "condition": {"type": "conditional_entry_func", "value": None, "condition_function": path_func_name, "resolution": {"status": "unresolved_no_returns"}}, "metadata": {"definition_location": location}})
+                    #   self.edges.append({"source": source, "target": "?", "condition": {"type": "conditional_entry_func", "value": None, "condition_function": path_func_name, "resolution": {"status": "unresolved_function_analysis", "detail": detail}}, "metadata": {"definition_location": location}})
+                #  elif not possible_targets: self.edges.append({"source": source, "target": "?", "condition": {"type": "conditional_entry_func", "value": None, "condition_function": path_func_name, "resolution": {"status": "unresolved_no_returns"}}, "metadata": {"definition_location": location}})
                  for target in possible_targets:
                       if target == "End": self._add_node_if_not_exists("END", None, {}, None)
                       if target: self.edges.append({"source": source, "target": target, "condition": {"type": "conditional_entry_func", "value": target, "condition_function": path_func_name, "resolution": {"status": "resolved"}}, "metadata": {"definition_location": location, "potential_return": True}})
-            else: self.edges.append({"source": source, "target": "?", "condition": {"type": "conditional_entry_func", "value": None, "condition_function": path_func_name, "resolution": {"status": "unresolved_function_not_found"}}, "metadata": {"definition_location": location}})
+            # else: self.edges.append({"source": source, "target": "?", "condition": {"type": "conditional_entry_func", "value": None, "condition_function": path_func_name, "resolution": {"status": "unresolved_function_not_found"}}, "metadata": {"definition_location": location}})
          else: print(f"Warning: Insufficient arguments for set_conditional_entry_point at {location}.")
 
 

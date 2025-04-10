@@ -1,0 +1,208 @@
+{
+  "nodes": [
+    {
+      "id": "End",
+      "name": "End",
+      "node_type": "End",
+      "function_name": null,
+      "docstring": null,
+      "source_location": null,
+      "metadata": {}
+    },
+    {
+      "id": "FAQ Agent",
+      "name": "FAQ Agent",
+      "node_type": "Agent",
+      "source_location": {
+        "file": "examples/code/openai_agents/agent.py",
+        "line": 88,
+        "col": 0,
+        "end_line": 99,
+        "end_col": 1
+      },
+      "metadata": {
+        "variable_name": "faq_agent",
+        "tool_names": [
+          "faq_lookup_tool"
+        ],
+        "handoff_refs": []
+      },
+      "function_name": null,
+      "docstring": null
+    },
+    {
+      "id": "Seat Booking Agent",
+      "name": "Seat Booking Agent",
+      "node_type": "Agent",
+      "source_location": {
+        "file": "examples/code/openai_agents/agent.py",
+        "line": 101,
+        "col": 0,
+        "end_line": 113,
+        "end_col": 1
+      },
+      "metadata": {
+        "variable_name": "seat_booking_agent",
+        "tool_names": [
+          "update_seat"
+        ],
+        "handoff_refs": []
+      },
+      "function_name": null,
+      "docstring": null
+    },
+    {
+      "id": "Start",
+      "name": "Start",
+      "node_type": "Start",
+      "function_name": null,
+      "docstring": null,
+      "source_location": null,
+      "metadata": {}
+    },
+    {
+      "id": "Triage Agent",
+      "name": "Triage Agent",
+      "node_type": "Agent",
+      "source_location": {
+        "file": "examples/code/openai_agents/agent.py",
+        "line": 115,
+        "col": 0,
+        "end_line": 126,
+        "end_col": 1
+      },
+      "metadata": {
+        "variable_name": "triage_agent",
+        "tool_names": [],
+        "handoff_refs": [
+          "faq_agent",
+          "seat_booking_agent"
+        ]
+      },
+      "function_name": null,
+      "docstring": null
+    },
+    {
+      "id": "faq_lookup_tool",
+      "name": "faq_lookup_tool",
+      "function_name": "faq_lookup_tool",
+      "docstring": "Lookup frequently asked questions.",
+      "node_type": "CustomTool",
+      "source_location": {
+        "file": "examples/code/openai_agents/agent.py",
+        "line": 41,
+        "col": 0,
+        "end_line": 56,
+        "end_col": 65
+      },
+      "metadata": {
+        "custom": true
+      }
+    },
+    {
+      "id": "update_seat",
+      "name": "update_seat",
+      "function_name": "update_seat",
+      "docstring": "Update the seat for a given confirmation number.\n\nArgs:\n    confirmation_number: The confirmation number for the flight.\n    new_seat: The new seat to update to.",
+      "node_type": "CustomTool",
+      "source_location": {
+        "file": "examples/code/openai_agents/agent.py",
+        "line": 60,
+        "col": 0,
+        "end_line": 75,
+        "end_col": 86
+      },
+      "metadata": {
+        "custom": true
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "FAQ Agent",
+      "target": "End",
+      "edge_type": "implicit_end",
+      "condition": {},
+      "metadata": {}
+    },
+    {
+      "source": "FAQ Agent",
+      "target": "faq_lookup_tool",
+      "edge_type": "tool_usage",
+      "condition": {},
+      "metadata": {
+        "definition_location": {
+          "file": "examples/code/openai_agents/agent.py",
+          "line": 88,
+          "col": 0,
+          "end_line": 99,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "Seat Booking Agent",
+      "target": "End",
+      "edge_type": "implicit_end",
+      "condition": {},
+      "metadata": {}
+    },
+    {
+      "source": "Seat Booking Agent",
+      "target": "update_seat",
+      "edge_type": "tool_usage",
+      "condition": {},
+      "metadata": {
+        "definition_location": {
+          "file": "examples/code/openai_agents/agent.py",
+          "line": 101,
+          "col": 0,
+          "end_line": 113,
+          "end_col": 1
+        }
+      }
+    },
+    {
+      "source": "Start",
+      "target": "Triage Agent",
+      "edge_type": "implicit_start",
+      "condition": {},
+      "metadata": {}
+    },
+    {
+      "source": "Triage Agent",
+      "target": "FAQ Agent",
+      "edge_type": "handoff",
+      "condition": {},
+      "metadata": {
+        "definition_location": {
+          "file": "examples/code/openai_agents/agent.py",
+          "line": 115,
+          "col": 0,
+          "end_line": 126,
+          "end_col": 1
+        },
+        "handoff_ref": "faq_agent"
+      }
+    },
+    {
+      "source": "Triage Agent",
+      "target": "Seat Booking Agent",
+      "edge_type": "handoff",
+      "condition": {},
+      "metadata": {
+        "definition_location": {
+          "file": "examples/code/openai_agents/agent.py",
+          "line": 115,
+          "col": 0,
+          "end_line": 126,
+          "end_col": 1
+        },
+        "handoff_ref": "seat_booking_agent"
+      }
+    }
+  ],
+  "metadata": {
+    "framework": "OpenAI_Agents"
+  }
+}

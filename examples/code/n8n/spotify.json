@@ -1,0 +1,167 @@
+{
+    "name": "Add Currently Playing Song to Playlist",
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "5f8c3b9e-a1d2-4e7f-8b9c-1a2d3e4f5a6b",
+        "name": "Manual Trigger",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          400,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "operation": "getCurrentPlaybackState",
+          "options": {}
+        },
+        "id": "c7d8e9f0-b2e3-4a8b-9c0d-2b3e4f5a6b7c",
+        "name": "Get Currently Playing",
+        "type": "n8n-nodes-base.spotify",
+        "typeVersion": 1.1,
+        "position": [
+          600,
+          300
+        ],
+        "credentials": {
+          "spotifyOAuth2Api": {
+            "id": "YOUR_SPOTIFY_CREDENTIAL_ID",
+            "name": "Spotify OAuth2 API"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "boolean": [
+              {
+                "value1": "={{ $json.is_playing }}",
+                "operation": "true"
+              }
+            ]
+          }
+        },
+        "id": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+        "name": "Is Song Playing?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 1,
+        "position": [
+          800,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "operation": "addToPlaylist",
+          "playlist": "YOUR_PLAYLIST_ID_HERE",
+          "trackUris": "={{ $json.item.uri }}",
+          "options": {}
+        },
+        "id": "f0e1d2c3-b4a5-6f7e-8d9c-0a1b2c3d4e5f",
+        "name": "Add Track to Playlist",
+        "type": "n8n-nodes-base.spotify",
+        "typeVersion": 1.1,
+        "position": [
+          1000,
+          200
+        ],
+        "credentials": {
+          "spotifyOAuth2Api": {
+            "id": "YOUR_SPOTIFY_CREDENTIAL_ID",
+            "name": "Spotify OAuth2 API"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "values": {
+            "string": [
+              {
+                "name": "message",
+                "value": "={{ `Successfully added '${$json.item.name}' by ${$json.item.artists[0].name} to the playlist.` }}"
+              }
+            ]
+          },
+          "keepOnlySet": true,
+          "options": {}
+        },
+        "id": "b9c8d7e6-a5b4-c3d2-e1f0-a9b8c7d6e5f4",
+        "name": "Success Message",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 1.1,
+        "position": [
+          1200,
+          200
+        ]
+      }
+    ],
+    "pinData": {},
+    "connections": {
+      "Manual Trigger": {
+        "main": [
+          [
+            {
+              "node": "Get Currently Playing",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Currently Playing": {
+        "main": [
+          [
+            {
+              "node": "Is Song Playing?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Is Song Playing?": {
+        "true": [
+          [
+            {
+              "node": "Add Track to Playlist",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Add Track to Playlist": {
+        "main": [
+          [
+            {
+              "node": "Success Message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "active": false,
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "versionId": "e8d9f0a1-b2c3-4d5e-6f7a-8b9c0d1e2f3a",
+    "meta": {
+      "instanceId": "YOUR_N8N_INSTANCE_ID_EXAMPLE"
+    },
+    "tags": [
+       {
+        "id": "tag-12345",
+        "name": "Spotify"
+       },
+       {
+         "id": "tag-67890",
+         "name": "Music"
+       }
+    ]
+  }

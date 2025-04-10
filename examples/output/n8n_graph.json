@@ -1,0 +1,233 @@
+{
+  "nodes": [
+    {
+      "name": "_START_",
+      "function_name": "_START_",
+      "docstring": "Synthetic node representing the workflow entry point(s).",
+      "description": "Workflow Start",
+      "node_type": "WorkflowBoundary",
+      "source_location": "spotify.json",
+      "metadata": {
+        "n8n_id": "_START_",
+        "n8n_type": "synthetic.start",
+        "simplified_n8n_type": "StartBoundary",
+        "category": "Workflow",
+        "subcategory": "Boundary",
+        "n8n_categories_list": [
+          "Workflow"
+        ],
+        "n8n_subcategories_data": [
+          "Boundary"
+        ],
+        "parameters": {}
+      }
+    },
+    {
+      "name": "5f8c3b9e-a1d2-4e7f-8b9c-1a2d3e4f5a6b",
+      "function_name": "5f8c3b9e-a1d2-4e7f-8b9c-1a2d3e4f5a6b",
+      "docstring": null,
+      "description": "Manual Trigger",
+      "node_type": "Generic",
+      "source_location": "spotify.json",
+      "metadata": {
+        "n8n_id": "5f8c3b9e-a1d2-4e7f-8b9c-1a2d3e4f5a6b",
+        "n8n_type": "n8n-nodes-base.manualTrigger",
+        "simplified_n8n_type": "ManualTrigger",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {}
+      }
+    },
+    {
+      "name": "c7d8e9f0-b2e3-4a8b-9c0d-2b3e4f5a6b7c",
+      "function_name": "c7d8e9f0-b2e3-4a8b-9c0d-2b3e4f5a6b7c",
+      "docstring": null,
+      "description": "Get Currently Playing",
+      "node_type": "Generic",
+      "source_location": "spotify.json",
+      "metadata": {
+        "n8n_id": "c7d8e9f0-b2e3-4a8b-9c0d-2b3e4f5a6b7c",
+        "n8n_type": "n8n-nodes-base.spotify",
+        "simplified_n8n_type": "Spotify",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "authentication": "oAuth2",
+          "operation": "getCurrentPlaybackState",
+          "options": {}
+        }
+      }
+    },
+    {
+      "name": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+      "function_name": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+      "docstring": null,
+      "description": "Is Song Playing?",
+      "node_type": "Generic",
+      "source_location": "spotify.json",
+      "metadata": {
+        "n8n_id": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+        "n8n_type": "n8n-nodes-base.if",
+        "simplified_n8n_type": "If",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "conditions": {
+            "boolean": [
+              {
+                "value1": "={{ $json.is_playing }}",
+                "operation": "true"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "f0e1d2c3-b4a5-6f7e-8d9c-0a1b2c3d4e5f",
+      "function_name": "f0e1d2c3-b4a5-6f7e-8d9c-0a1b2c3d4e5f",
+      "docstring": null,
+      "description": "Add Track to Playlist",
+      "node_type": "Generic",
+      "source_location": "spotify.json",
+      "metadata": {
+        "n8n_id": "f0e1d2c3-b4a5-6f7e-8d9c-0a1b2c3d4e5f",
+        "n8n_type": "n8n-nodes-base.spotify",
+        "simplified_n8n_type": "Spotify",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "authentication": "oAuth2",
+          "operation": "addToPlaylist",
+          "playlist": "YOUR_PLAYLIST_ID_HERE",
+          "trackUris": "={{ $json.item.uri }}",
+          "options": {}
+        }
+      }
+    },
+    {
+      "name": "b9c8d7e6-a5b4-c3d2-e1f0-a9b8c7d6e5f4",
+      "function_name": "b9c8d7e6-a5b4-c3d2-e1f0-a9b8c7d6e5f4",
+      "docstring": null,
+      "description": "Success Message",
+      "node_type": "Generic",
+      "source_location": "spotify.json",
+      "metadata": {
+        "n8n_id": "b9c8d7e6-a5b4-c3d2-e1f0-a9b8c7d6e5f4",
+        "n8n_type": "n8n-nodes-base.set",
+        "simplified_n8n_type": "Set",
+        "category": null,
+        "subcategory": null,
+        "n8n_categories_list": [],
+        "n8n_subcategories_data": [],
+        "parameters": {
+          "values": {
+            "string": [
+              {
+                "name": "message",
+                "value": "={{ `Successfully added '${$json.item.name}' by ${$json.item.artists[0].name} to the playlist.` }}"
+              }
+            ]
+          },
+          "keepOnlySet": true,
+          "options": {}
+        }
+      }
+    },
+    {
+      "name": "_END_",
+      "function_name": "_END_",
+      "docstring": "Synthetic node representing the workflow terminal point(s).",
+      "description": "Workflow End",
+      "node_type": "WorkflowBoundary",
+      "source_location": "spotify.json",
+      "metadata": {
+        "n8n_id": "_END_",
+        "n8n_type": "synthetic.end",
+        "simplified_n8n_type": "EndBoundary",
+        "category": "Workflow",
+        "subcategory": "Boundary",
+        "n8n_categories_list": [
+          "Workflow"
+        ],
+        "n8n_subcategories_data": [
+          "Boundary"
+        ],
+        "parameters": {}
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "5f8c3b9e-a1d2-4e7f-8b9c-1a2d3e4f5a6b",
+      "target": "c7d8e9f0-b2e3-4a8b-9c0d-2b3e4f5a6b7c",
+      "condition": "main",
+      "metadata": {
+        "definition_location": "spotify.json",
+        "source_handle": "main",
+        "target_handle": "main"
+      }
+    },
+    {
+      "source": "c7d8e9f0-b2e3-4a8b-9c0d-2b3e4f5a6b7c",
+      "target": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+      "condition": "main",
+      "metadata": {
+        "definition_location": "spotify.json",
+        "source_handle": "main",
+        "target_handle": "main"
+      }
+    },
+    {
+      "source": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+      "target": "f0e1d2c3-b4a5-6f7e-8d9c-0a1b2c3d4e5f",
+      "condition": "true",
+      "metadata": {
+        "definition_location": "spotify.json",
+        "source_handle": "true",
+        "target_handle": "main"
+      }
+    },
+    {
+      "source": "f0e1d2c3-b4a5-6f7e-8d9c-0a1b2c3d4e5f",
+      "target": "b9c8d7e6-a5b4-c3d2-e1f0-a9b8c7d6e5f4",
+      "condition": "main",
+      "metadata": {
+        "definition_location": "spotify.json",
+        "source_handle": "main",
+        "target_handle": "main"
+      }
+    },
+    {
+      "source": "_START_",
+      "target": "5f8c3b9e-a1d2-4e7f-8b9c-1a2d3e4f5a6b",
+      "condition": "trigger",
+      "metadata": {
+        "definition_location": "spotify.json",
+        "source_handle": "start",
+        "target_handle": "input"
+      }
+    },
+    {
+      "source": "b9c8d7e6-a5b4-c3d2-e1f0-a9b8c7d6e5f4",
+      "target": "_END_",
+      "condition": "terminal",
+      "metadata": {
+        "definition_location": "spotify.json",
+        "source_handle": "output",
+        "target_handle": "end"
+      }
+    }
+  ],
+  "metadata": {
+    "framework": "n8n"
+  }
+}
