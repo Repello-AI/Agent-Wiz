@@ -1,0 +1,3360 @@
+{
+  "n8n-nodes-base.Brandfetch": {
+    "categories": [
+      "Utility",
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.WorkflowTrigger": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Flow",
+        "Other Trigger Nodes"
+      ]
+    }
+  },
+  "n8n-nodes-base.actionNetwork": {
+    "categories": [
+      "Sales",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.activeCampaign": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.activeCampaignTrigger": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.acuitySchedulingTrigger": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.adalo": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.affinity": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.affinityTrigger": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.aggregate": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.agileCrm": {
+    "categories": [
+      "Marketing",
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.aiTransform": {
+    "categories": [
+      "Development",
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.airtable": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.airtableTrigger": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.airtop": {
+    "categories": [
+      "Productivity",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.amqp": {
+    "categories": [
+      "Development",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.amqpTrigger": {
+    "categories": [
+      "Development",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.apiTemplateIo": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.asana": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.asanaTrigger": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.automizy": {
+    "categories": [
+      "Communication",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.autopilot": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.autopilotTrigger": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.awsCertificateManager": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.awsComprehend": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.awsDynamoDb": {
+    "categories": [
+      "Data & Storage",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.awsElb": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.awsLambda": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.awsRekognition": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.awsS3": {
+    "categories": [
+      "Development",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.awsSes": {
+    "categories": [
+      "Communication",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.awsSns": {
+    "categories": [
+      "Development",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.awsSnsTrigger": {
+    "categories": [
+      "Development",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.awsSqs": {
+    "categories": [
+      "Development",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.awsTextract": {
+    "categories": [
+      "Utility"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.awsTranscribe": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.azureStorage": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.bambooHr": {
+    "categories": [
+      "Miscellaneous"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.bannerbear": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.baserow": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.beeminder": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.bitbucketTrigger": {
+    "categories": [
+      "Development",
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.bitly": {
+    "categories": [
+      "Utility"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.bitwarden": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.box": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.boxTrigger": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.brevo": {
+    "categories": [
+      "Marketing",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.brevoTrigger": {
+    "categories": [
+      "Marketing",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.bubble": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.calTrigger": {
+    "categories": [
+      "Productivity",
+      "Utility"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.calendlyTrigger": {
+    "categories": [
+      "Productivity",
+      "Utility"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.chargebee": {
+    "categories": [
+      "Finance & Accounting"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.chargebeeTrigger": {
+    "categories": [
+      "Finance & Accounting"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.circleCi": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.ciscoWebex": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.ciscoWebexTrigger": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.clearbit": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.clickUp": {
+    "categories": [
+      "Productivity",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.clickUpTrigger": {
+    "categories": [
+      "Productivity",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.clockify": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.clockifyTrigger": {
+    "categories": [
+      "Utility",
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.cloudflare": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.cockpit": {
+    "categories": [
+      "Marketing",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.coda": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.code": {
+    "categories": [
+      "Development",
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers",
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.coinGecko": {
+    "categories": [
+      "Productivity",
+      "Finance & Accounting"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.compareDatasets": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Flow"
+      ]
+    }
+  },
+  "n8n-nodes-base.compression": {
+    "categories": [
+      "Core Nodes",
+      "Data & Storage"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Files",
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.contentful": {
+    "categories": [
+      "Marketing",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.convertKit": {
+    "categories": [
+      "Marketing",
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.convertKitTrigger": {
+    "categories": [
+      "Marketing",
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.convertToFile": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Files",
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.copper": {
+    "categories": [
+      "Marketing",
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.copperTrigger": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.cortex": {
+    "categories": [
+      "Development",
+      "Analytics"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.crateDb": {
+    "categories": [
+      "Development",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.cron": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Flow"
+      ]
+    }
+  },
+  "n8n-nodes-base.crowdDev": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.crowdDevTrigger": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.crypto": {
+    "categories": [
+      "Development",
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.customerIo": {
+    "categories": [
+      "Communication",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.customerIoTrigger": {
+    "categories": [
+      "Communication",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.dateTime": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.debughelper": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.deepL": {
+    "categories": [
+      "Utility"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.demio": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.dhl": {
+    "categories": [
+      "Miscellaneous"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.discord": {
+    "categories": [
+      "Communication",
+      "HITL"
+    ],
+    "subcategories": {
+      "HITL": [
+        "Human in the Loop"
+      ]
+    }
+  },
+  "n8n-nodes-base.discourse": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.disqus": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.drift": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.dropbox": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.dropcontact": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.e2eTest": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers"
+      ]
+    }
+  },
+  "n8n-nodes-base.editImage": {
+    "categories": [
+      "Marketing",
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Files",
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.egoi": {
+    "categories": [
+      "Communication",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.elasticSecurity": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.elasticsearch": {
+    "categories": [
+      "Development",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.emailReadImap": {
+    "categories": [
+      "Communication",
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Other Trigger Nodes"
+      ]
+    }
+  },
+  "n8n-nodes-base.emailSend": {
+    "categories": [
+      "Communication",
+      "HITL",
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "HITL": [
+        "Human in the Loop"
+      ]
+    }
+  },
+  "n8n-nodes-base.emelia": {
+    "categories": [
+      "Communication",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.emeliaTrigger": {
+    "categories": [
+      "Communication",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.erpNext": {
+    "categories": [
+      "Finance & Accounting",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.errorTrigger": {
+    "categories": [
+      "Development",
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Other Trigger Nodes"
+      ]
+    }
+  },
+  "n8n-nodes-base.evaluationMetrics": {
+    "categories": [
+      "Evaluation",
+      "Core Nodes"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.eventbriteTrigger": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.executeCommand": {
+    "categories": [
+      "Development",
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers"
+      ]
+    }
+  },
+  "n8n-nodes-base.executeWorkflow": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers",
+        "Flow"
+      ]
+    }
+  },
+  "n8n-nodes-base.executeWorkflowTrigger": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers"
+      ]
+    }
+  },
+  "n8n-nodes-base.executionData": {
+    "categories": [
+      "Development",
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers"
+      ]
+    }
+  },
+  "n8n-nodes-base.extractFromFile": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Files",
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.facebookGraphApi": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.facebookLeadAdsTrigger": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.facebookTrigger": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.figmaTrigger": {
+    "categories": [
+      "Miscellaneous"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.filemaker": {
+    "categories": [
+      "Development",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.filter": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Flow",
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.flow": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.flowTrigger": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.form": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers"
+      ]
+    }
+  },
+  "n8n-nodes-base.formIoTrigger": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.formTrigger": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Other Trigger Nodes"
+      ]
+    }
+  },
+  "n8n-nodes-base.formstackTrigger": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.freshdesk": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.freshservice": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.freshworksCrm": {
+    "categories": [
+      "Marketing",
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.ftp": {
+    "categories": [
+      "Core Nodes",
+      "Data & Storage",
+      "Development",
+      "Utility"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Files",
+        "Helpers"
+      ]
+    }
+  },
+  "n8n-nodes-base.function": {
+    "categories": [
+      "Development",
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.functionItem": {
+    "categories": [
+      "Development",
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.gSuiteAdmin": {
+    "categories": [
+      "Utility"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.getResponse": {
+    "categories": [
+      "Communication",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.getResponseTrigger": {
+    "categories": [
+      "Communication",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.ghost": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.git": {
+    "categories": [
+      "Core Nodes",
+      "Development"
+    ],
+    "subcategories": [
+      "Helpers"
+    ]
+  },
+  "n8n-nodes-base.github": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.githubTrigger": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.gitlab": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.gitlabTrigger": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.gmail": {
+    "categories": [
+      "Communication",
+      "HITL"
+    ],
+    "subcategories": {
+      "HITL": [
+        "Human in the Loop"
+      ]
+    }
+  },
+  "n8n-nodes-base.gmailTrigger": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.goToWebinar": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.gong": {
+    "categories": [
+      "Development",
+      "Developer Tools"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleAds": {
+    "categories": [
+      "Analytics"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleAnalytics": {
+    "categories": [
+      "Analytics"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleBigQuery": {
+    "categories": [
+      "Data & Storage",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleBooks": {
+    "categories": [
+      "Miscellaneous"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleBusinessProfile": {
+    "categories": [
+      "Marketing",
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleBusinessProfileTrigger": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleCalendar": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleCalendarTrigger": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleChat": {
+    "categories": [
+      "Communication",
+      "HITL"
+    ],
+    "subcategories": {
+      "HITL": [
+        "Human in the Loop"
+      ]
+    }
+  },
+  "n8n-nodes-base.googleCloudNaturalLanguage": {
+    "categories": [
+      "Analytics"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleCloudStorage": {
+    "categories": [
+      "Development",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleContacts": {
+    "categories": [
+      "Miscellaneous "
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleDocs": {
+    "categories": [
+      "Miscellaneous"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleDrive": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleDriveTrigger": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleFirebaseCloudFirestore": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleFirebaseRealtimeDatabase": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googlePerspective": {
+    "categories": [
+      "Analytics",
+      "Utility"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleSheets": {
+    "categories": [
+      "Data & Storage",
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleSheetsTrigger": {
+    "categories": [
+      "Data & Storage",
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleSlides": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleTasks": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.googleTranslate": {
+    "categories": [
+      "Utility"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.gotify": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.grafana": {
+    "categories": [
+      "Development",
+      "Analytics"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.graphql": {
+    "categories": [
+      "Data & Storage",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.grist": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.gumroadTrigger": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.hackerNews": {
+    "categories": [
+      "Communication",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.haloPSA": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.harvest": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.helpScout": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.helpScoutTrigger": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.highLevel": {
+    "categories": [
+      "Marketing",
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.homeAssistant": {
+    "categories": [
+      "Miscellaneous"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.html": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.htmlExtract": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers",
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.httpRequest": {
+    "categories": [
+      "Development",
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers"
+      ]
+    }
+  },
+  "n8n-nodes-base.hubspot": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.hubspotTrigger": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.humanticAi": {
+    "categories": [
+      "Analytics"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.hunter": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.iCal": {
+    "categories": [
+      "Core Nodes",
+      "Productivity"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Files"
+      ]
+    }
+  },
+  "n8n-nodes-base.if": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Flow"
+      ]
+    }
+  },
+  "n8n-nodes-base.intercom": {
+    "categories": [
+      "Communication",
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.interval": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Flow",
+        "Other Trigger Nodes"
+      ]
+    }
+  },
+  "n8n-nodes-base.invoiceNinja": {
+    "categories": [
+      "Finance & Accounting"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.invoiceNinjaTrigger": {
+    "categories": [
+      "Finance & Accounting"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.itemLists": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers",
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.iterable": {
+    "categories": [
+      "Communication",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.jenkins": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.jira": {
+    "categories": [
+      "Development",
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.jiraTrigger": {
+    "categories": [
+      "Development",
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.jotFormTrigger": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.jwt": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.kafka": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.kafkaTrigger": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.keap": {
+    "categories": [
+      "Sales",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.keapTrigger": {
+    "categories": [
+      "Sales",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.kitemaker": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.koBoToolbox": {
+    "categories": [
+      "Communication",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.koBoToolboxTrigger": {
+    "categories": [
+      "Communication",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.ldap": {
+    "categories": [
+      "Development",
+      "Developer Tools"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.lemlist": {
+    "categories": [
+      "Communication",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.lemlistTrigger": {
+    "categories": [
+      "Communication",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.limit": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.line": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.linear": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.linearTrigger": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.lingvaNex": {
+    "categories": [
+      "Miscellaneous"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.linkedIn": {
+    "categories": [
+      "Marketing",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.localFileTrigger": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Files",
+        "Other Trigger Nodes"
+      ]
+    }
+  },
+  "n8n-nodes-base.lonescale": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.lonescaleTrigger": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.magento2": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mailcheck": {
+    "categories": [
+      "Utility",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mailchimp": {
+    "categories": [
+      "Marketing",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mailchimpTrigger": {
+    "categories": [
+      "Marketing",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mailerLite": {
+    "categories": [
+      "Communication",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mailerLiteTrigger": {
+    "categories": [
+      "Communication",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mailgun": {
+    "categories": [
+      "Communication",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mailjet": {
+    "categories": [
+      "Communication",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mailjetTrigger": {
+    "categories": [
+      "Communication",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mandrill": {
+    "categories": [
+      "Communication",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.manualTrigger": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.markdown": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.marketstack": {
+    "categories": [
+      "Analytics",
+      "Finance & Accounting"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.matrix": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mattermost": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mautic": {
+    "categories": [
+      "Marketing",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mauticTrigger": {
+    "categories": [
+      "Marketing",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.medium": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.merge": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Flow",
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.messageBird": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.metabase": {
+    "categories": [
+      "Development",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.microsoftDynamicsCrm": {
+    "categories": [
+      "Marketing",
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.microsoftEntra": {
+    "categories": [
+      "Development",
+      "Developer Tools"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.microsoftExcel": {
+    "categories": [
+      "Data & Storage",
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.microsoftGraphSecurity": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.microsoftOneDrive": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.microsoftOneDriveTrigger": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.microsoftOutlook": {
+    "categories": [
+      "Communication",
+      "HITL"
+    ],
+    "subcategories": {
+      "HITL": [
+        "Human in the Loop"
+      ]
+    }
+  },
+  "n8n-nodes-base.microsoftOutlookTrigger": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.microsoftSql": {
+    "categories": [
+      "Development",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.microsoftTeams": {
+    "categories": [
+      "Communication",
+      "HITL"
+    ],
+    "subcategories": {
+      "HITL": [
+        "Human in the Loop"
+      ]
+    }
+  },
+  "n8n-nodes-base.microsoftToDo": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mindee": {
+    "categories": [
+      "Utility"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.misp": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mocean": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mondayCom": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mongoDb": {
+    "categories": [
+      "Development",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.monicaCrm": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.moveBinaryData": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Files"
+      ]
+    }
+  },
+  "n8n-nodes-base.mqtt": {
+    "categories": [
+      "Development",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mqttTrigger": {
+    "categories": [
+      "Communication",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.msg91": {
+    "categories": [
+      "Communication",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.mySql": {
+    "categories": [
+      "Development",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.n8n": {
+    "categories": [
+      "Development",
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers",
+        "Other Trigger Nodes"
+      ]
+    }
+  },
+  "n8n-nodes-base.n8nTrigger": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Flow",
+        "Other Trigger Nodes",
+        "Helpers"
+      ]
+    }
+  },
+  "n8n-nodes-base.nasa": {
+    "categories": [
+      "Miscellaneous"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.netlify": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.netlifyTrigger": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.netscalerAdc": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.nextCloud": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.noOp": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers"
+      ]
+    }
+  },
+  "n8n-nodes-base.nocoDb": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.notion": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.notionTrigger": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.npm": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.odoo": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.okta": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.oneSimpleApi": {
+    "categories": [
+      "Utility"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.onfleet": {
+    "categories": [
+      "Miscellaneous"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.onfleetTrigger": {
+    "categories": [
+      "Miscellaneous"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.openAi": {
+    "categories": [
+      "Utility"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.openThesaurus": {
+    "categories": [
+      "Utility"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.openWeatherMap": {
+    "categories": [
+      "Miscellaneous",
+      "Utility"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.orbit": {
+    "categories": [
+      "Analytics"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.oura": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.paddle": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.pagerDuty": {
+    "categories": [
+      "Communication",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.payPal": {
+    "categories": [
+      "Finance & Accounting",
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.payPalTrigger": {
+    "categories": [
+      "Finance & Accounting",
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.peekalink": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.phantombuster": {
+    "categories": [
+      "Sales",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.philipsHue": {
+    "categories": [
+      "Miscellaneous"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.pipedrive": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.pipedriveTrigger": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.plivo": {
+    "categories": [
+      "Communication",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.postHog": {
+    "categories": [
+      "Analytics",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.postbin": {
+    "categories": [
+      "Development",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.postgres": {
+    "categories": [
+      "Development",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.postgresTrigger": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.postmarkTrigger": {
+    "categories": [
+      "Communication",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.profitWell": {
+    "categories": [
+      "Analytics"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.pushbullet": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.pushcut": {
+    "categories": [
+      "Communication",
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.pushcutTrigger": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.pushover": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.questDb": {
+    "categories": [
+      "Data & Storage",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.quickChart": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.quickbase": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.quickbooks": {
+    "categories": [
+      "Finance & Accounting"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.rabbitmq": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.rabbitmqTrigger": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.raindrop": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.readBinaryFile": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Files"
+      ]
+    }
+  },
+  "n8n-nodes-base.readBinaryFiles": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Files"
+      ]
+    }
+  },
+  "n8n-nodes-base.readPDF": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Files"
+      ]
+    }
+  },
+  "n8n-nodes-base.readWriteFile": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Files"
+      ]
+    }
+  },
+  "n8n-nodes-base.reddit": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.redis": {
+    "categories": [
+      "Development",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.redisTrigger": {
+    "categories": [
+      "Communication",
+      "Development",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.removeDuplicates": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.renameKeys": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.respondToWebhook": {
+    "categories": [
+      "Core Nodes",
+      "Utility"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers"
+      ]
+    }
+  },
+  "n8n-nodes-base.rocketchat": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.rssFeedRead": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.rssFeedReadTrigger": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.rundeck": {
+    "categories": [
+      "Communication",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.s3": {
+    "categories": [
+      "Development",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.salesforce": {
+    "categories": [
+      "Sales",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.salesforceTrigger": {
+    "categories": [
+      "Sales",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.salesmate": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.scheduleTrigger": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.seaTable": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.seaTableTrigger": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.securityScorecard": {
+    "categories": [
+      "Analytics"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.segment": {
+    "categories": [
+      "Analytics",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.sendGrid": {
+    "categories": [
+      "Marketing",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.sendy": {
+    "categories": [
+      "Communication",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.sentryIo": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.serviceNow": {
+    "categories": [
+      "Productivity",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.set": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.shopify": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.shopifyTrigger": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.signl4": {
+    "categories": [
+      "Communication",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.simulate": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers"
+      ]
+    }
+  },
+  "n8n-nodes-base.simulateTrigger": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers"
+      ]
+    }
+  },
+  "n8n-nodes-base.slack": {
+    "categories": [
+      "Communication",
+      "HITL"
+    ],
+    "subcategories": {
+      "HITL": [
+        "Human in the Loop"
+      ]
+    }
+  },
+  "n8n-nodes-base.slackTrigger": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.sms77": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.snowflake": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.sort": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.splitInBatches": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Flow"
+      ]
+    }
+  },
+  "n8n-nodes-base.splitOut": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.splunk": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.spontit": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.spotify": {
+    "categories": [
+      "Miscellaneous"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.spreadsheetFile": {
+    "categories": [
+      "Data & Storage",
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Files"
+      ]
+    }
+  },
+  "n8n-nodes-base.sseTrigger": {
+    "categories": [
+      "Development",
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Other Trigger Nodes"
+      ]
+    }
+  },
+  "n8n-nodes-base.ssh": {
+    "categories": [
+      "Core Nodes",
+      "Development"
+    ],
+    "subcategories": [
+      "Helpers"
+    ]
+  },
+  "n8n-nodes-base.stackby": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.start": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.stickyNote": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers"
+      ]
+    }
+  },
+  "n8n-nodes-base.stopAndError": {
+    "categories": [
+      "Core Nodes",
+      "Utility"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Flow"
+      ]
+    }
+  },
+  "n8n-nodes-base.storyblok": {
+    "categories": [
+      "Data & Storage",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.strapi": {
+    "categories": [
+      "Data & Storage",
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.strava": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.stravaTrigger": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.stripe": {
+    "categories": [
+      "Finance & Accounting",
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.stripeTrigger": {
+    "categories": [
+      "Finance & Accounting",
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.summarize": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.supabase": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.surveyMonkeyTrigger": {
+    "categories": [
+      "Marketing",
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.switch": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Flow"
+      ]
+    }
+  },
+  "n8n-nodes-base.syncroMsp": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.taiga": {
+    "categories": [
+      "Development",
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.taigaTrigger": {
+    "categories": [
+      "Development",
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.tapfiliate": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.telegram": {
+    "categories": [
+      "Communication",
+      "HITL"
+    ],
+    "subcategories": {
+      "HITL": [
+        "Human in the Loop"
+      ]
+    }
+  },
+  "n8n-nodes-base.telegramTrigger": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.theHive": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.theHiveProject": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.theHiveProjectTrigger": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.theHiveTrigger": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.timescaleDb": {
+    "categories": [
+      "Data & Storage",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.todoist": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.togglTrigger": {
+    "categories": [
+      "Productivity",
+      "Utility"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.totp": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": [
+      "Helpers"
+    ]
+  },
+  "n8n-nodes-base.travisCi": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.trello": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.trelloTrigger": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.twake": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.twilio": {
+    "categories": [
+      "Communication",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.twilioTrigger": {
+    "categories": [
+      "Communication",
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.twist": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.twitter": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.typeformTrigger": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.unleashedSoftware": {
+    "categories": [
+      "Sales",
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.uplead": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.uproc": {
+    "categories": [
+      "Data & Storage"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.uptimeRobot": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.urlScanIo": {
+    "categories": [
+      "Development",
+      "Utility"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.venafiTlsProtectCloud": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.venafiTlsProtectCloudTrigger": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.venafiTlsProtectDatacenter": {
+    "categories": [
+      "Development"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.vero": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.vonage": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.wait": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers",
+        "Flow"
+      ]
+    }
+  },
+  "n8n-nodes-base.webflow": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.webflowTrigger": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.webhook": {
+    "categories": [
+      "Development",
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Helpers"
+      ]
+    }
+  },
+  "n8n-nodes-base.wekan": {
+    "categories": [
+      "Productivity"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.whatsApp": {
+    "categories": [
+      "Communication",
+      "HITL"
+    ],
+    "subcategories": {
+      "HITL": [
+        "Human in the Loop"
+      ]
+    }
+  },
+  "n8n-nodes-base.whatsAppTrigger": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.wise": {
+    "categories": [
+      "Finance & Accounting"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.wiseTrigger": {
+    "categories": [
+      "Finance & Accounting"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.wooCommerce": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.wooCommerceTrigger": {
+    "categories": [
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.wordpress": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.workableTrigger": {
+    "categories": [
+      "Miscellaneous"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.writeBinaryFile": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Files"
+      ]
+    }
+  },
+  "n8n-nodes-base.wufooTrigger": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.xero": {
+    "categories": [
+      "Finance & Accounting"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.xml": {
+    "categories": [
+      "Core Nodes"
+    ],
+    "subcategories": {
+      "Core Nodes": [
+        "Data Transformation"
+      ]
+    }
+  },
+  "n8n-nodes-base.youTube": {
+    "categories": [
+      "Marketing"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.yourls": {
+    "categories": [
+      "Utility"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.zammad": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.zendesk": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.zendeskTrigger": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.zohoCrm": {
+    "categories": [
+      "Communication",
+      "Sales"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.zoom": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "n8n-nodes-base.zulip": {
+    "categories": [
+      "Communication"
+    ],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.openAi": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.agent": {
+    "categories": ["Development"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.openAiAssistant": {
+    "categories": ["Development"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.chainSummarization": {
+    "categories": ["Development"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.chainLlm": {
+    "categories": ["Development"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.chainRetrievalQa": {
+    "categories": ["Development"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.sentimentAnalysis": {
+    "categories": ["Development"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.informationExtractor": {
+    "categories": ["Development"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.textClassifier": {
+    "categories": ["Development"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.code": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.documentDefaultDataLoader": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.documentBinaryInputLoader": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.documentGithubLoader": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.documentJsonInputLoader": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.embeddingsCohere": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.embeddingsAwsBedrock": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.embeddingsAzureOpenAi": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.embeddingsGoogleVertex": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.embeddingsMistralCloud": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.embeddingsOpenAi": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.embeddingsOllama": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.lmChatAnthropic": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.lmChatAwsBedrock": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.lmChatDeepSeek": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.lmChatGoogleGemini": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.lmChatGoogleVertex": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.lmChatGroq": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.lmChatMistralCloud": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.lmChatOllama": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.lmChatOpenRouter": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.lmChatXAiGrok": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.lmChatOpenAi": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.lmOpenAi": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.lmCohere": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.lmOllama": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.lmOpenHuggingFaceInference": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.memoryBufferWindow": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.memoryMotorhead": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.memoryPostgresChat": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.memoryRedisChat": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.memoryManager": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.memoryChatRetriever": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.memoryXata": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.memoryZep": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.outputParserAutofixing": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.outputParserItemList": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.outputParserStructured": {
+    "categories": ["Developer Tools"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.retrieverContextualCompression": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.retrieverVectorStore": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.retrieverMultiQuery": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.retrieverWorkflow": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.textSplitterCharacterTextSplitter": {
+    "categories": ["Utility"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter": {
+    "categories": ["Utility"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.textSplitterTokenSplitter": {
+    "categories": ["Utility"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.toolCalculator": {
+    "categories": ["Utility"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.toolCode": {
+    "categories": ["Utility"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.toolHttpRequest": {
+    "categories": ["Utility"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.toolSerpApi": {
+    "categories": ["Utility"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.toolThink": {
+    "categories": ["Utility"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.toolVectorStore": {
+    "categories": ["Utility"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.toolWikipedia": {
+    "categories": ["Utility"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.toolWolframAlpha": {
+    "categories": ["Utility"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.toolWorkflow": {
+    "categories": ["Utility"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.manualChatTrigger": {
+    "categories": ["Core Nodes"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.chatTrigger": {
+    "categories": ["Core Nodes"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.vectorStoreInMemory": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.vectorStoreInMemoryInsert": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.vectorStoreInMemoryLoad": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.vectorStoreMongoDBAtlas": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.vectorStorePGVector": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.vectorStorePinecone": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.vectorStorePineconeInsert": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.vectorStorePineconeLoad": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.vectorStoreQdrant": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.vectorStoreSupabase": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.vectorStoreSupabaseInsert": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.vectorStoreSupabaseLoad": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.vectorStoreZep": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.vectorStoreZepInsert": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  },
+  "@n8n/n8n-nodes-langchain.vectorStoreZepLoad": {
+    "categories": ["Data & Storage"],
+    "subcategories": []
+  }
+}
