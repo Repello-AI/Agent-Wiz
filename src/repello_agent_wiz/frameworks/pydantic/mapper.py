@@ -450,6 +450,11 @@ def extract_pydantic_ai_graph(directory_path: str, output_filename: str):
 
     graph_structure = extractor.get_graph_data()
 
+    if graph_structure:
+        graph_structure["metadata"] = {
+            "framework": "PydanticAI",
+        }
+
     if graph_structure["nodes"] or graph_structure["edges"]:
         try:
             graph_structure["nodes"].sort(key=lambda x: (x["node_type"], x["name"]))

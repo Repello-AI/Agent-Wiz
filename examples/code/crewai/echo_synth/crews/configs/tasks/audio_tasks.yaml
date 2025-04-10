@@ -1,0 +1,58 @@
+convert_audio_to_text:
+  description: >
+    Transcribe the provided audio file into written text. Pay attention to accuracy,
+    speaker differentiation, and include relevant non-verbal audio context when appropriate.
+    Identify the main themes and tone of the content. Audio file path: {audio_file_path}
+  expected_output: >
+    A complete, accurate transcription of the audio file with timestamps and speaker
+    identification where applicable. Include a brief note about the overall tone and
+    key themes detected in the content.
+  agent: "audio_to_text_transcriber"
+
+write_speech:
+  description: >
+    Using the transcribed content, create an engaging speech that maintains the core
+    message while improving structure, flow, and rhetorical impact. Adapt the content
+    to be effective when spoken aloud.
+  expected_output: >
+    A well-structured speech with clear introduction, body, and conclusion. The speech
+    should include rhetorical devices appropriate for oral delivery and maintain the
+    original voice and key messages while enhancing clarity and impact.
+  agent: "speech_writer"
+  dependencies: ["convert_audio_to_text"] 
+
+write_image_summary:
+  description: >
+    Analyze the content and identify key themes, concepts, or metaphors that could be
+    effectively represented visually. Create a concise summary focused on visual elements
+    that captures the essence of the content.
+  expected_output: >
+    A detailed description of 3-5 key visual concepts from the content, including emotional
+    tone, symbolic elements, and specific imagery that would effectively represent the
+    main ideas. This will serve as input for image generation.
+  agent: "image_summary_writer"
+  dependencies: ["convert_audio_to_text"]
+  
+write_summary:
+  description: >
+    Create a comprehensive yet concise summary of the content that captures all key points,
+    arguments, and conclusions. Organize the information logically and highlight the most
+    important elements.
+  expected_output: >
+    A clear, well-structured summary of approximately 250-500 words that distills the
+    essential information from the original content. The summary should be accessible
+    to someone unfamiliar with the topic while retaining all critical insights.
+  agent: "summary_writer"
+  dependencies: ["convert_audio_to_text"]
+  
+create_image:
+  description: >
+    Based on the image summary and overall content themes, generate a compelling visual
+    representation that captures the essence of the material. Create detailed prompts
+    for image generation that will result in relevant, high-quality imagery.
+  expected_output: >
+    A high-quality image file or URL that visually represents the key themes identified
+    in the content. The image should complement the textual elements and enhance overall
+    understanding of the material.
+  agent: "image_painter"
+  dependencies: ["write_image_summary"]

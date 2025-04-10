@@ -983,6 +983,12 @@ def extract_langgraph_graph(directory_path: str, output_filename: str):
 
 
     graph_data = {"nodes": visitor.nodes, "edges": visitor.edges}
+
+    if graph_data:
+        graph_data["metadata"] = {
+            "framework": "Langgraph",
+        }
+    
     print(f"Finished graph extraction. Found {len(visitor.nodes)} nodes and {len(visitor.edges)} edges across {len(all_files_processed)} files ({parse_errors} file processing errors).")
 
 

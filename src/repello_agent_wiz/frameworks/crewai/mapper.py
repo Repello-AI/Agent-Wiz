@@ -884,6 +884,10 @@ def extract_crewai_graph(directory_path: str, output_file: str):
     graph_structure = extractor.get_graph_data()
     print(f"Extraction finished. Found {len(graph_structure['nodes'])} nodes and {len(graph_structure['edges'])} edges.")
 
+    if graph_structure:
+        graph_structure["metadata"] = {
+            "framework": "CrewAI",
+        }
 
     if graph_structure["nodes"] or graph_structure["edges"]:
         try:

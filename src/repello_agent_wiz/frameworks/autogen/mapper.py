@@ -346,7 +346,7 @@ def extract_autogen_graph(target_directory: str, output_filename: str):
 
     if graph_data:
         graph_data["metadata"] = {
-            "framework": "AutoGen Core",
+            "framework": "AutoGen_Core",
         }
 
     # Write to output file

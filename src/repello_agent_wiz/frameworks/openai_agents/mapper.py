@@ -627,6 +627,11 @@ def extract_openai_agents_graph(scan_path: str, output_file: str):
         )
         print(f"Analysis complete. Nodes: {len(final_graph['nodes'])}, Edges: {len(final_graph['edges'])}.")
 
+        if final_graph:
+            final_graph["metadata"] = {
+                "framework": "OpenAI_Agents",
+            }
+
     except Exception as e:
          print(f"Error during graph extraction: {e}")
          sys.exit(1)
