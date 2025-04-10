@@ -46,6 +46,11 @@ In modern LLM-powered systems, agentic workflows are becoming increasingly compl
 | **Developer Friendly** | Simple CLI, extensible SDK, and clean JSON exports |
 
 
+
+https://github.com/user-attachments/assets/40231eae-9716-421e-a005-fd55d1d8cc71
+
+
+
 ## Supported Frameworks
 
 The following agent orchestration frameworks are currently supported:
