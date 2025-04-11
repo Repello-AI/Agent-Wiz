@@ -10,20 +10,20 @@
       "metadata": {}
     },
     {
-      "id": "FAQ Agent",
-      "name": "FAQ Agent",
+      "id": "Order Status Agent",
+      "name": "Order Status Agent",
       "node_type": "Agent",
       "source_location": {
         "file": "examples/code/openai_agents/agent.py",
-        "line": 88,
+        "line": 100,
         "col": 0,
-        "end_line": 99,
+        "end_line": 115,
         "end_col": 1
       },
       "metadata": {
-        "variable_name": "faq_agent",
+        "variable_name": "order_status_agent",
         "tool_names": [
-          "faq_lookup_tool"
+          "get_order_status"
         ],
         "handoff_refs": []
       },
@@ -31,20 +31,20 @@
       "docstring": null
     },
     {
-      "id": "Seat Booking Agent",
-      "name": "Seat Booking Agent",
+      "id": "Product Info Agent",
+      "name": "Product Info Agent",
       "node_type": "Agent",
       "source_location": {
         "file": "examples/code/openai_agents/agent.py",
-        "line": 101,
+        "line": 117,
         "col": 0,
-        "end_line": 113,
+        "end_line": 132,
         "end_col": 1
       },
       "metadata": {
-        "variable_name": "seat_booking_agent",
+        "variable_name": "product_info_agent",
         "tool_names": [
-          "update_seat"
+          "get_product_info"
         ],
         "handoff_refs": []
       },
@@ -66,51 +66,52 @@
       "node_type": "Agent",
       "source_location": {
         "file": "examples/code/openai_agents/agent.py",
-        "line": 115,
+        "line": 134,
         "col": 0,
-        "end_line": 126,
+        "end_line": 151,
         "end_col": 1
       },
       "metadata": {
         "variable_name": "triage_agent",
         "tool_names": [],
         "handoff_refs": [
-          "faq_agent",
-          "seat_booking_agent"
+          "order_status_agent",
+          "product_info_agent",
+          "order_status_agent"
         ]
       },
       "function_name": null,
       "docstring": null
     },
     {
-      "id": "faq_lookup_tool",
-      "name": "faq_lookup_tool",
-      "function_name": "faq_lookup_tool",
-      "docstring": "Lookup frequently asked questions.",
+      "id": "get_order_status",
+      "name": "get_order_status",
+      "function_name": "get_order_status",
+      "docstring": "Looks up the status of a given order ID.\n\nArgs:\n    order_id: The unique identifier for the order (e.g., ORD-12345).",
       "node_type": "CustomTool",
       "source_location": {
         "file": "examples/code/openai_agents/agent.py",
-        "line": 41,
+        "line": 36,
         "col": 0,
-        "end_line": 56,
-        "end_col": 65
+        "end_line": 60,
+        "end_col": 55
       },
       "metadata": {
         "custom": true
       }
     },
     {
-      "id": "update_seat",
-      "name": "update_seat",
-      "function_name": "update_seat",
-      "docstring": "Update the seat for a given confirmation number.\n\nArgs:\n    confirmation_number: The confirmation number for the flight.\n    new_seat: The new seat to update to.",
+      "id": "get_product_info",
+      "name": "get_product_info",
+      "function_name": "get_product_info",
+      "docstring": "Provides information about a product based on its SKU.\n\nArgs:\n    product_sku: The Stock Keeping Unit (SKU) of the product (e.g., SKU-TECH-001).",
       "node_type": "CustomTool",
       "source_location": {
         "file": "examples/code/openai_agents/agent.py",
-        "line": 60,
+        "line": 63,
         "col": 0,
-        "end_line": 75,
-        "end_col": 86
+        "end_line": 91,
+        "end_col": 89
       },
       "metadata": {
         "custom": true
@@ -119,45 +120,45 @@
   ],
   "edges": [
     {
-      "source": "FAQ Agent",
+      "source": "Order Status Agent",
       "target": "End",
       "edge_type": "implicit_end",
       "condition": {},
       "metadata": {}
     },
     {
-      "source": "FAQ Agent",
-      "target": "faq_lookup_tool",
+      "source": "Order Status Agent",
+      "target": "get_order_status",
       "edge_type": "tool_usage",
       "condition": {},
       "metadata": {
         "definition_location": {
           "file": "examples/code/openai_agents/agent.py",
-          "line": 88,
+          "line": 100,
           "col": 0,
-          "end_line": 99,
+          "end_line": 115,
           "end_col": 1
         }
       }
     },
     {
-      "source": "Seat Booking Agent",
+      "source": "Product Info Agent",
       "target": "End",
       "edge_type": "implicit_end",
       "condition": {},
       "metadata": {}
     },
     {
-      "source": "Seat Booking Agent",
-      "target": "update_seat",
+      "source": "Product Info Agent",
+      "target": "get_product_info",
       "edge_type": "tool_usage",
       "condition": {},
       "metadata": {
         "definition_location": {
           "file": "examples/code/openai_agents/agent.py",
-          "line": 101,
+          "line": 117,
           "col": 0,
-          "end_line": 113,
+          "end_line": 132,
           "end_col": 1
         }
       }
@@ -171,34 +172,50 @@
     },
     {
       "source": "Triage Agent",
-      "target": "FAQ Agent",
+      "target": "Order Status Agent",
       "edge_type": "handoff",
       "condition": {},
       "metadata": {
         "definition_location": {
           "file": "examples/code/openai_agents/agent.py",
-          "line": 115,
+          "line": 134,
           "col": 0,
-          "end_line": 126,
+          "end_line": 151,
           "end_col": 1
         },
-        "handoff_ref": "faq_agent"
+        "handoff_ref": "order_status_agent"
       }
     },
     {
       "source": "Triage Agent",
-      "target": "Seat Booking Agent",
+      "target": "Order Status Agent",
       "edge_type": "handoff",
       "condition": {},
       "metadata": {
         "definition_location": {
           "file": "examples/code/openai_agents/agent.py",
-          "line": 115,
+          "line": 134,
           "col": 0,
-          "end_line": 126,
+          "end_line": 151,
           "end_col": 1
         },
-        "handoff_ref": "seat_booking_agent"
+        "handoff_ref": "order_status_agent"
+      }
+    },
+    {
+      "source": "Triage Agent",
+      "target": "Product Info Agent",
+      "edge_type": "handoff",
+      "condition": {},
+      "metadata": {
+        "definition_location": {
+          "file": "examples/code/openai_agents/agent.py",
+          "line": 134,
+          "col": 0,
+          "end_line": 151,
+          "end_col": 1
+        },
+        "handoff_ref": "product_info_agent"
       }
     }
   ],
