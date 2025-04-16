@@ -1,5 +1,5 @@
 import argparse
-from .frameworks import agent_chat, autogen, crewai, langgraph, llama_index, n8n, openai_agents, pydantic, swarm
+from .frameworks import agent_chat, autogen, crewai, google_adk, langgraph, llama_index, n8n, openai_agents, pydantic, swarm
 from .analyzers import generate_maestro_analysis_report
 from .visualizers.visualizer import generate_visualization
 
@@ -11,7 +11,7 @@ def main():
     # --- Extract command ---
     extract_parser = subparsers.add_parser("extract", help="Extract graph from source code")
     extract_parser.add_argument("--framework", "-f", required=True, choices=[
-        "agent_chat", "autogen", "crewai", "langgraph", 
+        "agent_chat", "autogen", "crewai", "google_adk" , "langgraph", 
         "llama_index", "n8n", "openai_agents", "pydantic", "swarm"
     ])
     extract_parser.add_argument("--directory", "-d", default=".", help="Directory containing source code")
@@ -39,6 +39,8 @@ def main():
                     autogen.extract_autogen_graph(args.directory, args.output)
                 case "crewai":
                     crewai.extract_crewai_graph(args.directory, args.output)
+                case "google_adk" :
+                    google_adk.extract_adk_graph(args.directory, args.output)
                 case "langgraph":
                     langgraph.extract_langgraph_graph(args.directory, args.output)
                 case "llama_index":
