@@ -195,7 +195,7 @@ Licensed under the **Apache 2.0 License**. See [`LICENSE`](./LICENSE) for full d
 
 ## Attribution
 
-<!-- [Google ADK code examples](insert github link here) are taken from [Google ADK Samples](https://github.com/google/adk-samples) -->
+[Google ADK code examples](https://github.com/Repello-AI/Agent-Wiz/tree/google-adk/examples/code/google_adk/agents) are taken from [Google ADK Samples](https://github.com/google/adk-samples)
 
 <p align="center">
 © 2025 Repello AI | <a href="https://repello.ai">Website</a> 
