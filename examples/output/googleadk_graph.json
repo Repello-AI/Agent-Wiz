@@ -1,0 +1,93 @@
+{
+  "nodes": [
+    {
+      "id": "End",
+      "name": "End",
+      "node_type": "End",
+      "location": "system",
+      "metadata": {}
+    },
+    {
+      "id": "Start",
+      "name": "Start",
+      "node_type": "Start",
+      "location": "system",
+      "metadata": {}
+    },
+    {
+      "id": "critic_agent",
+      "name": "critic_agent",
+      "node_type": "LlmAgent",
+      "location": "examples/code/google_adk/agents/llm-auditor/llm_auditor/sub_agents/critic/agent.py:63:0",
+      "metadata": {
+        "original_variable_name": "critic_agent",
+        "class_called_repr": "Agent",
+        "name_parameter": "critic_agent",
+        "instruction": "prompt.CRITIC_PROMPT",
+        "model": "gemini-2.0-flash"
+      }
+    },
+    {
+      "id": "llm_auditor",
+      "name": "llm_auditor",
+      "node_type": "SequentialAgent",
+      "location": "examples/code/google_adk/agents/llm-auditor/llm_auditor/agent.py:23:0",
+      "metadata": {
+        "original_variable_name": "llm_auditor",
+        "class_called_repr": "SequentialAgent",
+        "name_parameter": "llm_auditor",
+        "description": "Evaluates LLM-generated answers, verifies actual accuracy using the web, and refines the response to ensure alignment with real-world knowledge."
+      }
+    },
+    {
+      "id": "reviser_agent",
+      "name": "reviser_agent",
+      "node_type": "LlmAgent",
+      "location": "examples/code/google_adk/agents/llm-auditor/llm_auditor/sub_agents/reviser/agent.py:40:0",
+      "metadata": {
+        "original_variable_name": "reviser_agent",
+        "class_called_repr": "Agent",
+        "name_parameter": "reviser_agent",
+        "instruction": "prompt.REVISER_PROMPT",
+        "model": "gemini-2.0-flash"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "Start",
+      "target": "llm_auditor",
+      "label": "initiates",
+      "metadata": {
+        "definition_location": "graph_analysis"
+      }
+    },
+    {
+      "source": "llm_auditor",
+      "target": "End",
+      "label": "terminates (assumed)",
+      "metadata": {
+        "definition_location": "graph_analysis"
+      }
+    },
+    {
+      "source": "llm_auditor",
+      "target": "critic_agent",
+      "label": "sub_agent (SequentialAgent)",
+      "metadata": {
+        "definition_location": "examples/code/google_adk/agents/llm-auditor/llm_auditor/agent.py:23:0"
+      }
+    },
+    {
+      "source": "llm_auditor",
+      "target": "reviser_agent",
+      "label": "sub_agent (SequentialAgent)",
+      "metadata": {
+        "definition_location": "examples/code/google_adk/agents/llm-auditor/llm_auditor/agent.py:23:0"
+      }
+    }
+  ],
+  "metadata": {
+    "framework": "GoogleADK"
+  }
+}
