@@ -19,8 +19,44 @@ We welcome contributions of all types – bug reports, feature requests, documen
    ```
 4. **Install in editable mode with dev dependencies**:
    ```bash
-   pip install -e .[dev]
+   pip install -e .
    ```
+5. **Test your changes locally:**
+   run using `agent-wiz` command as instructed in [cli_usage](https://github.com/Repello-AI/Agent-Wiz?tab=readme-ov-file#-cli-usage])
+
+---
+
+## ⚙️ Troubleshooting
+
+Make sure you are in the Agent-Wiz root directory (where pyproject.toml is)
+Make sure your virtual environment (venv) is active
+
+1. Uninstall completely
+
+```bash
+pip uninstall repello-agent-wiz -y
+```
+
+2. Optional: Clean build artifacts (just in case)
+
+```bash
+rm -rf build dist src/repello_agent_wiz.egg-info
+```
+
+3. Reinstall in editable mode, disabling cache
+
+```bash
+pip install --no-cache-dir -e .
+```
+
+4. Verify again
+
+```bash
+pip list | grep repello-agent-wiz
+```
+
+This should point to a path inside your virtual environment's `bin` directory, like:
+`/path/to/your/Agent-Wiz/venv/bin/agent-wiz`
 
 ---
 
@@ -30,7 +66,6 @@ We welcome contributions of all types – bug reports, feature requests, documen
 
 - Use `black` for formatting.
 - Follow [PEP8](https://peps.python.org/pep-0008/).
-
 
 ### 📝 Commits
 

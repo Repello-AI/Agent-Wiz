@@ -66,6 +66,7 @@ The following agent orchestration frameworks are currently supported:
 | OpenAI Agents     | ✅      |
 | Pydantic-AI       | ✅      |
 | Swarm             | ✅      |
+| Google-ADK        | ✅      |
 
 Each framework has its own AST-based static parser to extract:
 - Agents (class/function-based)
@@ -191,6 +192,10 @@ Licensed under the **Apache 2.0 License**. See [`LICENSE`](./LICENSE) for full d
 - [Agent Wiz GitHub](https://github.com/Repello-AI/Agent-Wiz)
 - [Issue Tracker](https://github.com/Repello-AI/Agent-Wiz/issues)
 - [PyPI Package](https://pypi.org/project/repello-agent-wiz/)
+
+## Attribution
+
+[Google ADK code examples](https://github.com/Repello-AI/Agent-Wiz/tree/google-adk/examples/code/google_adk/agents) are taken from [Google ADK Samples](https://github.com/google/adk-samples)
 
 <p align="center">
 © 2025 Repello AI | <a href="https://repello.ai">Website</a> 
