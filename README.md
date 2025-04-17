@@ -99,7 +99,7 @@ You can also add this line to your `.bashrc`, `.zshrc`, or environment setup scr
 
 ## Installation
 
-```bash
+```console
 pip install repello-agent-wiz
 ```
 
@@ -107,7 +107,7 @@ pip install repello-agent-wiz
 
 Before running any analysis commands, you must set your OpenAI API key as an environment variable:
 
-```bash
+```console
 export OPENAI_API_KEY=sk-...
 ```
 
@@ -115,7 +115,7 @@ export OPENAI_API_KEY=sk-...
 
 ### 1. Extract Agentic Workflow
 
-```bash
+```console
 agent-wiz extract --framework agent_chat --directory ./examples/code/agent_chat --output agentchat_graph.json
 ```
 
@@ -132,7 +132,7 @@ This will generate a graph JSON with the following structure:
 ```
 
 ### 2. Visualize the Agentic workflow
-```bash
+```console
 agent-wiz visualize --input agentchat_graph.json --open
 ```
 
@@ -140,14 +140,14 @@ This will generate an html d3 based visualisation of the agentic workflow. The `
 
 ### 3. Analyze against Threat Modeling
 
-```bash
+```console
 agent-wiz analyze --input agentchat_graph.json
 ```
 
 This will generate a report like:  `autogen_report.md`  based on the provided graph and threat modeling frameworks.
 
 __Run agent-wiz --help for more info:__
-```bash
+```console
 usage: agent-wiz [-h] {extract,analyze,visualize} ...
 
 Agent Wiz CLI: Extract, Analyze, Visualize agentic workflows.
