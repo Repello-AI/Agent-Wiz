@@ -21,6 +21,9 @@ We welcome contributions of all types – bug reports, feature requests, documen
    ```bash
    pip install -e .[dev]
    ```
+5. **Test your changes:**
+
+    run using `agent-wiz` command as instructed in [cli_usage](https://github.com/Repello-AI/Agent-Wiz?tab=readme-ov-file#-cli-usage])
 
 ---
 
