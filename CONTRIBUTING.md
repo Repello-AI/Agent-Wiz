@@ -9,16 +9,16 @@ We welcome contributions of all types – bug reports, feature requests, documen
 
 1. **Fork** the repository.
 2. **Clone** your forked repo:
-   ```bash
+   ```console
    git clone https://github.com/your-username/agent-wiz.git
    cd agent-wiz
    ```
 3. **Create a virtual environment**:
-   ```bash
+   ```console
    python -m venv .venv && source .venv/bin/activate
    ```
 4. **Install in editable mode with dev dependencies**:
-   ```bash
+   ```console
    pip install -e .[dev]
    ```
 
