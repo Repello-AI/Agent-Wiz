@@ -148,10 +148,10 @@ This will generate an html d3 based visualisation of the agentic workflow. The `
 ### 3. Analyze against Threat Modeling
 
 ```bash
-agent-wiz analyze --input agentchat_graph.json
+agent-wiz analyze --input agentchat_graph.json --snapshot-input AgentChat_vis/snapshot.png
 ```
 
-This will generate a report like:  `autogen_report.md`  based on the provided graph and threat modeling frameworks.
+This will generate a report like:  `autogen_report.md`  based on the provided graph and threat modeling frameworks. The `snapshot-input` flag (optional) will add the visualization snapshot to the report.
 
 __Run agent-wiz --help for more info:__
 ```bash
