@@ -19,7 +19,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "openai",
+    "openai", "playwright"
 ]
 
 [project.scripts]

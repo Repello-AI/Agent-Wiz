@@ -99,9 +99,16 @@ You can also add this line to your `.bashrc`, `.zshrc`, or environment setup scr
 
 ## Installation
 
-```bash
-pip install repello-agent-wiz
-```
+1.  Install the agent-wiz tool:
+    ```bash
+    pip install repello-agent-wiz
+    ```
+
+2.  **Install necessary browser binaries for visualization snapshots(optional):**
+    ```bash
+    playwright install chromium
+    ```
+    *(This step is required to generate image snapshots of the workflow visualizations.)*
 
 ## Prerequisites
 

@@ -2,7 +2,7 @@ import shutil
 import json
 import importlib.resources as pkg_resources
 from pathlib import Path
-
+from playwright.sync_api import sync_playwright, Error as PlaywrightError
 
 def generate_visualization(json_path: str, open_browser: bool = False):
     import repello_agent_wiz.templates
@@ -29,6 +29,19 @@ def generate_visualization(json_path: str, open_browser: bool = False):
 
     with open(output_dir / "index.html", "w") as f:
         f.write(index_filled)
+
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch()
+            page = browser.new_page()
+            html_file_url = f"file://{(output_dir / 'index.html').resolve()}"
+            page.goto(html_file_url, wait_until='networkidle') 
+            page.screenshot(path=output_dir / "snapshot.png", full_page=True)
+            browser.close()
+    except PlaywrightError as e:
+         print(f"[!] Playwright Error: Could not take snapshot. Is Playwright installed and browsers downloaded (`playwright install`)? Error: {e}")
+    except Exception as e:
+        print(f"[!] Error during snapshot generation: {e}")
 
     print(f"[✓] Visualization HTML generated at: {output_dir}/index.html")
 

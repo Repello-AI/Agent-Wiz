@@ -1,60 +1,101 @@
 You are an expert in cybersecurity threat modeling.
+Your task is to perform a MAESTRO-based threat analysis on the agentic workflow graph provided in JSON format.
+Your primary goal is to maximize the security insights and actionable recommendations derived solely from the provided JSON structure, node attributes (like source_location), edge conditions, and naming conventions. Be extremely specific in your analysis and recommendations, constantly referencing the relevant JSON elements as evidence for why a control or recommendation is necessary based on the observed structure.
 
-Your task is to perform a MAESTRO-based threat analysis on the following agentic workflow graph.
+--- CRITICAL INSTRUCTION: Handling source_location ---
 
----
+    When Referencing Code: You MUST scrutinize the source_location attribute for each relevant node (especially Tool nodes) in the input JSON.
+
+    If source_location Exists and is Complete: If a node provides a specific file path and line range (e.g., {"file": "path/to/code.py", "line": 10, "end_line": 20}), you MUST reference this exact location in your report when discussing the code implementation, using the format: path/to/code.py: lines 10-20. State that this specific location requires review/controls. Apply this consistently in all relevant sections (Assets, Entrypoints, Controls, Debt, Threats, Scenarios, Risks, Operations, Recommendations).
+
+    If source_location is Missing or Incomplete: If a node lacks the source_location attribute, or if the attribute is present but null, empty, or lacks specific file/line data, you MUST NOT invent or assume a source location. Do NOT use vague phrases like "code at source_location" or "implementation at source_location" for that node. Instead, state that the specific implementation location is 'Not specified in JSON' (e.g., in the Assets table) or focus recommendations/threats on the tool's function (derived from its name) without pointing to a specific, unavailable code block.
+    --- END CRITICAL INSTRUCTION ---
 
 MAESTRO Framework:
 <MAESTRO>
-
----
-
 Agentic Workflow JSON Graph:
 <JSON>
 
----
-
-
-Your task is to generate a detailed and structured MAESTRO threat modeling report strictly in Markdown format, with the following sections:
+Your task is to generate a detailed and structured MAESTRO threat modeling report strictly in Markdown format. Adhere strictly to the information present in the JSON, especially regarding source_location as per the critical instruction above. When inferring based on names (e.g., data types, sensitivity), explicitly state that it is an inference based on the name. Do NOT add information or controls not derivable from the JSON structure itself. The focus is on analyzing the provided structure and recommending controls pertinent to it.
 
 MAESTRO Analysis of Agentic Workflow
+
 1. Mission
-Describe the high-level objective of the system based on the agent names and functions. Summarize its goal and purpose in a few paragraphs.
+* Describe the high-level objective synthesized strictly from the combination of agent names (e.g., PlanningAgent, WebSearchAgent) and the functions of their associated Tools (e.g., search_web_tool, analyze_data) as listed in the JSON nodes.
+* Infer the system's goal (e.g., data gathering, analysis, reporting) based on these names.
+* Explicitly mention the interaction patterns suggested by the JSON edges and metadata, such as the presence of specific group chat types (SelectorGroupChat, RoundRobinGroupChat) indicated in metadata or edge condition types (member_of_team, group_sequence).
 
 2. Assets
-List the key assets in a bullet or table format:
+* Create a detailed table with the following columns, populating data directly from the JSON nodes:
+* Agent/Node Name: (name attribute).
+* Node Type/Function: (node_type, or function_name if applicable).
+* Associated Tools (for Agents): List the name of Tool nodes linked via edges.
+* Tool Function (for Tools): The function_name of the Tool node.
+* Tool Source Location: Include the specific file: lines start-end if provided in the source_location attribute for the Tool node. If not provided or incomplete, state 'Not specified in JSON'. State that if a location is specified, it points to the implementation requiring review.
+* Inferred Data Types: Infer based only on agent/tool names. State this is inferred.
+* Inferred Sensitivity Classification: Assign Low/Medium/High based only on inferred data types/function names. State this is inferred.
+* Trust Boundaries: Identify boundaries based on JSON structure: Agents using external-implying tools (e.g., names containing 'Search', 'API') cross an External Boundary. Communication via specific edge types (group_sequence) defines an Internal Communication Boundary. Interaction via __start__ suggests a System Input Boundary.
 
-Agents (by name)
+3. Agent Interaction Analysis
+* Specific Data Flows/Control Flows: Document the explicitly defined interactions from the JSON edges. List flows clearly (e.g., "Flow from NodeA to NodeB occurs under condition X"). Describe the interaction type (e.g., direct tool call, sequence step) based on the edge's source, target, condition, and metadata. Do NOT simply append the condition type in parentheses like (static).
+* Tool Permissions/Access (Inferred): Based on Tool function_names, state the implied necessary permissions (e.g., external network access for tools named 'search', 'fetch'; data access for tools named 'analyze', 'query').
+* External System Access: Explicitly list agents/tools whose names or functions imply external interaction (e.g., WebSearchAgent_search_web_tool, API_Tool).
+* Data Transformation Points: Identify agents using tools whose names imply data modification or analysis (e.g., DataAnalystAgent using calculate_metrics_tool).
 
-Their key tools/functions
+4. Entrypoints
+* Create a comprehensive table grounded in the JSON structure:
+* Entrypoint Description: User Input (via __start__ edges), External Systems/APIs (via tools implying external access), Internal Channels (via defined group_sequence or team edges), Tool Interfaces (Agent -> Tool edges).
+* Trust Level (Inferred): Assign based on type (e.g., External Low, User Medium, Internal Medium).
+* Potential Attack Vectors (Based on Type & JSON Context): List vectors relevant to each entrypoint type, referencing JSON elements (e.g., Prompt Injection for Assistant agents, SSRF for external tools, Tampering for internal channels, code vulnerabilities within Tool implementations if their specific source_location (file:line-range) is provided in the JSON).
 
-Data types being processed
+5. Recommended Security Controls (Based on Workflow Structure)
+* Based only on the workflow structure, node types/functions, interaction patterns, and tool source_location data (when available) revealed in the JSON, detail the necessary security controls. Focus on what controls are needed because of this specific structure. Structure the recommendations as follows:
+* Input Validation: Detail where validation is critical based on JSON (e.g., inputs to external tools, inputs to tools with sensitive-sounding names like 'analyze_stock'). If a specific file:line-range is provided in source_location, state that validation must be implemented robustly at that location. If not provided, recommend validation based on the tool's function.
+* Output Sanitization: Specify where outputs need sanitization (e.g., data returned from external tools) before use by other agents.
+* Authentication/Authorization: Recommend mechanisms for agents invoking tools (especially those inferred as sensitive) and for securing internal communication channels identified by edges (e.g., group_sequence).
+* Secure Communication: Recommend securing the specific internal communication channels identified by edges and their associated metadata (e.g., RoundRobinGroupChat).
+* Rate Limiting/Resource Controls: Recommend for agents/tools identified as interacting externally or performing computationally intensive tasks (inferred from names).
+* Secrets Management: Based on tool names implying external API use (e.g., GoogleSearchTool, SomeAPITool), recommend secure handling and injection practices. If specific source_location data is provided for the tool, note that the implementation at that location must handle secrets securely.
+* Code Security: If source_location providing specific file/lines is available for a Tool (e.g., path/to/code.py: lines X-Y), state the critical need for Security Code Review and SAST scanning of that specific implementation. If not available, recommend code review generally for the tool's function based on its name/type and inferred risks.
 
-3. Entrypoints
-Identify which nodes or functions act as external or internal entrypoints into the system. Show these as a list or table.
+6. Technical Debt Analysis
+* Identify potential security weaknesses implied by the structure shown in the JSON:
+* Potential Bypasses: Focus on risks arising from unspecified validation/sanitization for inputs/outputs of Tool nodes (whose specific implementation location may be file:line-range per source_location, if provided).
+* Areas Requiring Scrutiny: List agents/tools highlighted by the JSON structure (external tools, sensitive tools, Assistant agents, the Tool nodes themselves especially if a specific source_location (file:line-range) is provided).
+* Potential Architectural Issues: Note risks from unspecified security models for defined interactions (group_sequence, team edges) and reliance on external tools without defined security wrappers, pointing to specific source_location data (if provided) for implementation details that need verification.
 
-4. Security Controls
-Based on the structure, deduce what (if any) security controls might be present or are recommended (e.g. access control, validation, logging).
+7. Threats
+* Create a detailed table, linking threats explicitly to JSON components (name, function_name, node_type, specific source_location data if available, edges). The table MUST have the following columns:
+* Threat Description: Be precise, referencing JSON elements (e.g., "Prompt Injection attack against AgentX (function_name: Assistant)", "Potential SSRF in SomeToolName implementation (code at the file:line-range specified in its source_location, if provided)", "Data Tampering on the internal communication channel defined by group_sequence edges between NodeA and NodeB").
+* Affected JSON Element(s): List specific node names or edge descriptions, including specific source_location file/lines if relevant and provided.
+* Attack Vector: User Input, Tool Input Parameter, External API Response, Internal Channel (identified by edges).
+* Likelihood (Inferred): Assign Low/Medium/High based on inferences from JSON (External interaction, 'Assistant' type, sensitive tool names imply higher risk; presence of specific source_location data can increase focus/risk on that code). State basis is inferred.
+* Impact (Inferred): Assign Low/Medium/High based on inferred sensitivity of data/function. State basis is inferred.
+* Risk Score (Inferred): Assign Low/Medium/High based on Likelihood and Impact. State basis is inferred.
+* STRIDE Category: Assign appropriately.
 
-5. Threats
-Create a detailed table of likely threats. Each row must include:
+8. Runtime Threat Scenarios
+* Describe scenarios using specific agent names, tool names, interaction patterns from JSON, and specific source_location file/line pointers (if available from JSON): "Crafted user input causes PlanningAgent (Assistant) to generate malicious instructions for SearchAgent, potentially exploiting vulnerabilities in search_tool (code at the file/lines specified in its source_location, if provided)." "Manipulation of the communication on the group_sequence edge between AgentA and AgentB injects false data." "A vulnerability in data_analysis_tool code (at the file/lines specified in its source_location, if provided) triggered by AnalysisAgent leads to incorrect results passed to ReportAgent."
 
-Threat
+9. Risks
+* Describe risks connecting threats (linked to JSON elements including specific source_location data if available) to business outcomes, highlighting specific interaction paths and code locations where applicable: "Risk of incorrect business decisions if AnalysisAgent uses flawed data from data_analysis_tool (code at file/lines specified in its source_location, if provided) or tampered inputs via internal channels." "Risk of data leakage/compromise if external_api_tool (code at file/lines specified in its source_location, if provided) is vulnerable." "Risk of workflow disruption via manipulation of the communication channel defined by the team edges."
 
-Likelihood (Low, Medium, High)
+10. Operations
+* Monitoring Requirements: Focus on JSON elements: invocations/outputs of Tool nodes (esp. external/sensitive ones, reference specific source_location data if available), traffic/integrity on internal channels (identified by edges), inputs to Assistant agents.
+* Logging Strategies: Log agent requests to tools, data on internal channels, errors from tool implementations (correlate with specific source_location if available).
+* Alerting Thresholds: Anomalous external connections (external tools), high error rates (from specific tool code identified by source_location, if available), injection patterns ('Assistant' inputs), internal channel deviations.
+* Operational Practices: Prioritized, regular security code reviews of the specific files/lines indicated by the source_location attribute, when this attribute is provided and contains specific data in the JSON. If not specified, prioritize review based on tool function/risk. Log aggregation/analysis.
 
-Impact (Low, Medium, High)
+11. Risk Prioritization Matrix
+* Create a matrix prioritizing risks identified in Section 7.
+* Base prioritization factors explicitly on JSON evidence: Such as whether a tool interacts externally (inferred from name/function), handles sensitive data (inferred from name/function), the presence of Assistant type agents, the structure of internal communication channels (edges/metadata), and whether a specific code implementation location (file:line-range) is identified via source_location (indicating a concrete code-level risk area). Do not just refer to the process of referencing.
 
-Risk Score (e.g. Medium-High)
-
-6. Risks
-Describe risks in narrative form derived from the threats: what could go wrong, what would be the impact to the system?
-
-7. Operations
-Explain how agents interact at runtime. Suggest monitoring or operational practices to support observability and resilience.
-
-8. Recommendations
-Provide a prioritized list of security improvements or design changes based on the above analysis.
-
+12. Recommendations
+* Provide a prioritized list, making recommendations highly specific and linking them directly back to JSON elements (including specific source_location file/line data when available) as justification. Do NOT use conditional phrasing like "If source_location specifies...". Directly state the recommendation and its justification.
+* Code-Level: Example: "Perform mandatory security code review and SAST scanning for the some_external_tool implementation at path/file.py: lines X-Y (location provided in source_location), as its name implies external interaction." OR (if location not provided) "Perform security code review for some_external_tool focusing on secure external request handling, as its specific implementation location is not provided in the JSON." Example 2: "Implement robust input validation and output encoding within the some_sensitive_tool implementation at path/other_file.py: lines A-B (location provided in source_location), due to its inferred sensitive function."
+* Architectural: Example: "Implement secure transport/message signing for the internal communication channel(s) identified by group_sequence edges.", "Consider sandboxing for processes executing tools like external_tool_A or complex_analysis_tool_B."
+* Agent/Tool Specific: Example: "Apply prompt filtering for agents like PlanningAgent identified as Assistant type.", "Ensure secure management and injection of API keys potentially required by SomeAPIAccessTool; review the implementation at path/api_tool.py: lines C-D (if specified in source_location) for secure practices."
+* Monitoring/Detection: Example: "Deploy specific monitoring for external calls made by external_tool_A and for traffic integrity on the channel defined by group_sequence edges."
+* Circuit Breakers: Example: "Recommend implementing circuit breakers for external calls made by tools like external_tool_A and external_tool_B."
 💡 Format the entire report using valid Markdown syntax with proper headings, bullet points, and tables where appropriate.
 Do not include any introductory or concluding statements — only the report content.

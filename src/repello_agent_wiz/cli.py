@@ -20,6 +20,7 @@ def main():
     # --- Analyze command ---
     analyze_parser = subparsers.add_parser("analyze", help="Run threat modeling analysis on extracted graph")
     analyze_parser.add_argument("--input", "-i", required=True, help="Path to JSON graph file")
+    analyze_parser.add_argument("--snapshot-input" , "-si" , help="Path to visualization snapshot file")
 
     # --- Visualize command ---
     visualize_parser = subparsers.add_parser("visualize", help="Generate HTML visualization from graph JSON")
@@ -55,7 +56,7 @@ def main():
                     print(f"Unknown framework: {args.framework}")
     
         case "analyze":
-            generate_maestro_analysis_report(args.input)
+            generate_maestro_analysis_report(args.input , args.snapshot_input)
         
         case "visualize":
             generate_visualization(args.input, open_browser=args.open)
