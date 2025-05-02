@@ -99,16 +99,10 @@ You can also add this line to your `.bashrc`, `.zshrc`, or environment setup scr
 
 ## Installation
 
-1.  Install the agent-wiz tool:
-    ```bash
-    pip install repello-agent-wiz
-    ```
+```bash
+  pip install repello-agent-wiz
+```
 
-2.  **Install necessary browser binaries for visualization snapshots(optional):**
-    ```bash
-    playwright install chromium
-    ```
-    *(This step is required to generate image snapshots of the workflow visualizations.)*
 
 ## Prerequisites
 
@@ -148,11 +142,10 @@ This will generate an html d3 based visualisation of the agentic workflow. The `
 ### 3. Analyze against Threat Modeling
 
 ```bash
-agent-wiz analyze --input agentchat_graph.json --snapshot-input AgentChat_vis/snapshot.png
+agent-wiz analyze --input agentchat_graph.json
 ```
 
-This will generate a report like:  `autogen_report.md`  based on the provided graph and threat modeling frameworks. The `snapshot-input` flag (optional) will add the visualization snapshot to the report.
-
+This will generate a report like:  `autogen_report.md`  based on the provided graph and threat modeling frameworks.
 __Run agent-wiz --help for more info:__
 ```bash
 usage: agent-wiz [-h] {extract,analyze,visualize} ...
