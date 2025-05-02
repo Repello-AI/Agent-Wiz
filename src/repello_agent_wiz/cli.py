@@ -1,7 +1,42 @@
 import argparse
+import time
+import threading
+import sys
 from .frameworks import agent_chat, autogen, crewai, google_adk, langgraph, llama_index, n8n, openai_agents, pydantic, swarm
 from .analyzers import generate_maestro_analysis_report
 from .visualizers.visualizer import generate_visualization
+
+
+def run_with_timer(task_fn, *args, label="Working", **kwargs):
+    """
+    Runs the given function while showing a live-updating timer with a custom label.
+
+    Parameters:
+        task_fn (callable): The function to run.
+        label (str): The message shown while the task is running.
+        *args, **kwargs: Arguments to pass to the function.
+    """
+    stop_event = threading.Event()
+    start_time = time.time()  # <-- define early so it's always available
+
+    def show_timer():
+        while not stop_event.is_set():
+            elapsed = time.time() - start_time
+            sys.stdout.write(f"\r⏳ {label}... Elapsed time: {elapsed:.1f}s")
+            sys.stdout.write("\n")
+            sys.stdout.flush()
+            time.sleep(0.1)
+
+    timer_thread = threading.Thread(target=show_timer)
+    timer_thread.start()
+
+    try:
+        task_fn(*args, **kwargs)
+    finally:
+        stop_event.set()
+        timer_thread.join()
+        total_elapsed = time.time() - start_time
+        print(f"\r✅ {label} completed in {total_elapsed:.1f}s\n")
 
 
 def main():
@@ -57,7 +92,8 @@ def main():
                     print(f"Unknown framework: {args.framework}")
     
         case "analyze":
-            generate_maestro_analysis_report(args.input)
+            run_with_timer(generate_maestro_analysis_report, args.input, label="Generating threat model report")
+            # generate_maestro_analysis_report(args.input)
         
         case "visualize":
             generate_visualization(args.input, open_browser=args.open)
