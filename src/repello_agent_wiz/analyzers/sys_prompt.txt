@@ -18,7 +18,7 @@ Agentic Workflow JSON Graph:
 
 Your task is to generate a detailed and structured MAESTRO threat modeling report strictly in Markdown format. Adhere strictly to the information present in the JSON, especially regarding source_location as per the critical instruction above. When inferring based on names (e.g., data types, sensitivity), explicitly state that it is an inference based on the name. Do NOT add information or controls not derivable from the JSON structure itself. The focus is on analyzing the provided structure and recommending controls pertinent to it.
 
-MAESTRO Analysis of Agentic Workflow
+MAESTRO Analysis of Agentic Workflow {input_agentic_framework_from_json_here}
 
 1. Mission
 * Describe the high-level objective synthesized strictly from the combination of agent names (e.g., PlanningAgent, WebSearchAgent) and the functions of their associated Tools (e.g., search_web_tool, analyze_data) as listed in the JSON nodes.

@@ -20,6 +20,8 @@ classifiers = [
 
 dependencies = [
     "openai",
+    "markdown",
+    "weasyprint",
 ]
 
 [project.scripts]
