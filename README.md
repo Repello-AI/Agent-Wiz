@@ -101,8 +101,9 @@ You can also add this line to your `.bashrc`, `.zshrc`, or environment setup scr
 ## Installation
 
 ```bash
-pip install repello-agent-wiz
+  pip install repello-agent-wiz
 ```
+
 
 ## Prerequisites
 
@@ -146,7 +147,6 @@ agent-wiz analyze --input agentchat_graph.json
 ```
 
 This will generate a report like:  `autogen_report.md`  based on the provided graph and threat modeling frameworks.
-
 __Run agent-wiz --help for more info:__
 ```bash
 usage: agent-wiz [-h] {extract,analyze,visualize} ...

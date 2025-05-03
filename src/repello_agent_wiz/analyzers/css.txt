@@ -1,0 +1,99 @@
+            @page {
+                size: A3 landscape;
+                margin-left: 1.5cm;
+                margin-right: 1.5cm;
+                margin-top: 1.5cm;
+                margin-bottom: 2.5cm;
+
+                    @bottom-center {
+                    content: "Page " counter(page) " of " counter(pages); /* The page numbering */
+                    font-family: 'Helvetica', 'Arial', sans-serif; /* Optional: Style the footer text */
+                    font-size: 9pt;
+                    color: #555; /* Dim color for footer */
+                    vertical-align: top; /* Align text within the margin box */
+                    padding-top: 5pt; /* Space above the page number */
+                }
+            }
+            @page :first {
+                margin-top: 0;
+            }
+            body {
+                font-family: 'Helvetica', 'Arial', sans-serif;
+                line-height: 1.4;
+                font-size: 14pt;
+            }
+            img {
+                /* Prevent horizontal overflow */
+                max-width: 110%;
+                
+
+                /* Prevent excessive vertical size - Adjust vh value as needed */
+                /* 85vh means max 85% of the page's viewport height */
+                /* This helps prevent images from dominating a page */
+                /* and running into the footer margin */
+                max-height: 85vh;
+
+                /* Try to keep the image on one page */
+                page-break-inside: avoid;
+
+                /* Ensure proper block behavior for page breaks */
+                display: block;
+                margin-top: -1em;  /* Add some space above image */
+                margin-left: -1.9cm;
+                margin-right: -1.5cm;
+                margin-bottom: 1em; /* Add some space below image */
+            }
+            h2, h3, h4, h5, h6 {
+                page-break-after: avoid; 
+                margin-top: 1.5em;
+                margin-bottom: 0.5em;
+            }
+            table {
+                border-collapse: collapse;
+                width: 100%; 
+                margin-top: 1em;
+                margin-bottom: 1em;
+                page-break-inside: avoid; 
+                font-size: 9pt;
+            }
+            th, td {
+                border: 1px solid #ccc;
+                padding: 6px;
+                text-align: left;
+                vertical-align: top; 
+                word-wrap: break-word; 
+            }
+            th {
+                background-color: #f2f2f2;
+                font-weight: bold;
+            }
+            pre {
+                background-color: #f8f8f8;
+                border: 1px solid #ccc;
+                padding: 10px;
+                overflow-x: auto; 
+                page-break-inside: avoid;
+                white-space: pre-wrap; 
+                word-wrap: break-word;
+            }
+            code {
+                font-family: monospace;
+                background-color: #f8f8f8;
+                padding: 0.2em 0.4em;
+                border-radius: 3px;
+            }
+            ul, ol {
+                padding-left: 2em;
+            }
+            ul ul, ol ol, ul ol, ol ul {
+                margin-left: 1.5em; 
+                padding-left: 1.5em;
+                margin-bottom: 0;
+            }
+            ul ul ul, ol ol ol /* etc */ {
+                margin-left: 1.5em;
+                padding-left: 1.5em;
+            }
+            li {
+                margin-bottom: 0.3em;
+            }

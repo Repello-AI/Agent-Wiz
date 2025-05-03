@@ -3,7 +3,6 @@ import json
 import importlib.resources as pkg_resources
 from pathlib import Path
 
-
 def generate_visualization(json_path: str, open_browser: bool = False):
     import repello_agent_wiz.templates
 
