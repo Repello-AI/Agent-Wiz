@@ -20,6 +20,7 @@ classifiers = [
 
 dependencies = [
     "openai",
+    "pyyaml",
 ]
 
 [project.scripts]
