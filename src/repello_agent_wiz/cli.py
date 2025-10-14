@@ -35,11 +35,17 @@ def main():
     match args.command:
         case "extract":
             
-            # Validate that the directory exists and is actually a directory
-            if not os.path.isdir(args.directory):
-                print(f"Error: The specified directory '{args.directory}' does not exist, is not a directory, or you lack permission to access it.")
-                sys.exit(1) # Exit with a non-zero status code to indicate an error
             
+            if not os.path.exists(args.directory):
+                print(f"Error: The specified directory '{args.directory}' does not exist.")
+                sys.exit(1)  
+            if not os.path.isdir(args.directory):
+                print(f"Error: The specified path '{args.directory}' is not a directory.")
+                sys.exit(1)
+            if not os.access(args.directory, os.R_OK):
+                print(f"Error: You do not have permission to access the directory '{args.directory}'.")
+                sys.exit(1)
+
             match args.framework:
                 case "agent_chat":
                     agent_chat.extract_agentchat_graph(args.directory, args.output)
