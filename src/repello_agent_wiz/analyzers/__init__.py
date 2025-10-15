@@ -1,1 +1,1 @@
-from .threat_modelling import generate_maestro_analysis_report
+from .threat_modelling import generate_analysis_report, generate_maestro_analysis_report

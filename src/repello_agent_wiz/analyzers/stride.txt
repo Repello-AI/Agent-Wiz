@@ -1,0 +1,98 @@
+STRIDE is a foundational threat modeling framework that categorizes adversarial goals into six classes—Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, and Elevation of Privilege. 
+Applying STRIDE to agentic/AI-driven systems provides a structured way to examine how agents, tools, data, and communication channels might be abused or disrupted.
+
+1. Spoofing (Identity Misrepresentation)
+Description: Attackers impersonate legitimate entities such as agents, users, APIs, or services to gain unauthorized access, issue commands, or exfiltrate data. In agentic systems, this often means forging inter-agent messages or pretending to be a trusted tool.
+Example Scenarios:
+- Malicious actor mimics a system agent to trigger destructive actions.
+- Injected credentials chain into restricted tools or services.
+- Prompt injection convinces an agent that hostile inputs are trusted instructions.
+Potential Impacts:
+- Unauthorized control of workflows or resources.
+- Degradation of inter-agent trust and reliability.
+- Leakage or corruption of sensitive information.
+Mitigations:
+- Strong authentication/authorization for all actors (human and non-human).
+- Signed requests with cryptographic guarantees and regular key rotation.
+- Secure identity attestation plus mutual TLS or scoped API keys.
+
+2. Tampering (Unauthorized Modification)
+Description: Adversaries modify code, prompts, intermediate artifacts, or datasets to manipulate results. For AI agents this includes model poisoning, prompt alteration, or interference in data pipelines.
+Example Scenarios:
+- Malicious code inserted into tool plugins or runtime modules.
+- Runtime manipulation of an agent’s working memory or system prompt.
+- Poisoned embeddings, dataset labels, or configuration files.
+Potential Impacts:
+- Biased, erroneous, or unstable outputs.
+- Downstream model/data corruption and loss of integrity.
+- Difficult-to-trace behavioural drift.
+Mitigations:
+- Hash/signature validation, Merkle trees, and change detection.
+- Immutable logging and version control for prompts, code, and data.
+- Sandboxed execution, strict input validation, dependency attestation.
+
+3. Repudiation (Action Denial or Obfuscation)
+Description: Attackers exploit weak auditability to deny or hide malicious actions. Distributed agent systems need transparent logs to ensure accountability.
+Example Scenarios:
+- Clearing or tampering with audit records after running unauthorized prompts.
+- Omitted logging of critical tool invocations or parameter changes.
+- Manipulated timestamps/metadata that mislead investigations.
+Potential Impacts:
+- Inability to attribute actions or detect insider threats.
+- Delayed incident response and incomplete forensics.
+- Erosion of trust in automated decisions.
+Mitigations:
+- Comprehensive, structured logging of agent reasoning and tool calls.
+- Append-only/tamper-evident audit trails with cryptographic signing.
+- Integration with SIEM tooling for correlation and anomaly detection.
+
+4. Information Disclosure (Data Exposure)
+Description: Sensitive information is exposed through insecure storage, model outputs, or overly broad context sharing.
+Example Scenarios:
+- Agents revealing API keys or internal documents in responses.
+- Model outputs leaking PII or proprietary training data.
+- Tool integrations transmitting more context than necessary.
+Potential Impacts:
+- Regulatory compliance violations (GDPR, HIPAA, etc.).
+- Intellectual property loss or competitive disadvantage.
+- Amplified prompt-injection and model-inversion risks.
+Mitigations:
+- Data minimization with least-privilege context exposure.
+- Encryption in transit/at rest plus strict access controls.
+- Context redaction, confidential computing, output filtering.
+
+5. Denial of Service (Availability Disruption)
+Description: Attackers exhaust resources or disrupt dependencies to halt agentic workflows.
+Example Scenarios:
+- Flooding an agent endpoint with traffic to exhaust capacity.
+- Prompt loops that force agents into runaway processing.
+- Cascading timeouts caused by dependency throttling or outages.
+Potential Impacts:
+- Workflow paralysis and downtime.
+- Coordination breakdown across agents/tools.
+- Increased operational costs and resource wastage.
+Mitigations:
+- Rate limiting, circuit breakers, and quota enforcement.
+- Graceful degradation, redundancy, caching, failover plans.
+- Continuous performance monitoring and anomaly detection.
+
+6. Elevation of Privilege (Unauthorized Capability Escalation)
+Description: Adversaries gain higher privileges by chaining other STRIDE vectors or exploiting misconfigurations.
+Example Scenarios:
+- Compromised low-privilege agent invoking administrative tools.
+- Prompt chaining that bypasses policy constraints.
+- Misconfigured environment variables exposing critical secrets.
+Potential Impacts:
+- Full control of the system or persistent backdoors.
+- Unauthorized data access and manipulation of workflows.
+- Violation of least privilege and isolation assumptions.
+Mitigations:
+- Principle of Least Privilege and fine-grained RBAC.
+- Segregation of duties between reasoning, execution, and control agents.
+- Privilege audits, configuration drift detection, automated revocation.
+Applying STRIDE to Agentic Workflows
+- Asset & Flow Mapping: Enumerate agents, tools, data stores, channels, and external dependencies.
+- Threat Enumeration: For each STRIDE category, identify plausible attack paths and adversarial behaviours.
+- Impact & Likelihood Assessment: Score threats to prioritize remediation.
+- Mitigation Planning: Develop layered controls spanning authn/z, isolation, observability, resilience.
+- Validation & Monitoring: Continuously test defences and monitor for regressions or emerging threats.
