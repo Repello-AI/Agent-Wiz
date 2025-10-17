@@ -41,7 +41,7 @@ In modern LLM-powered systems, agentic workflows are becoming increasingly compl
 |---------|-------------|
 | **Workflow Extraction** | Extract agent-based workflows from code using AST-based static parsing |
 | **Threat Vector Visualization** | View agent-to-agent, agent-to-tool, and chained connections in an interactive graph |
-| **Automated Threat Assessment** | Generate comprehensive threat assessment report using established threat modeling frameworks for AI agents like MAESTRO|
+| **Automated Threat Assessment** | Generate comprehensive threat assessment report using established threat modeling frameworks for AI agents like MAESTRO or STRIDE |
 | **Framework Agnostic** | Works with all major LLM orchestration frameworks |
 | **Developer Friendly** | Simple CLI, extensible SDK, and clean JSON exports |
 
@@ -78,7 +78,7 @@ Each framework has its own AST-based static parser to extract:
 
 ## Security Analysis
 
-Agent Wiz currently supports [**MAESTRO**](https://cloudsecurityalliance.org/blog/2025/02/06/agentic-ai-threat-modeling-framework-maestro) as its primary threat modeling framework. It evaluates agent workflows against the following structure:
+Agent Wiz currently supports [**MAESTRO**](https://cloudsecurityalliance.org/blog/2025/02/06/agentic-ai-threat-modeling-framework-maestro) and [**STRIDE**](https://www.practical-devsecops.com/what-is-stride-threat-model/) threat modeling methodologies. MAESTRO remains the default; pass `--methodology stride` to switch the analyzer to STRIDE. MAESTRO evaluates agent workflows against the following structure:
 
 - **M**ission: Defining the system purpose and security objectives
 - **A**ssets: Inventorying critical components (agents, tools, data flows)
@@ -88,6 +88,8 @@ Agent Wiz currently supports [**MAESTRO**](https://cloudsecurityalliance.org/blo
 - **R**isks: Calculating impact and likelihood of security events
 - **O**perations: Assessing runtime security considerations
 
+STRIDE reports organize findings across the six foundational categories: Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, and Elevation of Privilege—highlighting how each manifests within the extracted agentic workflow and the mitigations to prioritize.
+
 Sample threat modelling report generated:
 
 <img src="https://github.com/Repello-AI/Agent-Wiz/raw/master/assets/example_report.png" alt="Threat Modeling Report" />
@@ -96,7 +98,7 @@ Sample threat modelling report generated:
 
 You can also add this line to your `.bashrc`, `.zshrc`, or environment setup script for persistent use.
 
-🧪 More threat models analysis (STRIDE, PASTA, LINDDUN, etc.) are under development.
+🧪 Additional threat modeling frameworks (PASTA, LINDDUN, etc.) are under development.
 
 ## Installation
 
@@ -142,7 +144,7 @@ This will generate an html d3 based visualisation of the agentic workflow. The `
 ### 3. Analyze against Threat Modeling
 
 ```bash
-agent-wiz analyze --input agentchat_graph.json
+agent-wiz analyze --input agentchat_graph.json --methodology (Default to maestro can be changed to stride) 
 ```
 
 This will generate a report like:  `autogen_report.md`  based on the provided graph and threat modeling frameworks.
@@ -169,7 +171,8 @@ Planned features (Not in any paricular order)
 - [x] Generate standardized JSON graph representations of agent flows
 - [x] CLI interfaces
 - [x] Security report generation
-- [ ] Extend to STRIDE, PASTA, LINDDUN, etc.
+- [x] STRIDE threat modeling support
+- [ ] Extend to PASTA, LINDDUN, etc.
 - [ ] Agent simulation-based threat exploration
 
 ## 🤝 Contributing
