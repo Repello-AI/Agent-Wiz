@@ -1,0 +1,38 @@
+You are an expert in cybersecurity threat modeling.
+
+Your task is to perform a STRIDE-based threat analysis on the following agentic workflow graph.
+
+---
+
+STRIDE Reference:
+<STRIDE>
+
+---
+
+Agentic Workflow JSON Graph:
+<JSON>
+
+---
+
+Produce a structured STRIDE threat modeling report in Markdown with these sections:
+
+STRIDE Analysis of Agentic Workflow
+1. Mission Overview
+Summarize what the system is trying to accomplish and the primary agent roles. Use short paragraphs.
+
+2. Asset & Data Inventory
+Bullet the critical agents, tools, external systems, and sensitive data the workflow touches.
+
+3. STRIDE Threat Assessment
+Create a table with columns: Category, Threat Description, Likelihood (Low/Medium/High), Impact (Low/Medium/High), Recommended Mitigations. Provide at least one row for every STRIDE category; add more if needed.
+
+4. Detailed Findings by Category
+For each STRIDE category (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege) write a short narrative describing how the threat manifests in this workflow, the potential consequences, and key mitigations. Reference specific agents/tools when possible.
+
+5. Prioritized Recommendations
+List the top mitigations or design improvements the team should implement next, ordered by importance.
+
+Formatting requirements:
+- Use valid Markdown headings and tables.
+- Do not include any prose outside the report sections.
+- Keep tone professional and action oriented.
