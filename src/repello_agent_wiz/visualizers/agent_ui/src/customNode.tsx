@@ -1,37 +1,50 @@
 import { memo } from 'react';
-import { Handle, Position } from 'react-flow-renderer';
+import { Handle, Position } from 'reactflow';
+import type { NodeProps } from 'reactflow';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import './customNode.css';
 
-export default memo(({ data }: any) => (
-  <div
-    style={{
-      background: data.color,
-      borderRadius: 16,
-      boxShadow: '0 2px 8px rgba(80,80,120,0.08)',
-      padding: 16,
-      minWidth: 120,
-      maxWidth: 180,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      border: '2px solid #fff',
-    }}
->
-    <img src={data.icon} alt={data.nodeType} style={{ width: 32, height: 32, marginBottom: 8 }} />
-    <div style={{
-      fontWeight: 600,
-      fontSize: 16,
-      color: '#222',
-      textAlign: 'center',
-      wordBreak: 'break-word',
-      marginBottom: 4,
-      maxWidth: 140,
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    }}>{data.label}</div>
-    <div style={{ fontSize: 12, color: '#555', marginBottom: 2 }}>
-      {data.functionName}
-    </div>
-    <Handle type="target" position={Position.Top} style={{ background: '#1976d2' }} />
-    <Handle type="source" position={Position.Bottom} style={{ background: '#1976d2' }} />
-  </div>
-));
+type Data = {
+  label?: string;
+  functionName?: string | null;
+  docstring?: string | null;
+  icon?: string;
+  color?: string;
+  nodeType?: string | null;
+  dimmed?: boolean;
+};
+
+export default memo(function CustomNode({ data }: NodeProps<Data>) {
+  const color = data.color ?? '#B39DDB';
+  const dim = !!data.dimmed;
+  const type = (data.nodeType || '').toLowerCase();
+
+  // style classes by type to allow distinct shapes
+  const classes = ['aw-node', `aw-node--${type || 'agent'}`, dim ? 'aw-node--dim' : ''].join(' ').trim();
+
+  return (
+    <Box 
+    className={classes} role="group" aria-label={data.label}
+    sx={{
+      borderRadius: 2,
+      boxShadow: '0 6px 18px rgba(10,20,40,0.08)',
+      padding: 1,
+      minWidth: 120, maxWidth: 380, display: 'flex', gap: 1, alignItems: 'center', border: `1px solid ${color}33`, background: `linear-gradient(180deg, ${color}12, ${color}06)`,
+    }}>
+      <div className="aw-node__left">
+        <img src={data.icon || ''} alt={data.label} className="aw-node__icon" draggable={false} />
+      </div>
+
+      <div className="aw-node__body">
+        <Typography className="aw-node__title">{data.label}</Typography>
+        {data.functionName && <Typography className="aw-node__subtitle">{data.functionName}</Typography>}
+        {data.docstring && <Typography className="aw-node__doc">{data.docstring.slice(0, 140)}{data.docstring.length > 140 ? '…' : ''}</Typography>}
+      </div>
+
+      {/* connector handles: top + bottom for simplicity */}
+      <Handle type="target" position={Position.Top} className="aw-handle aw-handle--top" />
+      <Handle type="source" position={Position.Bottom} className="aw-handle aw-handle--bottom" />
+    </Box>
+  );
+});

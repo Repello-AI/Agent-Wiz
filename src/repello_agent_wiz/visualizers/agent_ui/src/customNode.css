@@ -1,0 +1,63 @@
+.aw-node {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(18, 26, 47, 0.06);
+    transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+    min-width: 120px;
+    max-width: 480px;
+    background: rgba(255,255,255,0.98);
+    border: 1px solid rgba(16,24,40,0.04);
+    box-sizing: border-box;
+  }
+  
+
+  .aw-node--agent { border-left: 6px solid #b39ddb; background: linear-gradient(180deg,#fff,#fbf8ff); }
+  .aw-node--tool { border-left: 6px solid #00BFA6; background: linear-gradient(180deg,#fff,#f7fffc); }
+  .aw-node--orchestrator { border-left: 6px solid #FFB300; background: linear-gradient(180deg,#fff,#fffaf3); }
+  .aw-node--start, .aw-node--end {
+    border-radius: 999px;
+    padding: 12px 14px;
+    justify-content: center;
+    min-width: 64px;
+    max-width: 160px;
+    background: linear-gradient(180deg,#fff,#f3f7ff);
+    border-left: none;
+    border: 2px solid rgba(25,118,210,0.12);
+  }
+  .aw-node--team {
+    border-left: 6px solid #7C4DFF;
+    background: linear-gradient(180deg,#fff,#f6f3ff);
+    padding: 12px;
+  }
+  
+  /* dim state */
+  .aw-node--dim { opacity: 0.36; filter: grayscale(0.02); transform: scale(0.99); }
+  
+  /* left icon */
+  .aw-node__left { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; }
+  .aw-node__icon { width: 36px; height: 36px; object-fit: contain; }
+  
+  /* body expands */
+  .aw-node__body { flex: 1 1 auto; min-width: 120px; overflow: hidden; }
+  .aw-node__title { font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .aw-node__subtitle { font-size: 11px; color: rgba(12,12,12,0.7); white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+  .aw-node__doc { font-size: 11px; color: rgba(35,35,35,0.6); margin-top: 6px; max-height: 3.4em; overflow: hidden; }
+  
+  /* handles */
+  .aw-handle { width: 10px !important; height: 10px !important; border-radius: 3px; background: #1976d2; }
+  
+  /* top/bottom offsets */
+  .aw-handle--top { top: -6px !important; }
+  .aw-handle--bottom { bottom: -6px !important; }
+  
+  .aw-node:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(18,26,47,0.12) }
+
+  @media (max-width: 700px) {
+    .aw-node { gap: 8px; padding: 8px; }
+    .aw-node__icon { width: 30px; height: 30px; }
+    .aw-node__title { font-size: 12px; }
+  }
+  
