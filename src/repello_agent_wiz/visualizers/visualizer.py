@@ -27,7 +27,7 @@ def generate_visualization(json_path: str, open_browser: bool = False):
     json_string = json.dumps(graph, indent=2)
     index_filled = index_text.replace("const data = {};", f"const data = {json_string};")
 
-    with open(output_dir / "index.html", "w") as f:
+    with open(output_dir / "index.html", "w" , encoding='utf-8') as f:
         f.write(index_filled)
 
     print(f"[✓] Visualization HTML generated at: {output_dir}/index.html")

@@ -1,5 +1,5 @@
 import argparse
-from .frameworks import agent_chat, autogen, crewai, google_adk, langgraph, llama_index, n8n, openai_agents, pydantic, swarm
+from .frameworks import agent_chat, autogen, crewai, google_adk, langgraph, llama_index, n8n, openai_agents, pydantic, swarm , atomic_agents
 from .analyzers import generate_maestro_analysis_report
 from .visualizers.visualizer import generate_visualization
 
@@ -12,7 +12,7 @@ def main():
     extract_parser = subparsers.add_parser("extract", help="Extract graph from source code")
     extract_parser.add_argument("--framework", "-f", required=True, choices=[
         "agent_chat", "autogen", "crewai", "google_adk" , "langgraph", 
-        "llama_index", "n8n", "openai_agents", "pydantic", "swarm"
+        "llama_index", "n8n", "openai_agents", "pydantic", "swarm" , "atomic_agents"
     ])
     extract_parser.add_argument("--directory", "-d", default=".", help="Directory containing source code")
     extract_parser.add_argument("--output", "-o", default="graph.json", help="Path to output JSON file")
@@ -28,7 +28,7 @@ def main():
 
 
     # --- Parse and execute ---
-    args = parser.parse_args()
+    args = parser.parse_args() 
 
     match args.command:
         case "extract":
@@ -53,6 +53,8 @@ def main():
                     n8n.extract_n8n_graph(args.directory, args.output)
                 case "openai_agents":
                     openai_agents.extract_openai_agents_graph(args.directory, args.output)
+                case "atomic_agents":
+                    atomic_agents.extract_atomic_agents_graph(args.directory, args.output)
                 case _:
                     print(f"Unknown framework: {args.framework}")
     
