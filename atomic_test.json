@@ -1,0 +1,67 @@
+{
+  "nodes": [
+    {
+      "id": "End",
+      "name": "End",
+      "node_type": "End",
+      "function_name": null,
+      "docstring": null,
+      "source_location": null,
+      "metadata": {}
+    },
+    {
+      "id": "Start",
+      "name": "Start",
+      "node_type": "Start",
+      "function_name": null,
+      "docstring": null,
+      "source_location": null,
+      "metadata": {}
+    },
+    {
+      "id": "agent",
+      "name": "agent",
+      "node_type": "Agent",
+      "source_location": {
+        "file": "examples\\code\\atomic_agents\\agent.py",
+        "line": 19,
+        "col": 0,
+        "end_line": 26,
+        "end_col": 1
+      },
+      "metadata": {
+        "type": "AtomicAgent"
+      },
+      "function_name": null,
+      "docstring": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "Start",
+      "target": "agent",
+      "edge_type": "execution_start",
+      "condition": {},
+      "metadata": {
+        "method": "run",
+        "definition_location": {
+          "file": "examples\\code\\atomic_agents\\agent.py",
+          "line": 29,
+          "col": 9,
+          "end_line": 29,
+          "end_col": 154
+        }
+      }
+    },
+    {
+      "source": "agent",
+      "target": "End",
+      "edge_type": "implicit_end",
+      "condition": {},
+      "metadata": {}
+    }
+  ],
+  "metadata": {
+    "framework": "Atomic_Agents"
+  }
+}
