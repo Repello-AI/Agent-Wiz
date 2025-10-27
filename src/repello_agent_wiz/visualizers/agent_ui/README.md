@@ -11,8 +11,7 @@ This guide documents the migration from d3-based visualization to ReactFlow visu
 
 **Changes:**
 - Added support for runtime JSON injection via `window.AGENT_GRAPH_DATA`
-- Maintains backward compatibility with static JSON import as fallback
-- The app now checks for runtime data first, then falls back to the bundled JSON
+- The app now checks for runtime data first, then falls gracefully
 
 ### 2. **visualizer.py** - React Build Integration
 **File:** `src/repello_agent_wiz/visualizers/visualizer.py`
@@ -45,9 +44,39 @@ This ensures the React build is included when the package is distributed.
 ### Current Flow (After Migration)
 
 1. **User runs CLI command:**
-   ```bash
-   agent-wiz visualize --input agentchat_graph.json --open
-   ```
+
+-  Extract Agentic Workflow
+
+```bash
+agent-wiz extract --framework agent_chat --directory ./examples/code/agent_chat --output agentchat_graph.json
+```
+
+This will generate a graph JSON with the following structure:
+
+```json
+{
+  "nodes": [...],
+  "edges": [...],
+  "metadata": {
+    "framework": "autogen"
+  }
+}
+```
+
+- Then, Visualize the Agentic workflow
+
+```bash
+agent-wiz visualize --input agentchat_graph.json --open
+```
+
+This will generate an html Reacflow based visualisation of the agentic workflow. The `open` flag (optional) and automatically opens the visualization in your default browser.   
+
+- visualize other graphs [exit above server's graph and run this cmd to visualize other agentic worflow in the same terminal]
+
+```bash
+agent-wiz visualize --input examples/output/crewai_graph.json --open
+agent-wiz visualize --input examples/output/langgraph_graph.json --open
+```
 
 2. **Python backend (`visualizer.py`):**
    - Reads the graph JSON file

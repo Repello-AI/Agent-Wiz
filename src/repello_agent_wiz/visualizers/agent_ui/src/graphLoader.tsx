@@ -13,8 +13,7 @@ declare global {
   }
 }
 
-import fallbackData from './agent_graph.json';
-const raw = window.AGENT_GRAPH_DATA || fallbackData;
+const raw = window.AGENT_GRAPH_DATA || { nodes: [], edges: [], metadata: {} };
 
 export type RFNode = any;
 export type RFEdge = any;
