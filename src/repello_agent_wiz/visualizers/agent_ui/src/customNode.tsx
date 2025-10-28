@@ -24,13 +24,18 @@ export default memo(function CustomNode({ data }: NodeProps<Data>) {
   const classes = ['aw-node', `aw-node--${type || 'agent'}`, dim ? 'aw-node--dim' : ''].join(' ').trim();
 
   return (
-    <Box 
-    className={classes} role="group" aria-label={data.label}
+    <Box
+      className={classes} role="group" aria-label={data.label}
     sx={{
       borderRadius: 2,
       boxShadow: '0 6px 18px rgba(10,20,40,0.08)',
       padding: 1,
-      minWidth: 120, maxWidth: 380, display: 'flex', gap: 1, alignItems: 'center', border: `1px solid ${color}33`, background: `linear-gradient(180deg, ${color}12, ${color}06)`,
+      minWidth: 120, maxWidth: 380, 
+      display: 'flex', 
+      gap: 1, 
+      alignItems: 'center', 
+      border: `1px solid ${color}33`, 
+      background: `linear-gradient(180deg, ${color}12, ${color}06)`,
     }}>
       <div className="aw-node__left">
         <img src={data.icon || ''} alt={data.label} className="aw-node__icon" draggable={false} />
@@ -43,8 +48,8 @@ export default memo(function CustomNode({ data }: NodeProps<Data>) {
       </div>
 
       {/* connector handles: top + bottom for simplicity */}
-      <Handle type="target" position={Position.Top} className="aw-handle aw-handle--top" />
-      <Handle type="source" position={Position.Bottom} className="aw-handle aw-handle--bottom" />
+      <Handle type="target" position={Position.Top} className="aw-handle aw-handle--top" isConnectable />
+      <Handle type="source" position={Position.Bottom} className="aw-handle aw-handle--bottom" isConnectable />
     </Box>
   );
 });

@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { Box, AppBar, Toolbar, Typography, Switch, Drawer, Card, List, ListItem, ButtonGroup, Button, Snackbar, TextField, InputAdornment } from '@mui/material';
-import ReactFlow, { MiniMap, Controls, Background, ReactFlowProvider, useReactFlow} from 'reactflow';
-import type {Node, Edge} from 'reactflow';
+import ReactFlow, { MiniMap, Controls, Background, ReactFlowProvider, useReactFlow, useNodesState, useEdgesState, addEdge, ConnectionLineType} from 'reactflow';
+import type {Node, Edge, Connection} from 'reactflow';
 import { loadGraph } from './graphLoader';
 import SearchIcon from './assets/search.svg';
 import AgentIcon from './assets/agent.svg';
@@ -10,17 +10,82 @@ import OrchestratorIcon from './assets/Planner.svg';
 import StartIcon from './assets/start.svg';
 import TeamIcon from './assets/generic.svg';
 import CustomNode from './customNode';
+import FloatingEdge from './interactions/FloatingEdge';
+import FloatingConnectionLine from './interactions/FloatingConnectionLine';
+import { DnDProvider } from './interactions/DnDContext';
 import 'reactflow/dist/style.css';
 
 const nodeTypes = { customNode: CustomNode };
+const edgeTypes = { floating: FloatingEdge };
 const { nodes: initialNodes, edges: initialEdges, framework } = loadGraph();
 
-function FlowCanvas({ nodes, edges, highlighted, onNodeClick, onEdgeClick }: {
-  nodes: Node<any>[]; edges: Edge<any>[]; highlighted: string | null;
+let nodeIdCounter = initialNodes.length + 1;
+const getId = () => `new-node-${nodeIdCounter++}`;
+
+function FlowCanvas({ nodes, edges, setNodes, setEdges, highlighted, onNodeClick, onEdgeClick, onNodesChange, onEdgesChange }: {
+  nodes: Node<any>[]; edges: Edge<any>[]; setNodes: any; setEdges: any;
+  highlighted: string | null;
   onNodeClick: (e: any, node: any) => void; onEdgeClick: (e: any, edge: any) => void;
+  onNodesChange: any; onEdgesChange: any;
 }) {
   const [search, setSearch] = useState('');
-  const { setCenter, fitView } = useReactFlow();
+  const { setCenter, fitView, screenToFlowPosition } = useReactFlow();
+
+  const onConnect = useCallback(
+    (params: Connection) => setEdges((eds: Edge[]) => addEdge(params, eds)),
+    [setEdges]
+  );
+
+  const onDragOver = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  const onDrop = useCallback(
+    (event: React.DragEvent) => {
+      event.preventDefault();
+      
+      const nodeType = event.dataTransfer.getData('application/reactflow');
+      if (!nodeType) return;
+
+      const position = screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+
+      const baseSize = nodeType === 'tool' ? { width: 240, height: 100 } : 
+                       nodeType === 'start' || nodeType === 'end' ? { width: 120, height: 120 } : 
+                       { width: 320, height: 140 };
+
+      const newNode = {
+        id: getId(),
+        type: 'customNode',
+        position,
+        data: {
+          label: `New ${nodeType}`,
+          nodeType: nodeType,
+          icon: nodeType === 'agent' ? AgentIcon : 
+                nodeType === 'tool' ? ToolIcon :
+                nodeType === 'orchestrator' ? OrchestratorIcon :
+                nodeType === 'start' ? StartIcon :
+                nodeType === 'team' ? TeamIcon : AgentIcon,
+          color: nodeType === 'agent' ? '#B39DDB' :
+                 nodeType === 'tool' ? '#00BFA6' :
+                 nodeType === 'orchestrator' ? '#FFB300' :
+                 nodeType === 'start' ? '#1976D2' :
+                 nodeType === 'team' ? '#7C4DFF' : '#B39DDB',
+          width: baseSize.width,
+          height: baseSize.height,
+        },
+        selectable: true,
+        draggable: true,
+        ...baseSize,
+      };
+
+      setNodes((nds: Node[]) => nds.concat(newNode));
+    },
+    [screenToFlowPosition, setNodes]
+  );
 
   const handleSearch = (e: any) => {
     const q = e.target.value || '';
@@ -63,7 +128,29 @@ function FlowCanvas({ nodes, edges, highlighted, onNodeClick, onEdgeClick }: {
               </InputAdornment>
             ),
           }}
-          sx={{ width: 320, maxWidth: '40vw' }}
+          sx={{
+            width: 320,
+            maxWidth: '40vw',
+            '& .MuiOutlinedInput-root': {
+              backgroundColor: 'background.paper',
+              '& fieldset': {
+                borderColor: 'rgba(255,255,255,0.23)',
+              },
+              '&:hover fieldset': {
+                borderColor: 'rgba(255,255,255,0.4)',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: 'rgba(255,255,255,0.6)',
+              },
+            },
+            '& .MuiInputBase-input': {
+              color: 'text.primary',
+            },
+            '& .MuiInputBase-input::placeholder': {
+              color: 'text.secondary',
+              opacity: 0.7,
+            },
+          }}
         />
         <Box sx={{ flex: 1 }} />
       </Box>
@@ -72,14 +159,30 @@ function FlowCanvas({ nodes, edges, highlighted, onNodeClick, onEdgeClick }: {
         nodes={nodes.map(n => ({ ...n, style: getNodeStyle(n.id, n.data?.color) }))}
         edges={edges}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        connectionLineComponent={FloatingConnectionLine}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        connectionLineType={ConnectionLineType.SmoothStep}
+        onConnect={onConnect}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
         fitView
+        fitViewOptions={{ padding: 0.15, maxZoom: 1.2 }}
         style={{ width: '100%', height: '100%' }}
         onNodeClick={onNodeClick}
         onEdgeClick={onEdgeClick}
-        minZoom={0.2}
-        maxZoom={2.2}
+        minZoom={0.15}
+        maxZoom={2.5}
         snapToGrid
         snapGrid={[24, 24]}
+        panOnDrag
+        selectNodesOnDrag={false}
+        defaultEdgeOptions={{
+          type: 'floating',
+          style: { strokeWidth: 4 },
+          animated: false
+        }}
       >
         <MiniMap nodeColor={n => (n.data?.color || '#777')} zoomable />
         <Controls />
@@ -89,7 +192,9 @@ function FlowCanvas({ nodes, edges, highlighted, onNodeClick, onEdgeClick }: {
   );
 }
 
-export default function App() {
+function App() {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [themeDark, setThemeDark] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState<any>(null);
@@ -111,9 +216,13 @@ export default function App() {
   const handleThemeToggle = () => setThemeDark((p) => !p);
   const handleSnackbarClose = () => setSnackbarOpen(false);
 
+  const onDragStart = (event: React.DragEvent, nodeType: string) => {
+    event.dataTransfer.setData('application/reactflow', nodeType);
+    event.dataTransfer.effectAllowed = 'move';
+  };
+
   return (
-    <ReactFlowProvider>
-      <Box sx={{ height: '100vh', width: '100vw', display: 'flex', flexDirection: 'column', bgcolor: themeDark ? '#0f1720' : '#fbfcff', overflow: 'hidden' }}>
+    <Box sx={{ height: '100vh', width: '100vw', display: 'flex', flexDirection: 'column', bgcolor: themeDark ? '#0f1720' : '#fbfcff', overflow: 'hidden' }}>
         <AppBar position="static" color={themeDark ? 'default' : 'primary'}>
           <Toolbar>
             <Typography variant="h6">Agent-Workflow ({framework})</Typography>
@@ -130,11 +239,50 @@ export default function App() {
               <Typography variant="body2">Agent</Typography>
             </Card>
             <Card sx={{ p: 1, mb: 2 }}>
-              <List>
-                <ListItem><img src={ToolIcon} alt="Tool" style={{ width: 22, marginRight: 8 }} /> Tool</ListItem>
-                <ListItem><img src={OrchestratorIcon} alt="Orchestrator" style={{ width: 22, marginRight: 8 }} /> Orchestrator</ListItem>
-                <ListItem><img src={StartIcon} alt="Start" style={{ width: 22, marginRight: 8 }} /> Start/End</ListItem>
-                <ListItem><img src={TeamIcon} alt="Team" style={{ width: 22, marginRight: 8 }} /> Team</ListItem>
+              <Typography variant="caption" sx={{ px: 1, color: 'text.secondary', fontWeight: 600, display: 'block', mb: 1 }}>
+                Drag to Canvas
+              </Typography>
+              <List dense>
+                <ListItem
+                  draggable
+                  onDragStart={(e) => onDragStart(e, 'agent')}
+                  sx={{ cursor: 'grab', borderRadius: 1, mb: 0.5, '&:hover': { bgcolor: 'action.hover' }, '&:active': { cursor: 'grabbing' } }}
+                >
+                  <img src={AgentIcon} alt="Agent" style={{ width: 22, marginRight: 8 }} />
+                  <Typography variant="body2">Agent</Typography>
+                </ListItem>
+                <ListItem
+                  draggable
+                  onDragStart={(e) => onDragStart(e, 'tool')}
+                  sx={{ cursor: 'grab', borderRadius: 1, mb: 0.5, '&:hover': { bgcolor: 'action.hover' }, '&:active': { cursor: 'grabbing' } }}
+                >
+                  <img src={ToolIcon} alt="Tool" style={{ width: 22, marginRight: 8 }} />
+                  <Typography variant="body2">Tool</Typography>
+                </ListItem>
+                <ListItem
+                  draggable
+                  onDragStart={(e) => onDragStart(e, 'orchestrator')}
+                  sx={{ cursor: 'grab', borderRadius: 1, mb: 0.5, '&:hover': { bgcolor: 'action.hover' }, '&:active': { cursor: 'grabbing' } }}
+                >
+                  <img src={OrchestratorIcon} alt="Orchestrator" style={{ width: 22, marginRight: 8 }} />
+                  <Typography variant="body2">Orchestrator</Typography>
+                </ListItem>
+                <ListItem
+                  draggable
+                  onDragStart={(e) => onDragStart(e, 'start')}
+                  sx={{ cursor: 'grab', borderRadius: 1, mb: 0.5, '&:hover': { bgcolor: 'action.hover' }, '&:active': { cursor: 'grabbing' } }}
+                >
+                  <img src={StartIcon} alt="Start" style={{ width: 22, marginRight: 8 }} />
+                  <Typography variant="body2">Start</Typography>
+                </ListItem>
+                <ListItem
+                  draggable
+                  onDragStart={(e) => onDragStart(e, 'team')}
+                  sx={{ cursor: 'grab', borderRadius: 1, '&:hover': { bgcolor: 'action.hover' }, '&:active': { cursor: 'grabbing' } }}
+                >
+                  <img src={TeamIcon} alt="Team" style={{ width: 22, marginRight: 8 }} />
+                  <Typography variant="body2">Team</Typography>
+                </ListItem>
               </List>
             </Card>
 
@@ -148,11 +296,15 @@ export default function App() {
 
           <Box sx={{ flex: 1, position: 'relative', minHeight: 0 }}>
             <FlowCanvas
-              nodes={initialNodes}
-              edges={initialEdges}
+              nodes={nodes}
+              edges={edges}
+              setNodes={setNodes}
+              setEdges={setEdges}
               highlighted={highlighted}
               onNodeClick={handleNodeClick}
               onEdgeClick={handleEdgeClick}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
             />
           </Box>
 
@@ -202,12 +354,17 @@ export default function App() {
         <Box sx={{ p: 2, display: 'flex', alignItems: 'center' }}>
           <ButtonGroup>
             <Button onClick={() => setSnackbarOpen(true)}>Reset Layout</Button>
-            <Button>Spread Nodes</Button>
-            <Button>Export</Button>
           </ButtonGroup>
           <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={handleSnackbarClose} message="Layout reset!" />
         </Box>
       </Box>
-    </ReactFlowProvider>
   );
 }
+
+export default () => (
+  <ReactFlowProvider>
+    <DnDProvider>
+      <App />
+    </DnDProvider>
+  </ReactFlowProvider>
+);
