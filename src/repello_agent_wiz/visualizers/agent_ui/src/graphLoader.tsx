@@ -92,7 +92,7 @@ export function loadGraph() {
       const nodeLabel = node.name ?? node.label ?? `node-${i}`;
 
       // optimized node sizes for visibility and clarity
-      const baseSize = nt.toLowerCase() === 'tool' ? { width: 240, height: 100 } : nt.toLowerCase().includes('start') || nt.toLowerCase().includes('end') ? { width: 120, height: 120 } : { width: 320, height: 140 };
+      const baseSize = nt.toLowerCase() === 'tool' ? { width: 540, height: 200 } : nt.toLowerCase().includes('start') || nt.toLowerCase().includes('end') ? { width: 520, height: 220 } : { width: 320, height: 140 };
 
       return {
         id: nodeLabel,
@@ -166,8 +166,8 @@ export function loadGraph() {
   // Optimal spacing to reduce node overlap and improve visibility
   const { nodes: positionedNodes, edges: positionedEdges } = dagreLayout(nodes, edges, { 
     rankdir: 'LR', 
-    nodeSep: 380,  // Horizontal spacing for better separation
-    rankSep: 240   // Vertical spacing to reduce overlaps
+    nodeSep: 80,  // Horizontal spacing for better separation
+    rankSep: 40   // Vertical spacing to reduce overlaps
   });
 
   return { nodes: positionedNodes, edges: positionedEdges, framework: graphData.metadata?.framework || 'unknown' };
