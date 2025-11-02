@@ -1,7 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { Box, AppBar, Toolbar, Typography, Switch, Drawer, Card, List, ListItem, ButtonGroup, Button, Snackbar, TextField, InputAdornment } from '@mui/material';
 import ReactFlow, { MiniMap, Controls, Background, ReactFlowProvider, useReactFlow, useNodesState, useEdgesState, addEdge, ConnectionLineType} from 'reactflow';
 import type {Node, Edge, Connection} from 'reactflow';
+import { toPng } from 'html-to-image';
 import { loadGraph } from './graphLoader';
 import SearchIcon from './assets/search.svg';
 import AgentIcon from './assets/agent.svg';
@@ -22,14 +23,22 @@ const { nodes: initialNodes, edges: initialEdges, framework } = loadGraph();
 let nodeIdCounter = initialNodes.length + 1;
 const getId = () => `new-node-${nodeIdCounter++}`;
 
-function FlowCanvas({ nodes, edges, setNodes, setEdges, highlighted, onNodeClick, onEdgeClick, onNodesChange, onEdgesChange }: {
+function FlowCanvas({ nodes, edges, setNodes, setEdges, highlighted, onNodeClick, onEdgeClick, onNodesChange, onEdgesChange, exportRef, themeDark }: {
   nodes: Node<any>[]; edges: Edge<any>[]; setNodes: any; setEdges: any;
   highlighted: string | null;
   onNodeClick: (e: any, node: any) => void; onEdgeClick: (e: any, edge: any) => void;
   onNodesChange: any; onEdgesChange: any;
+  exportRef?: React.MutableRefObject<any>;
+  themeDark: boolean;
 }) {
   const [search, setSearch] = useState('');
   const { setCenter, fitView, screenToFlowPosition } = useReactFlow();
+
+  useEffect(() => {
+    if (exportRef) {
+      exportRef.current = { fitView, nodes };
+    }
+  }, [exportRef, fitView, nodes]);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds: Edge[]) => addEdge(params, eds)),
@@ -112,6 +121,25 @@ function FlowCanvas({ nodes, edges, setNodes, setEdges, highlighted, onNodeClick
     padding: 6,
   });
 
+  const getEdgeStyle = (edge: Edge) => {
+    const baseStyle = edge.style || {};
+    if (themeDark) {
+      return {
+        ...baseStyle,
+        stroke: baseStyle.stroke || '#5568d3',
+        strokeWidth: baseStyle.strokeWidth || 3,
+        opacity: baseStyle.opacity || 0.85,
+      };
+    } else {
+      return {
+        ...baseStyle,
+        stroke: baseStyle.stroke || '#4A90E2',
+        strokeWidth: baseStyle.strokeWidth || 2.5,
+        opacity: baseStyle.opacity || 0.75,
+      };
+    }
+  };
+
   return (
     <>
       <Box sx={{ p: 2, pb: 0, display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -157,7 +185,7 @@ function FlowCanvas({ nodes, edges, setNodes, setEdges, highlighted, onNodeClick
 
       <ReactFlow
         nodes={nodes.map(n => ({ ...n, style: getNodeStyle(n.id, n.data?.color) }))}
-        edges={edges}
+        edges={edges.map(e => ({ ...e, style: getEdgeStyle(e) }))}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         connectionLineComponent={FloatingConnectionLine}
@@ -200,6 +228,7 @@ function App() {
   const [selectedDetails, setSelectedDetails] = useState<any>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [highlighted, setHighlighted] = useState<string | null>(null);
+  const exportRef = useRef<any>(null);
 
   const handleNodeClick = useCallback((_e: any, node: any) => {
     setSelectedDetails({ type: 'node', ...node.data, id: node.id, position: node.position });
@@ -215,20 +244,84 @@ function App() {
   const handleCloseDrawer = () => { setDrawerOpen(false); setSelectedDetails(null); setHighlighted(null); };
   const handleThemeToggle = () => setThemeDark((p) => !p);
   const handleSnackbarClose = () => setSnackbarOpen(false);
+  const handleResetLayout = useCallback(() => {
+    setNodes(initialNodes);
+    setEdges(initialEdges);
+    setHighlighted(null);
+    setSnackbarOpen(true);
+  }, [setNodes, setEdges]);
 
   const onDragStart = (event: React.DragEvent, nodeType: string) => {
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.effectAllowed = 'move';
   };
 
+  const handleExport = useCallback(() => {
+    if (!exportRef.current || !exportRef.current.fitView) return;
+    
+    const minMap = document.querySelector('.react-flow__minimap');
+    const controls = document.querySelector('.react-flow__controls');
+    
+    if (minMap) (minMap as HTMLElement).style.display = 'none';
+    if (controls) (controls as HTMLElement).style.display = 'none';
+    
+    exportRef.current.fitView({ padding: 0.2, duration: 200 });
+    
+    setTimeout(() => {
+      const container = document.querySelector('.react-flow') as HTMLElement;
+      if (!container) {
+        if (minMap) (minMap as HTMLElement).style.display = '';
+        if (controls) (controls as HTMLElement).style.display = '';
+        return;
+      }
+      
+      toPng(container, {
+        backgroundColor: themeDark ? '#0f1720' : '#fbfcff',
+        pixelRatio: 2,
+        cacheBust: true,
+      }).then((dataUrl: string) => {
+        const link = document.createElement('a');
+        link.download = 'agent-workflow.png';
+        link.href = dataUrl;
+        link.click();
+        
+        if (minMap) (minMap as HTMLElement).style.display = '';
+        if (controls) (controls as HTMLElement).style.display = '';
+      }).catch((err: any) => {
+        console.error('Export failed:', err);
+        if (minMap) (minMap as HTMLElement).style.display = '';
+        if (controls) (controls as HTMLElement).style.display = '';
+      });
+    }, 300);
+  }, [themeDark]);
+
   return (
     <Box sx={{ height: '100vh', width: '100vw', display: 'flex', flexDirection: 'column', bgcolor: themeDark ? '#0f1720' : '#fbfcff', overflow: 'hidden' }}>
-        <AppBar position="static" color={themeDark ? 'default' : 'primary'}>
+        <AppBar 
+          position="static" 
+          sx={{ 
+            bgcolor: themeDark ? '#1a2332' : '#1976d2',
+            color: themeDark ? '#f5f5f5' : '#ffffff',
+            boxShadow: themeDark ? '0 2px 8px rgba(0,0,0,0.3)' : '0 2px 8px rgba(0,0,0,0.15)',
+            transition: 'all 0.3s ease-in-out'
+          }}
+        >
           <Toolbar>
-            <Typography variant="h6">Agent-Workflow ({framework})</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>Agent-Workflow ({framework})</Typography>
             <Box sx={{ flex: 1 }} />
-            <Typography variant="body2" sx={{ mr: 1 }}>{themeDark ? 'Dark' : 'Light'}</Typography>
-            <Switch checked={themeDark} onChange={handleThemeToggle} />
+            <Typography variant="body2" sx={{ mr: 1, fontWeight: 500 }}>{themeDark ? 'Dark' : 'Light'}</Typography>
+            <Switch 
+              checked={themeDark} 
+              onChange={handleThemeToggle}
+              sx={{
+                '& .MuiSwitch-switchBase.Mui-checked': {
+                  color: themeDark ? '#90caf9' : '#fff'
+                },
+                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                  backgroundColor: themeDark ? '#64b5f6' : '#90caf9'
+                }
+              }}
+            />
           </Toolbar>
         </AppBar>
 
@@ -288,8 +381,8 @@ function App() {
 
             <Box sx={{ mt: 2 }}>
               <ButtonGroup orientation="vertical" variant="outlined" size="small" fullWidth>
-                <Button onClick={() => setSnackbarOpen(true)}>Reset Layout</Button>
-                <Button onClick={() => window.print()}>Export</Button>
+                <Button onClick={handleResetLayout}>Reset Layout</Button>
+                <Button onClick={handleExport}>Export</Button>
               </ButtonGroup>
             </Box>
           </Box>
@@ -305,6 +398,8 @@ function App() {
               onEdgeClick={handleEdgeClick}
               onNodesChange={onNodesChange}
               onEdgesChange={onEdgesChange}
+              exportRef={exportRef}
+              themeDark={themeDark}
             />
           </Box>
 
@@ -353,7 +448,8 @@ function App() {
 
         <Box sx={{ p: 2, display: 'flex', alignItems: 'center' }}>
           <ButtonGroup>
-            <Button onClick={() => setSnackbarOpen(true)}>Reset Layout</Button>
+            <Button onClick={handleResetLayout}>Reset Layout</Button>
+            <Button onClick={handleExport}>Export</Button>
           </ButtonGroup>
           <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={handleSnackbarClose} message="Layout reset!" />
         </Box>

@@ -16,6 +16,7 @@
     "@mui/material": "^7.3.4",
     "axios": "^1.12.2",
     "dagre": "^0.8.5",
+    "html-to-image": "^1.11.13",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-flow-renderer": "^10.3.17",
