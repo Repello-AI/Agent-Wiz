@@ -1,0 +1,255 @@
+{
+  "nodes": [
+    {
+      "id": "End",
+      "name": "End",
+      "node_type": "End",
+      "function_name": null,
+      "docstring": null,
+      "source_location": null,
+      "metadata": {}
+    },
+    {
+      "id": "Start",
+      "name": "Start",
+      "node_type": "Start",
+      "function_name": null,
+      "docstring": null,
+      "source_location": null,
+      "metadata": {}
+    },
+    {
+      "id": "agent",
+      "name": "agent",
+      "node_type": "Agent",
+      "source_location": {
+        "file": "examples\\code\\atomic_agents\\mainPDFAnalysis.py",
+        "line": 43,
+        "col": 0,
+        "end_line": 51,
+        "end_col": 1
+      },
+      "metadata": {
+        "type": "AtomicAgent",
+        "config": {
+          "client": "client",
+          "model": "'gemini-2.0-flash'",
+          "system_prompt_generator": "system_prompt_generator",
+          "input_schema": "InputSchema",
+          "output_schema": "ExtractionResult"
+        }
+      },
+      "function_name": null,
+      "docstring": null
+    },
+    {
+      "id": "nutrition_analyzer",
+      "name": "nutrition_analyzer",
+      "node_type": "Agent",
+      "source_location": {
+        "file": "examples\\code\\atomic_agents\\mainBaseModal.py",
+        "line": 62,
+        "col": 0,
+        "end_line": 90,
+        "end_col": 1
+      },
+      "metadata": {
+        "type": "AtomicAgent",
+        "config": {
+          "client": "instructor.from_openai(openai.OpenAI(api_key=API_KEY))",
+          "model": "'gpt-5-mini'",
+          "model_api_parameters": "{'reasoning_effort': 'low'}",
+          "system_prompt_generator": "SystemPromptGenerator(background=['You are a specialized nutrition label analyzer.', 'You excel at extracting precise nutritional information from food label images.', 'You understand various serving size formats and measurement units.', 'You can process multiple nutrition labels simultaneously.'], steps=['For each nutrition label image:', '1. Locate and identify the nutrition facts panel', '2. Extract all serving information and nutritional values', '3. Validate measurements and units for accuracy', '4. Compile the nutrition facts into structured data'], output_instructions=['For each analyzed nutrition label:', '1. Record complete serving size information', '2. Extract all nutrient values with correct units', '3. Ensure all measurements are properly converted', '4. Include all extracted labels in the final result'])"
+        }
+      },
+      "function_name": null,
+      "docstring": null
+    },
+    {
+      "id": "orchestrator_agent",
+      "name": "orchestrator_agent",
+      "node_type": "Agent",
+      "source_location": {
+        "file": "examples\\code\\atomic_agents\\orchestor.py",
+        "line": 181,
+        "col": 8,
+        "end_line": 181,
+        "end_col": 125
+      },
+      "metadata": {
+        "type": "AtomicAgent"
+      },
+      "function_name": null,
+      "docstring": null
+    },
+    {
+      "id": "orchestrator_agent_final",
+      "name": "orchestrator_agent_final",
+      "node_type": "Agent",
+      "source_location": {
+        "file": "examples\\code\\atomic_agents\\orchestor.py",
+        "line": 92,
+        "col": 0,
+        "end_line": 92,
+        "end_col": 116
+      },
+      "metadata": {
+        "type": "AtomicAgent"
+      },
+      "function_name": null,
+      "docstring": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "Start",
+      "target": "agent",
+      "edge_type": "execution_start",
+      "condition": {},
+      "metadata": {
+        "method": "run",
+        "definition_location": {
+          "file": "examples\\code\\atomic_agents\\hooksModel.py",
+          "line": 189,
+          "col": 23,
+          "end_line": 189,
+          "end_col": 39
+        }
+      }
+    },
+    {
+      "source": "Start",
+      "target": "agent",
+      "edge_type": "execution_start",
+      "condition": {},
+      "metadata": {
+        "method": "run",
+        "definition_location": {
+          "file": "examples\\code\\atomic_agents\\hooksModel.py",
+          "line": 221,
+          "col": 23,
+          "end_line": 221,
+          "end_col": 39
+        }
+      }
+    },
+    {
+      "source": "Start",
+      "target": "agent",
+      "edge_type": "execution_start",
+      "condition": {},
+      "metadata": {
+        "method": "run",
+        "definition_location": {
+          "file": "examples\\code\\atomic_agents\\hooksModel.py",
+          "line": 260,
+          "col": 23,
+          "end_line": 260,
+          "end_col": 39
+        }
+      }
+    },
+    {
+      "source": "Start",
+      "target": "agent",
+      "edge_type": "execution_start",
+      "condition": {},
+      "metadata": {
+        "method": "run",
+        "definition_location": {
+          "file": "examples\\code\\atomic_agents\\mainPDFAnalysis.py",
+          "line": 68,
+          "col": 26,
+          "end_line": 68,
+          "end_col": 53
+        }
+      }
+    },
+    {
+      "source": "Start",
+      "target": "nutrition_analyzer",
+      "edge_type": "execution_start",
+      "condition": {},
+      "metadata": {
+        "method": "run",
+        "definition_location": {
+          "file": "examples\\code\\atomic_agents\\mainBaseModal.py",
+          "line": 110,
+          "col": 26,
+          "end_line": 110,
+          "end_col": 66
+        }
+      }
+    },
+    {
+      "source": "Start",
+      "target": "orchestrator_agent",
+      "edge_type": "execution_start",
+      "condition": {},
+      "metadata": {
+        "method": "run",
+        "definition_location": {
+          "file": "examples\\code\\atomic_agents\\orchestor.py",
+          "line": 154,
+          "col": 30,
+          "end_line": 154,
+          "end_col": 66
+        }
+      }
+    },
+    {
+      "source": "Start",
+      "target": "orchestrator_agent",
+      "edge_type": "execution_start",
+      "condition": {},
+      "metadata": {
+        "method": "run",
+        "definition_location": {
+          "file": "examples\\code\\atomic_agents\\orchestor.py",
+          "line": 178,
+          "col": 23,
+          "end_line": 178,
+          "end_col": 59
+        }
+      }
+    },
+    {
+      "source": "Start",
+      "target": "orchestrator_agent_final",
+      "edge_type": "implicit_start",
+      "condition": {},
+      "metadata": {}
+    },
+    {
+      "source": "agent",
+      "target": "End",
+      "edge_type": "implicit_end",
+      "condition": {},
+      "metadata": {}
+    },
+    {
+      "source": "nutrition_analyzer",
+      "target": "End",
+      "edge_type": "implicit_end",
+      "condition": {},
+      "metadata": {}
+    },
+    {
+      "source": "orchestrator_agent",
+      "target": "End",
+      "edge_type": "implicit_end",
+      "condition": {},
+      "metadata": {}
+    },
+    {
+      "source": "orchestrator_agent_final",
+      "target": "End",
+      "edge_type": "implicit_end",
+      "condition": {},
+      "metadata": {}
+    }
+  ],
+  "metadata": {
+    "framework": "Atomic_Agents"
+  }
+}

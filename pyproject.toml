@@ -22,6 +22,7 @@ dependencies = [
     "openai",
     "python-dotenv",
     "pyyaml",
+    "dotenv"
 ]
 
 [project.scripts]

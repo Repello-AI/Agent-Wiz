@@ -64,6 +64,7 @@ db.sqlite3-journal
 # Flask stuff:
 instance/
 .webassets-cache
+assets
 
 # Scrapy stuff:
 .scrapy
@@ -82,6 +83,10 @@ target/
 profile_default/
 ipython_config.py
 
+Atomic_Agents_vis 
+AgentChat_vis
+agentchat_graph.json
+atomic.json
 # pyenv
 #   For a library or package, you might want to ignore these files since the code is
 #   intended to run in multiple environments; otherwise, check them in:
