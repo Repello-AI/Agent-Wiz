@@ -19,9 +19,10 @@ classifiers = [
 ]
 
 dependencies = [
-    "openai",
-    "python-dotenv",
-    "pyyaml",
+    "openai>=1.57.0",
+    "python-dotenv>=1.0.1",
+    "pyyaml>=6.0.2",
+    "pydantic>=2.7.0",
 ]
 
 [project.scripts]
